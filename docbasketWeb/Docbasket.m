@@ -50,6 +50,7 @@
     self.poi_id = [attributes valueForKeyPath:@"poi_id"];
     self.poi_title = [attributes valueForKeyPath:@"poi_title"];
     self.url = [attributes valueForKeyPath:@"url"];
+    self.image = [attributes valueForKey:@"image"];
     
     //self.permission = [[attributes valueForKeyPath:@"permission"] integerValue];
     //self.address = [attributes valueForKeyPath:@"address"];

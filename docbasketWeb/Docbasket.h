@@ -39,6 +39,7 @@
 @property (nonatomic, strong) NSString *poi_id;
 @property (nonatomic, strong) NSString *poi_title;
 @property (nonatomic, strong) NSString *url;
+@property (nonatomic, strong) NSString *image;
 @property (nonatomic, assign) NSUInteger permission;
 
 @property (nonatomic, strong) User *user;

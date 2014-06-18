@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6162" systemVersion="14A238h" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6154.21" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="F91-YK-ZbB">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6160"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6153.13"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +15,79 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView appearanceType="aqua" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K10-bk-XCx">
+                                <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
+                            <mapView appearanceType="aqua" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Y2d-9M-KP6">
+                                <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="P1x-ej-DPB"/>
+                                </connections>
+                            </mapView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-64" id="76q-gh-baU"/>
+                            <constraint firstItem="K10-bk-XCx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="77s-Ta-ETk"/>
+                            <constraint firstAttribute="trailing" secondItem="K10-bk-XCx" secondAttribute="trailing" id="CaY-xG-L4f"/>
+                            <constraint firstItem="K10-bk-XCx" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="N8R-O4-wSi"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Y2d-9M-KP6" secondAttribute="bottom" id="ZiW-Ct-CJy"/>
+                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="trailing" secondItem="K10-bk-XCx" secondAttribute="trailing" id="hx3-KA-asX"/>
+                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="qk2-to-kGk"/>
+                            <constraint firstAttribute="bottom" secondItem="K10-bk-XCx" secondAttribute="bottom" id="xov-Ho-ktN"/>
+                        </constraints>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
+                    <navigationItem key="navigationItem" id="b8v-W4-Qy0">
+                        <nil key="title"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="YEU-Sq-rfa">
+                            <connections>
+                                <action selector="refreshHandler:" destination="BYZ-38-t0r" id="m5d-8g-4oU"/>
+                            </connections>
+                        </barButtonItem>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="QMC-pw-HJQ">
+                            <rect key="frame" x="144" y="7" width="192" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="Map"/>
+                                <segment title="Web"/>
+                            </segments>
+                            <connections>
+                                <action selector="tabHandler:" destination="BYZ-38-t0r" eventType="valueChanged" id="4mS-x6-4Kq"/>
+                            </connections>
+                        </segmentedControl>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="juN-Tz-bb1">
+                            <connections>
+                                <action selector="buttonHandler:" destination="BYZ-38-t0r" id="Xtr-sb-Eg0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="mapView" destination="Y2d-9M-KP6" id="Y80-NG-8G9"/>
+                        <outlet property="webView" destination="K10-bk-XCx" id="8C3-wz-auv"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="808" y="364"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="FHR-Es-Ced">
+            <objects>
+                <navigationController id="F91-YK-ZbB" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="vzH-AN-4Q4">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="qfd-1J-cSS"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ccP-et-O1V" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="190" y="364"/>
         </scene>
     </scenes>
 </document>

@@ -7,9 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController  <UIWebViewDelegate, MKMapViewDelegate>
 
+
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) NSString *strURL;
+
+- (IBAction)refreshHandler:(id)sender;
+
+- (IBAction)buttonHandler:(id)sender;
+
+- (IBAction)tabHandler:(id)sender;
 
 @end
 

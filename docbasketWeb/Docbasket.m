@@ -68,6 +68,8 @@
         
         NSUInteger count = 0;
         if(!IsEmpty(JSON)) {
+            //NSLog(@"JSON : %@", JSON);
+            
             NSMutableArray *mutableBaskets = [NSMutableArray arrayWithCapacity:[JSON count]];
             for(id attributes in JSON){
                 if([attributes isKindOfClass:[NSDictionary class]]) {

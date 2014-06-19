@@ -8,7 +8,8 @@
 
 #import "DBKLocationManager.h"
 #import "GlobalValue.h"
-
+#import "RegionAnnotation.h"
+#import "DocbaketAPIClient.h"
 @implementation DBKLocationManager
 
 +(DBKLocationManager*)sharedInstance
@@ -99,7 +100,7 @@
              NSString *Area = [[NSString alloc]initWithString:placemark.locality];
              NSString *Country = [[NSString alloc]initWithString:placemark.country];
              NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
-             NSLog(@"%@",CountryArea);
+             NSLog(@"%@",Address);
          }
          else
          {
@@ -128,11 +129,15 @@
     NSString *title = [findBasket valueForKey:@"title"];
     
     NSString *event = [NSString stringWithFormat:@"didEnterRegion %@ at %@", title, [NSDate date]];
+    NSLog(@"%@",event);
+    
+    NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":[NSDate date], @"checkout_at":@""};
+    [DocbaketAPIClient postRegionCheck:parameters withBasketID:[findBasket valueForKey:@"basketID"]];
     
     [self updateWithEvent:event];
 }
 
-
+// 37.56202672  126.98963106
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region {
     
     NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
@@ -140,6 +145,10 @@
 
     
     NSString *event = [NSString stringWithFormat:@"didExitRegion %@ at %@", title, [NSDate date]];
+    NSLog(@"%@",event);
+    
+    NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":@"", @"checkout_at":[NSDate date]};
+    [DocbaketAPIClient postRegionCheck:parameters withBasketID:[findBasket valueForKey:@"basketID"]];
     
     [self updateWithEvent:event];
 }
@@ -152,8 +161,8 @@
 
     
     NSString *event = [NSString stringWithFormat:@"monitoringDidFailForRegion %@: %@", title, error];
-    
-    [self updateWithEvent:event];
+    NSLog(@"%@",event);
+    //[self updateWithEvent:event];
 }
 
 
@@ -161,7 +170,7 @@
 - (void)updateWithEvent:(NSString *)event {
 
     // Update the icon badge number.
-    [UIApplication sharedApplication].applicationIconBadgeNumber++;
+    //[UIApplication sharedApplication].applicationIconBadgeNumber++;
 
     UIApplication *app = [UIApplication sharedApplication];
     NSArray *oldNotifications = [app scheduledLocalNotifications];
@@ -172,14 +181,16 @@
         [app cancelAllLocalNotifications];
     
     // Create a new notification
-    UILocalNotification *alarm = [[UILocalNotification alloc] init];
-    if (alarm) {
-        alarm.fireDate =  [NSDate dateWithTimeIntervalSinceNow:1];
-        alarm.timeZone = [NSTimeZone defaultTimeZone];
-        alarm.repeatInterval = 0;
-        alarm.alertBody = event;
+    UILocalNotification *noti = [[UILocalNotification alloc] init];
+    if (noti) {
+        noti.fireDate =  [NSDate dateWithTimeIntervalSinceNow:1];
+        noti.timeZone = [NSTimeZone defaultTimeZone];
+        //noti.repeatInterval = 0;
+        noti.alertBody = event;
+        noti.alertAction = @"GOGO";
+        noti.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
         
-        [app scheduleLocalNotification:alarm];
+        [app presentLocalNotificationNow:noti];
     }
     
     NSLog(@"Done.");
@@ -202,8 +213,8 @@
 - (void)startLocationManager
 {
     self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.distanceFilter = kCLLocationAccuracyHundredMeters;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    self.locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
     
     self.locationManager.delegate = self;
     //[self.locationManager requestWhenInUseAuthorization];
@@ -233,7 +244,7 @@
 
     if ([CLLocationManager significantLocationChangeMonitoringAvailable]) {
         // Stop normal location updates and start significant location change updates for battery efficiency.
-        //[_locationManager stopUpdatingLocation];
+        [_locationManager stopUpdatingLocation];
         [_locationManager startMonitoringSignificantLocationChanges];
     }
     else {
@@ -246,7 +257,7 @@
     if ([CLLocationManager significantLocationChangeMonitoringAvailable]) {
         // Stop significant location updates and start normal location updates again since the app is in the forefront.
         [_locationManager stopMonitoringSignificantLocationChanges];
-        //[_locationManager startUpdatingLocation];
+        [_locationManager startUpdatingLocation];
     }
     else {
         NSLog(@"Significant location change monitoring is not available.");
@@ -255,24 +266,26 @@
 }
 
 
-- (void)makeNewRegionMonitoring:( CLLocationCoordinate2D) coord withID:(NSString*)identifier
+- (void)makeNewRegionMonitoring:( CLLocationCoordinate2D) coord withID:(NSString*)identifier withMap:(MKMapView*)mapView
 {
     if ([CLLocationManager regionMonitoringAvailable]) {
         //CLLocationCoordinate2DMake(checkpoint.lat, checkpoint.lon);
         CLRegion *newRegion = [[CLRegion alloc] initCircularRegionWithCenter:coord
-                                                                      radius:100
+                                                                      radius:50
                                                                   identifier:identifier];
         
         // Create an annotation to show where the region is located on the map.
-        //    RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
-        //    myRegionAnnotation.coordinate = newRegion.center;
-        //    myRegionAnnotation.radius = newRegion.radius;
+        RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
+        myRegionAnnotation.coordinate = newRegion.center;
+        myRegionAnnotation.radius = newRegion.radius;
         //
-        //    [_mapView addAnnotation:myRegionAnnotation];
+        [mapView addAnnotation:myRegionAnnotation];
         
         
         // Start monitoring the newly created region.
-        [_locationManager startMonitoringForRegion:newRegion desiredAccuracy:kCLLocationAccuracyBest];
+        //[_locationManager startMonitoringForRegion:newRegion desiredAccuracy:kCLLocationAccuracyBest];
+        
+        [self startMonitoringRegion:newRegion];
     }
 
 }
@@ -280,10 +293,13 @@
 
 - (void)startMonitoringRegion:(CLRegion *)region
 {
-    [_locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyBest];
+    NSLog(@"startMonitoringRegion: %@", region);
+    [_locationManager startMonitoringForRegion:region];
 }
+
 - (void)stopMonitoringRegion:(CLRegion *)region
 {
+    NSLog(@"stopMonitoringRegion: %@", region);
     [_locationManager stopMonitoringForRegion:region];
 }
 

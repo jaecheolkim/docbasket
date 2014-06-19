@@ -14,6 +14,7 @@
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (weak, nonatomic) IBOutlet UIButton *addressInfo;
 @property (nonatomic, strong) NSString *strURL;
 
 - (IBAction)refreshHandler:(id)sender;

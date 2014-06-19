@@ -20,23 +20,35 @@
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </webView>
-                            <mapView appearanceType="aqua" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Y2d-9M-KP6">
+                            <mapView appearanceType="aqua" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y2d-9M-KP6">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
                                 <connections>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="P1x-ej-DPB"/>
                                 </connections>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Up-7y-SkJ">
+                                <rect key="frame" x="90" y="452" width="300" height="22"/>
+                                <fontDescription key="fontDescription" name="GillSans-Light" family="Gill Sans" pointSize="13"/>
+                                <size key="titleShadowOffset" width="1" height="1"/>
+                                <state key="normal" title="서울시 용산구 청파동">
+                                    <color key="titleShadowColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-64" id="76q-gh-baU"/>
-                            <constraint firstItem="K10-bk-XCx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="77s-Ta-ETk"/>
-                            <constraint firstAttribute="trailing" secondItem="K10-bk-XCx" secondAttribute="trailing" id="CaY-xG-L4f"/>
-                            <constraint firstItem="K10-bk-XCx" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="N8R-O4-wSi"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Y2d-9M-KP6" secondAttribute="bottom" id="ZiW-Ct-CJy"/>
-                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="trailing" secondItem="K10-bk-XCx" secondAttribute="trailing" id="hx3-KA-asX"/>
-                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="qk2-to-kGk"/>
-                            <constraint firstAttribute="bottom" secondItem="K10-bk-XCx" secondAttribute="bottom" id="xov-Ho-ktN"/>
+                            <constraint firstItem="K10-bk-XCx" firstAttribute="leading" secondItem="Y2d-9M-KP6" secondAttribute="leading" id="5lg-NR-5ZO"/>
+                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="top" secondItem="K10-bk-XCx" secondAttribute="top" id="91u-1D-LD0"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="8Up-7y-SkJ" secondAttribute="bottom" constant="6" id="JuS-pU-ClN"/>
+                            <constraint firstAttribute="trailing" secondItem="Y2d-9M-KP6" secondAttribute="trailing" id="Une-01-Idm"/>
+                            <constraint firstItem="8Up-7y-SkJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="90" id="ao6-bH-IOn"/>
+                            <constraint firstItem="8Up-7y-SkJ" firstAttribute="centerX" secondItem="K10-bk-XCx" secondAttribute="centerX" id="c8U-xf-0GB"/>
+                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="trailing" secondItem="K10-bk-XCx" secondAttribute="trailing" id="dWR-6l-rgp"/>
+                            <constraint firstItem="K10-bk-XCx" firstAttribute="bottom" secondItem="Y2d-9M-KP6" secondAttribute="bottom" id="g5D-sX-1BG"/>
+                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="iPT-Wr-eMi"/>
+                            <constraint firstAttribute="bottom" secondItem="K10-bk-XCx" secondAttribute="bottom" id="icu-d6-k2c"/>
+                            <constraint firstItem="Y2d-9M-KP6" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="vMh-fP-09a"/>
+                            <constraint firstItem="8Up-7y-SkJ" firstAttribute="top" relation="greaterThanOrEqual" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="388" id="vf8-dA-Gci"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
@@ -65,6 +77,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="addressInfo" destination="8Up-7y-SkJ" id="zXH-bx-ydx"/>
                         <outlet property="mapView" destination="Y2d-9M-KP6" id="Y80-NG-8G9"/>
                         <outlet property="webView" destination="K10-bk-XCx" id="8C3-wz-auv"/>
                     </connections>

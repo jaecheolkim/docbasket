@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#import <MapKit/MapKit.h>
 
 #define DBKLOCATION [DBKLocationManager sharedInstance]
 
@@ -27,7 +28,7 @@
 
 - (CLLocationCoordinate2D)getCurrentCoordinate;
 
-- (void)makeNewRegionMonitoring:( CLLocationCoordinate2D) coord withID:(NSString*)identifier;
+- (void)makeNewRegionMonitoring:( CLLocationCoordinate2D) coord withID:(NSString*)identifier withMap:(MKMapView*)mapView;
 
 - (void)startMonitoringRegion:(CLRegion *)region;
 - (void)stopMonitoringRegion:(CLRegion *)region;

@@ -1,0 +1,7 @@
+- Image Cache Lib 넣기
+
+- Docbasket 생성 
+- 내 위치 이동
+
+- /baskets/:id/checkin    POST    trans_id, user_id, checkin_at, checkout_at (ISO8601)
+

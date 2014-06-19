@@ -148,5 +148,21 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
     
 }
 
+//- /baskets/:id/checkin    POST    trans_id, user_id, checkin_at, checkout_at (ISO8601)
+//[_faceAssets addObject:@{@"Asset": photoAsset, @"UserID" : @(UserID), @"PhotoID" : @(PhotoID)}];
+
++ (void)postRegionCheck:(NSDictionary *)parameters withBasketID:(NSString*)basketID {
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *URL = [NSString stringWithFormat:@"%@%@%@", @"http://docbasket.com/baskets/", basketID, @"/checkin.json"];
+    
+    //NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":@"2014-06-19 07:37:29 +0000", @"checkout_at":@""};
+    //[manager POST:@"http://docbasket.com/baskets/377b7268-a653-486e-9f37-390ecc51029b/checkin.json" parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [manager POST:URL parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+        NSLog(@"JSON: %@", responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+}
 
 @end

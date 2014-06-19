@@ -14,6 +14,7 @@
 #import "RegionAnnotation.h"
 #import "RegionAnnotationView.h"
 #import "Docbasket.h"
+#import "UIButton+WebCache.h"
 
 //#import "Docbasket.h"
 //#import "AFHTTPRequestOperationManager.h"
@@ -44,50 +45,18 @@
     [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:MAINURL]]];
     
     _webView.hidden = YES;
+    
+    
+    self.mapView.showsUserLocation=YES;
+    [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
+    
     // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     
     [self refreshMap];
-//    [DocbaketAPIClient loadDocBaskets:^(BOOL success){
-//        if(success){
-//            NSLog(@"Load Baskets : %@", GVALUE.baskets );
-//            for(Docbasket *basket in GVALUE.baskets){
-//                if(!IsEmpty(basket)){
-//                    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
-//                    [[DBKLocationManager sharedInstance] makeNewRegionMonitoring:coord withID:basket.basketID];
-//                }
-//            }
-//            
-//            NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
-//            // Iterate through the regions and add annotations to the map for each of them.
-//            for (int i = 0; i < [regions count]; i++) {
-//                CLRegion *region = [regions objectAtIndex:i];
-//                RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLRegion:region];
-//                [_mapView addAnnotation:annotation];
-//            }
-//
-//            NSLog(@"Load regions : %@", regions );
-//        } else {
-//            NSLog(@"Load Baskets : FAIL");
-//        }
-//    }];
-
-    
-    
-//    // Get all regions being monitored for this application.
-//    NSArray *regions = [[DBKLOCATION.locationManager monitoredRegions] allObjects];
-//    
-//    // Iterate through the regions and add annotations to the map for each of them.
-//    for (int i = 0; i < [regions count]; i++) {
-//        CLRegion *region = [regions objectAtIndex:i];
-//        RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLRegion:region];
-//        [_mapView addAnnotation:annotation];
-//    }
-    
-    
-    
+    [self goCurrent];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -215,9 +184,11 @@
         
         NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
         NSString *title = [findBasket valueForKey:@"title"];
+        
         NSString *image = [findBasket valueForKey:@"image"];
         NSString *ext = nil;
         UIImage *icon = [UIImage imageNamed:@"RemoveRegion"];
+        NSString *MyURL = nil;
         
         if(!IsEmpty(image)){
             
@@ -225,8 +196,8 @@
             if([ext isEqualToString:@"png"] || [ext isEqualToString:@"PNG"] ||
                [ext isEqualToString:@"jpg"] || [ext isEqualToString:@"JPG"] ){
                 
-                NSString *MyURL = [NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
-                icon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:MyURL]]];
+                MyURL = [NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
+//                icon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:MyURL]]];
 
             }
         }
@@ -245,7 +216,12 @@
             // Create a button for the left callout accessory view of each annotation to remove the annotation and region being monitored.
             UIButton *removeRegionButton = [UIButton buttonWithType:UIButtonTypeCustom];
             [removeRegionButton setFrame:CGRectMake(0., 0., 25., 25.)];
-            [removeRegionButton setImage:icon forState:UIControlStateNormal];
+            if(!IsEmpty(MyURL)){
+                [removeRegionButton setImageWithURL:[NSURL URLWithString:MyURL] forState:UIControlStateNormal];
+            } else {
+                [removeRegionButton setImage:icon forState:UIControlStateNormal];
+            }
+            
             
             regionView.leftCalloutAccessoryView = removeRegionButton;
         } else {
@@ -267,8 +243,8 @@
     if([overlay isKindOfClass:[MKCircle class]]) {
         // Create the view for the radius overlay.
         MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
-        circleView.strokeColor = [UIColor grayColor];
-        circleView.fillColor = [[UIColor yellowColor] colorWithAlphaComponent:0.4];
+        circleView.strokeColor = [[UIColor grayColor] colorWithAlphaComponent:0.2];
+        circleView.fillColor = [[UIColor yellowColor] colorWithAlphaComponent:0.1];
         
         return circleView;
     }
@@ -293,7 +269,7 @@
         if (oldState == MKAnnotationViewDragStateDragging && newState == MKAnnotationViewDragStateEnding) {
             [regionView updateRadiusOverlay];
             
-            CLRegion *newRegion = [[CLRegion alloc] initCircularRegionWithCenter:regionAnnotation.coordinate radius:100 identifier:[NSString stringWithFormat:@"%f, %f", regionAnnotation.coordinate.latitude, regionAnnotation.coordinate.longitude]];
+            CLRegion *newRegion = [[CLRegion alloc] initCircularRegionWithCenter:regionAnnotation.coordinate radius:50 identifier:[NSString stringWithFormat:@"%f, %f", regionAnnotation.coordinate.latitude, regionAnnotation.coordinate.longitude]];
             regionAnnotation.region = newRegion;
             
             
@@ -315,6 +291,10 @@
 
 
 - (IBAction)refreshHandler:(id)sender {
+    
+    [self refreshMap];
+    [self goCurrent];
+    
     [_webView reload];
     
     currentCoordinate = [DBKLOCATION getCurrentCoordinate];
@@ -323,8 +303,7 @@
     
 
     
-    [self refreshMap];
-    [self goCurrent];
+
     
 }
 
@@ -339,6 +318,7 @@
     
     NSLog(@"User : %@", [self javaScriptFromString:@" $('*[data-user-id]').data('user-id')"]); // 로그인된 사용자 ID값 받아오기
    
+   
     
 }
 
@@ -348,27 +328,10 @@
 
 }
 
-
-//- (void)reload:(__unused id)sender {
-//    //self.navigationItem.rightBarButtonItem.enabled = NO;
-//    
-//    NSURLSessionTask *task = [Docbasket getBasktesWithBlock:^(NSArray *basktes, NSError *error) {
-//        if (!error) {
-//
-//            [GVALUE setBaskets:basktes];
-//            
-//            NSLog(@"Baskets : %@", GVALUE.baskets );
-//        }
-//    }];
-//    
-//    [UIAlertView showAlertViewForTaskWithErrorOnCompletion:task delegate:nil];
-////    [self.refreshControl setRefreshingWithStateOfTask:task];
-//    
-//
-//   // [self getJSONFromAFHTTP];
-//}
-
-
+- (NSString *)getUserID
+{
+    return [self javaScriptFromString:@" $('*[data-user-id]').data('user-id')"];
+}
 
 - (void)saveUserID
 {
@@ -392,36 +355,57 @@
 
 - (void)goCurrent
 {
-    [self.mapView setCenterCoordinate:[DBKLOCATION getCurrentCoordinate] animated:YES];
+//    [self.mapView setCenterCoordinate:[DBKLOCATION getCurrentCoordinate] animated:YES];
+    self.mapView.showsUserLocation = (self.mapView.showsUserLocation) ? NO : YES;
+    [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
+
 }
 
 - (void)refreshMap
 {
+
+    [_mapView removeAnnotations:_mapView.annotations];
+    
+    for (id overlay in [_mapView overlays]) {
+        if ([overlay isKindOfClass:[MKCircle class]]) {
+            [_mapView removeOverlay:overlay];
+            
+        }
+    }
+
     [DocbaketAPIClient loadDocBaskets:^(BOOL success){
         if(success){
-            NSLog(@"Load Baskets : %@", GVALUE.baskets );
-            for(Docbasket *basket in GVALUE.baskets){
-                if(!IsEmpty(basket)){
-                    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
-                    [[DBKLocationManager sharedInstance] makeNewRegionMonitoring:coord withID:basket.basketID];
-                }
-            }
-            
-            NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
-            if(!IsEmpty(regions)){
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
 
-                // Iterate through the regions and add annotations to the map for each of them.
-                for (int i = 0; i < [regions count]; i++) {
-                    CLRegion *region = [regions objectAtIndex:i];
-                    RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLRegion:region];
-                    
-                    [_mapView removeAnnotation:annotation];
-                    [_mapView addAnnotation:annotation];
+                NSLog(@"Basket count = %d", (int)[GVALUE.baskets count]);
+                
+                for(Docbasket *basket in GVALUE.baskets){
+                    if(!IsEmpty(basket)){
+                        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
+                        [[DBKLocationManager sharedInstance] makeNewRegionMonitoring:coord withID:basket.basketID withMap:_mapView];
+                    }
                 }
-            }
+                
+                NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
+//                
+//                 NSLog(@"regions count = %d", (int)[GVALUE.baskets count]);
+//                
+//                if(!IsEmpty(regions)){
+//                    
+//                    // Iterate through the regions and add annotations to the map for each of them.
+//                    for (int i = 0; i < [regions count]; i++) {
+//                        CLRegion *region = [regions objectAtIndex:i];
+//                        RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLRegion:region];
+//                        [_mapView addAnnotation:annotation];
+//                    }
+//                }
+//                
+//                
+                NSLog(@"Load %d regions : %@", (int)regions.count, regions );
+                
+            });
+ 
 
-            
-            NSLog(@"Load regions : %@", regions );
         } else {
             NSLog(@"Load Baskets : FAIL");
         }

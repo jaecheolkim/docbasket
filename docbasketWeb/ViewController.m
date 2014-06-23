@@ -53,10 +53,24 @@
     // Do any additional setup after loading the view, typically from a nib.
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(LocationEventHandler:)
+                                                 name:@"LocationEventHandler" object:nil];
+
     
     [self refreshMap];
     [self goCurrent];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"LocationEventHandler" object:nil];
+
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -180,7 +194,7 @@
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
     if([annotation isKindOfClass:[RegionAnnotation class]]) {
         RegionAnnotation *currentAnnotation = (RegionAnnotation *)annotation;
-        CLRegion *region = currentAnnotation.region;
+        CLCircularRegion *region = currentAnnotation.region;
         
         NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
         NSString *title = [findBasket valueForKey:@"title"];
@@ -269,11 +283,8 @@
         if (oldState == MKAnnotationViewDragStateDragging && newState == MKAnnotationViewDragStateEnding) {
             [regionView updateRadiusOverlay];
             
-            CLRegion *newRegion = [[CLRegion alloc] initCircularRegionWithCenter:regionAnnotation.coordinate radius:50 identifier:[NSString stringWithFormat:@"%f, %f", regionAnnotation.coordinate.latitude, regionAnnotation.coordinate.longitude]];
-            regionAnnotation.region = newRegion;
             
-            
-            [DBKLOCATION startMonitoringRegion:regionAnnotation.region];
+            [DBKLOCATION makeNewRegionMonitoring:regionAnnotation.coordinate withID:regionAnnotation.region.identifier withMap:self.mapView];
         }
     }
 }
@@ -283,29 +294,25 @@
     RegionAnnotationView *regionView = (RegionAnnotationView *)view;
     RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
     
-    // Stop monitoring the region, remove the radius overlay, and finally remove the annotation from the map.
-    [DBKLOCATION stopMonitoringRegion:regionAnnotation.region];
-    [regionView removeRadiusOverlay];
-    [_mapView removeAnnotation:regionAnnotation];
+    [self.mapView setRegion:MKCoordinateRegionMake(regionAnnotation.coordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
+//
+//    // Stop monitoring the region, remove the radius overlay, and finally remove the annotation from the map.
+//    [DBKLOCATION stopMonitoringRegion:regionAnnotation.region];
+//    [regionView removeRadiusOverlay];
+//    [_mapView removeAnnotation:regionAnnotation];
 }
 
 
 - (IBAction)refreshHandler:(id)sender {
-    
+    currentCoordinate = [DBKLOCATION getCurrentCoordinate];
     [self refreshMap];
     [self goCurrent];
     
     [_webView reload];
     
-    currentCoordinate = [DBKLOCATION getCurrentCoordinate];
     NSString *func = [NSString stringWithFormat:@"goCurrentPosition(%f,%f)",currentCoordinate.latitude, currentCoordinate.longitude];
     [self javaScriptFromString:func];
-    
-
-    
-
-    
-}
+ }
 
 - (IBAction)buttonHandler:(id)sender {
     
@@ -316,8 +323,10 @@
    // NSLog(@"latitude : %@", [self javaScriptFromString:@"$(\"#basket_latitude\")[0].value"]);
    // NSLog(@"longitude : %@", [self javaScriptFromString:@"$(\"#basket_longitude\")[0].value"]);  
     
-    NSLog(@"User : %@", [self javaScriptFromString:@" $('*[data-user-id]').data('user-id')"]); // 로그인된 사용자 ID값 받아오기
+    //NSLog(@"User : %@", [self javaScriptFromString:@" $('*[data-user-id]').data('user-id')"]); // 로그인된 사용자 ID값 받아오기
    
+    [self saveUserID];
+    [DocbaketAPIClient postUserTracking];
    
     
 }
@@ -355,10 +364,7 @@
 
 - (void)goCurrent
 {
-//    [self.mapView setCenterCoordinate:[DBKLOCATION getCurrentCoordinate] animated:YES];
-    self.mapView.showsUserLocation = (self.mapView.showsUserLocation) ? NO : YES;
-    [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
-
+     [self.mapView setRegion:MKCoordinateRegionMake(currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
 }
 
 - (void)refreshMap
@@ -369,8 +375,12 @@
     for (id overlay in [_mapView overlays]) {
         if ([overlay isKindOfClass:[MKCircle class]]) {
             [_mapView removeOverlay:overlay];
-            
         }
+    }
+    
+    NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
+    for(CLCircularRegion *oldregion in regions){
+        [[DBKLocationManager sharedInstance] stopMonitoringRegion:oldregion];
     }
 
     [DocbaketAPIClient loadDocBaskets:^(BOOL success){
@@ -387,23 +397,9 @@
                 }
                 
                 NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
-//                
-//                 NSLog(@"regions count = %d", (int)[GVALUE.baskets count]);
-//                
-//                if(!IsEmpty(regions)){
-//                    
-//                    // Iterate through the regions and add annotations to the map for each of them.
-//                    for (int i = 0; i < [regions count]; i++) {
-//                        CLRegion *region = [regions objectAtIndex:i];
-//                        RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLRegion:region];
-//                        [_mapView addAnnotation:annotation];
-//                    }
-//                }
-//                
-//                
-                NSLog(@"Load %d regions : %@", (int)regions.count, regions );
-                
-            });
+
+                NSLog(@"->Load %d regions : %@", (int)regions.count, regions );
+             });
  
 
         } else {
@@ -412,6 +408,41 @@
     }];
 
 }
+
+- (void)LocationEventHandler:(NSNotification *)notification
+{
+//    - (MKAnnotationView *)viewForAnnotation:(id <MKAnnotation>)annotation;
+
+    
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"monitoringDidFailForRegion"]) {
+        
+        id region = [[notification userInfo] objectForKey:@"region"];
+        if(!IsEmpty(region) && [NSStringFromClass([CLCircularRegion class]) isEqualToString:@"CLCircularRegion"]){
+            NSLog(@"Msg : %@", [[notification userInfo] objectForKey:@"Msg"]);
+            NSLog(@"region : %@", [[notification userInfo] objectForKey:@"region"]);
+            
+//            MKUserLocation *userLocation = 
+//            
+//            MKAnnotationView* annotationView = [_mapView viewForAnnotation:userLocation];
+//            
+//            
+//            CLCircularRegion *newRegion = (CLCircularRegion *)region;
+//            
+//
+//            RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
+//            annotation.coordinate = newRegion.center;
+//            annotation.radius = newRegion.radius;
+//
+//            
+//            RegionAnnotationView *annotationView = [_mapView viewForAnnotation:annotation];
+//
+//            annotationView.pinColor = MKPinAnnotationColorPurple;
+        }
+    }
+    
+}
+
 
 //[[NSUserDefaults standardUserDefaults] setObject:cookieData forKey:@"MySavedCookies"];
 //NSData *cookiesdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"MySavedCookies"];

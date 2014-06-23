@@ -165,4 +165,41 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
     }];
 }
 
++ (void)postUserLocation:(NSDictionary *)parameters withBasketID:(NSString*)basketID {
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *URL = [NSString stringWithFormat:@"%@%@%@", @"http://docbasket.com/baskets/", basketID, @"/checkin.json"];
+    
+    //NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":@"2014-06-19 07:37:29 +0000", @"checkout_at":@""};
+    //[manager POST:@"http://docbasket.com/baskets/377b7268-a653-486e-9f37-390ecc51029b/checkin.json" parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [manager POST:URL parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSLog(@"JSON: %@", responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+}
+
++ (void)postUserTracking {
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+   // [manager setParameterEncoding:AFJSONParameterEncoding];
+    //http://docbasket.com/users/32ea57d6-6f0e-4902-817a-544cae7cc189/heartbeat.json
+    NSString *UserID = @"bb5774c9-2c4e-41d0-b792-530e295e1ca6";
+    NSString *URL = [NSString stringWithFormat:@"%@%@%@", @"http://docbasket.com/users/", UserID, @"/heartbeat.json"];
+    
+    NSDictionary *trackingInfo = @{@"longitude":@(127.00000001), @"latitude": @(37.0000001), @"tracked_at": @"2014-06-23 02:12:36.502347"};
+    
+    NSDictionary *params = @{@"trackings" : @[trackingInfo,] };
+    [manager POST:URL parameters:params
+          success:^(AFHTTPRequestOperation *operation, id responseObject)
+     {
+         NSLog(@"JSON: %@", responseObject);
+     }
+          failure:
+     ^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+     }];
+
+}
+
 @end

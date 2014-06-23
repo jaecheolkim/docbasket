@@ -58,7 +58,7 @@
     [self loadWebViewCookie];
     [[DBKLocationManager sharedInstance] stopMonitoringSignificantLocationChanges];
     
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

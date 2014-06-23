@@ -51,12 +51,12 @@
 
 }
 
-@property (nonatomic, retain) CLRegion *region;
+@property (nonatomic, retain) CLCircularRegion *region;
 @property (nonatomic, readwrite) CLLocationCoordinate2D coordinate;
 @property (nonatomic, readwrite) CLLocationDistance radius;
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *subtitle;
 
-- (id)initWithCLRegion:(CLRegion *)newRegion;
+- (id)initWithCLRegion:(CLCircularRegion *)newRegion;
 
 @end

@@ -40,7 +40,6 @@
 		<string>MKDirectionsModeCar</string>
 		<string>MKDirectionsModeFerry</string>
 		<string>MKDirectionsModePedestrian</string>
-		<string>MKDirectionsModePlane</string>
 		<string>MKDirectionsModeStreetCar</string>
 		<string>MKDirectionsModeSubway</string>
 		<string>MKDirectionsModeTaxi</string>

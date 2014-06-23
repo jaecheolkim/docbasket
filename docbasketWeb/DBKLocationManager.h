@@ -30,8 +30,8 @@
 
 - (void)makeNewRegionMonitoring:( CLLocationCoordinate2D) coord withID:(NSString*)identifier withMap:(MKMapView*)mapView;
 
-- (void)startMonitoringRegion:(CLRegion *)region;
-- (void)stopMonitoringRegion:(CLRegion *)region;
+- (void)startMonitoringRegion:(CLCircularRegion *)region;
+- (void)stopMonitoringRegion:(CLCircularRegion *)region;
 
 @end
 

@@ -61,13 +61,13 @@
 }
 
 
-- (id)initWithCLRegion:(CLRegion *)newRegion {
+- (id)initWithCLRegion:(CLCircularRegion *)newRegion {
 	self = [self init];
 	
 	if (self != nil) {
 		self.region = newRegion;
-		self.coordinate = region.center;
-		self.radius = region.radius;
+		self.coordinate = newRegion.center;
+		self.radius = newRegion.radius;
         
 //		self.title = @"Monitored Region";
 	}

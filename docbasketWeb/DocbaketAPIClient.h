@@ -28,5 +28,5 @@
 + (instancetype)sharedClient;
 + (void)loadDocBaskets:(void (^)(BOOL success))block;
 + (void)postRegionCheck:(NSDictionary *)parameters withBasketID:(NSString*)basketID;
-
++ (void)postUserTracking;
 @end

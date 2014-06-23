@@ -11,6 +11,7 @@
 #define GVALUE              [GlobalValue sharedInstance]
 
 #define KEY_USER_ID         @"default_user_id"
+#define KEY_USER_TOKEN      @"default_user_token"
 
 static inline BOOL IsEmpty(id thing) {
     return thing == nil
@@ -29,6 +30,7 @@ static inline id ObjectOrNull(id object)
 
 @interface GlobalValue : NSObject
 @property (nonatomic, strong) NSString* userID;
+@property (nonatomic, strong) NSString *token;
 @property (nonatomic, strong) NSArray *baskets;
 @property (nonatomic) BOOL START_LOGIN;
 @property (nonatomic) BOOL FIND_USERID;

@@ -52,9 +52,8 @@
 
 @synthesize map, theAnnotation;
 
-- (id)initWithAnnotation:(id <MKAnnotation>)annotation {
-	self = [super initWithAnnotation:annotation reuseIdentifier:[annotation title]];	
-	
+- (id)initWithAnnotation:(id <MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier {
+	self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
 	if (self) {		
 		self.canShowCallout	= YES;		
 		self.multipleTouchEnabled = NO;

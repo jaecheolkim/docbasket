@@ -29,4 +29,8 @@
 + (void)loadDocBaskets:(void (^)(BOOL success))block;
 + (void)postRegionCheck:(NSDictionary *)parameters withBasketID:(NSString*)basketID;
 + (void)postUserTracking;
++ (void)createBasket;
++ (void)Login;
+
++ (void)getBaskets;
 @end

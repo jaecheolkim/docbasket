@@ -60,25 +60,43 @@
     CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
     [geocoder reverseGeocodeLocation:_currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
      {
+         NSString *currentAddress = nil;
+         
          if (!(error))
          {
              CLPlacemark *placemark = [placemarks objectAtIndex:0];
-             NSLog(@"\nCurrent Location Detected\n");
-             NSLog(@"placemark %@",placemark);
+             
+//             NSLog(@"placemark %@",placemark);
              NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
              NSString *Address = [[NSString alloc]initWithString:locatedAt];
              NSString *Area = [[NSString alloc]initWithString:placemark.locality];
              NSString *Country = [[NSString alloc]initWithString:placemark.country];
              //NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
-             NSLog(@"%@",Address);
+             
+             currentAddress = Address;
+             
+             NSLog(@"\nCurrent Location Detected\n");
+             
          }
          else
          {
              NSLog(@"Geocode failed with error %@", error);
-             NSLog(@"\nCurrent Location Not Detected\n");
+
+             currentAddress = @"Current Location Not Detected";
+             
              //return;
 //             CountryArea = NULL;
          }
+         
+         
+         NSLog(@"%@",currentAddress);
+         
+         
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"LocationEventHandler"
+                                                             object:self
+                                                           userInfo:@{@"Msg":@"currentAddress", @"address":currentAddress}];
+
+         
          /*---- For more results
           placemark.region);
           placemark.country);

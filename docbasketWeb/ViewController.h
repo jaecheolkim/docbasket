@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-@interface ViewController : UIViewController  <UIWebViewDelegate, MKMapViewDelegate>
+@interface ViewController : UIViewController
+<UIWebViewDelegate, MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
-
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIButton *addressInfo;
@@ -22,6 +23,9 @@
 - (IBAction)buttonHandler:(id)sender;
 
 - (IBAction)tabHandler:(id)sender;
+
+- (IBAction)refreshCurrentLocation:(id)sender;
+
 
 @end
 

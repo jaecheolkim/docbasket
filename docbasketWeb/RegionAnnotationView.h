@@ -58,7 +58,7 @@
 @property (nonatomic, assign) MKMapView *map;
 @property (nonatomic, assign) RegionAnnotation *theAnnotation;
 
-- (id)initWithAnnotation:(id <MKAnnotation>)annotation;
+- (id)initWithAnnotation:(id <MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier;
 - (void)updateRadiusOverlay;
 - (void)removeRadiusOverlay;
 

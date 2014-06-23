@@ -5,3 +5,47 @@
 
 - /baskets/:id/checkin    POST    trans_id, user_id, checkin_at, checkout_at (ISO8601)
 
+https://github.com/AFNetworking/AFOAuth2Client
+
+
+사용자 위치 트래킹 
+/users/:id/heartbeat POST latitude, longitude
+/users/:id/heartbeat.json
+
+Create new basket
+/baskets    POST    create a new basket 
+핀 혹은 리전 색 정의 (모니터링 되는 거 / 안되는 거)
+모니터링 리스트 테이블 뷰
+API OAuth 추가
+Login  기능 추가
+파일 뷰어 기능 추가
+
+Geofence 20개 한계에 대한 프로그래밍
+위치 오차에 대한 문제 어떻게 해결?
+
+https://geoloqi.com
+https://developers.geoloqi.com
+
+========================
+6/19일 한일  :
+체크인/아웃 API 연동
+강북맛집 50개 지오펜스 / 푸쉬 연동
+geofence 20개 리밋 및 위치정보 오차율 조사 
+
+ToDo List
+ 
+트래킹 정보 API 연동
+Basket 생성 API  연동 및 네이티브 UI 개발
+로그인 관련 OAuth 연동 및 API 수정
+파일 뷰어 관련 UI개발  (메모 기능 포함)
+(중요) 동적 geofence 연동 모듈 개발 (DB / BG work / Noti)
+(중요) 위치정보 오차 해결 
+Geofence 핀 색깔 다르게 표시
+노티피케이션 클라이언트 연동 작업
+마이 닥바스켓 UI 개발
+
+
+
+
+
+ 

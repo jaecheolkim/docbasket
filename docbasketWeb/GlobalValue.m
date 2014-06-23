@@ -42,6 +42,19 @@
     return [self readObjectFromDefault:KEY_USER_ID];
 }
 
+
+- (void)setToken:(NSString *)token
+{
+    [self writeObjectToDefault:token withKey:KEY_USER_TOKEN];
+}
+
+- (NSString*)token
+{
+    return [self readObjectFromDefault:KEY_USER_TOKEN];
+}
+
+
+
 - (void)writeObjectToDefault:(id)idValue withKey:(NSString *)strKey
 {
     [[NSUserDefaults standardUserDefaults] setObject:idValue forKey:strKey];

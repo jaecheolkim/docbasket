@@ -66,6 +66,8 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 - (void)getJSONFromAFHTTP
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"bearer" password:@"61410252b906e22f2fdbbc06e43ea1ec10ce472eb92c1cdcc2c5c1bbfe5ad752"];
+
     [manager GET:@"http://docbasket.com/baskets.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
         NSUInteger count = 0;
@@ -148,6 +150,26 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
     
 }
 
++ (void)getBaskets
+{
+    NSString *token = GVALUE.token;
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    if(!IsEmpty(token)) {
+        [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"bearer" password:token];
+    }
+    
+    [manager GET:@"http://docbasket.com/baskets.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         if(!IsEmpty(responseObject)) {
+             
+             NSLog(@"JSON: %@", responseObject);
+          }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+
+}
+
 //- /baskets/:id/checkin    POST    trans_id, user_id, checkin_at, checkout_at (ISO8601)
 //[_faceAssets addObject:@{@"Asset": photoAsset, @"UserID" : @(UserID), @"PhotoID" : @(PhotoID)}];
 
@@ -194,6 +216,154 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
           success:^(AFHTTPRequestOperation *operation, id responseObject)
      {
          NSLog(@"JSON: %@", responseObject);
+     }
+          failure:
+     ^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+     }];
+
+}
+
++ (void)createBasket {
+    
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *UserID = @"bb5774c9-2c4e-41d0-b792-530e295e1ca6";
+    NSDictionary *parameters = @{@"user_id": UserID, @"basket[title]": @"테스트", @"basket[longitude]": @(127.00000001), @"basket[latitude]": @(37.0000001)};
+    
+    //NSURL *filePath = [NSURL fileURLWithPath:@"file://path/to/image.png"];
+    [manager POST:@"http://docbasket.com/baskets.json" parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
+     {
+         //[formData appendPartWithFileURL:filePath name:@"image" error:nil];
+         
+         NSData *imageData = UIImagePNGRepresentation([UIImage imageNamed:@"RemoveRegion"]);
+         
+         [formData appendPartWithFileData:imageData name:@"documents[file][]" fileName:[NSString stringWithFormat:@"upload.png"] mimeType:@"image/png"];
+         [formData appendPartWithFileData:imageData name:@"documents[file][]" fileName:[NSString stringWithFormat:@"abc%d.png",1] mimeType:@"image/png"];
+         [formData appendPartWithFileData:imageData name:@"documents[file][]" fileName:[NSString stringWithFormat:@"abc%d.png",2] mimeType:@"image/png"];
+ 
+         NSError* err;
+         NSURL *movieURL = [NSURL URLWithString:@"http://movietrailers.apple.com/movies/disney/planesfireandrescue/planesandrescue-tlr4_480p.mov"];
+         
+         [formData appendPartWithFileURL:movieURL name:@"documents[file][]" fileName:[NSString stringWithFormat:@"video.mov"] mimeType:@"video/quicktime" error:&err];
+         
+         NSLog(@"video error : %@", err);
+//          NSError* err;
+//          [formData appendPartWithFileURL:[NSURL fileURLWithPath:filePathToUpload] name:[fileInfo objectForKey:@"fileName"] error:&err];
+
+     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         NSLog(@"Success: %@", responseObject);
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"Error: %@", error);
+     }];
+    
+    
+    
+    //Video
+    
+//    httpClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@"http://www.mysite.com"]];
+//    
+//    NSMutableURLRequest *afRequest = [httpClient multipartFormRequestWithMethod:@"POST" path:@"/upload.php" parameters:nil constructingBodyWithBlock:^(id <AFMultipartFormData>formData)
+//                                      {
+//                                          [formData appendPartWithFileData:videoData name:@"file" fileName:@"filename.mov" mimeType:@"video/quicktime"];
+//                                      }];
+//    
+//    
+//    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:afRequest];
+//    
+//    [operation setUploadProgressBlock:^(NSInteger bytesWritten,long long totalBytesWritten,long long totalBytesExpectedToWrite)
+//     {
+//         
+//         NSLog(@"Sent %lld of %lld bytes", totalBytesWritten, totalBytesExpectedToWrite);
+//         
+//     }];
+//    
+//    [operation  setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {NSLog(@"Success");}
+//                                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {NSLog(@"error: %@",  operation.responseString);}];
+//    [operation start];
+
+    
+//////////////////////////////////////////////////////
+    
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//    NSDictionary *parameters = @{@"basket[title]": @"테스트", @"basket[longitude]": @(127.00000001), @"basket[latitude]": @(37.0000001)};
+//    NSURL *filePath = [NSURL fileURLWithPath:@"file://path/to/image.png"];
+//    [manager POST:@"http://docbasket.com/baskets" parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
+//    {
+//        [formData appendPartWithFileURL:filePath name:@"image" error:nil];
+//        
+//    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        NSLog(@"Success: %@", responseObject);
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        NSLog(@"Error: %@", error);
+//    }];
+    
+    
+//////////////////////////////////////////////////////
+    
+//    NSArray *imageArray = [NSArray arrayWithObjects:[UIImage imageNamed:@"close_button.png"],[UIImage imageNamed:@"done_button.png"], nil];
+//    __block int i=1;
+//    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:@"yoururl"];
+//    NSMutableURLRequest *request=nil;
+//    request = [httpClient multipartFormRequestWithMethod:@"POST" path:@"yoururl" parameters:nil constructingBodyWithBlock: ^(id <AFMultipartFormData>formData)
+//               {
+//                   for(UIImage *eachImage in imageArray)
+//                   {
+//                       NSData *imageData = UIImagePNGRepresentation(eachImage);
+//                       [formData appendPartWithFileData:imageData name:[NSString stringWithFormat:@"file%d",i] fileName:[NSString stringWithFormat:@"abc%d.png",i] mimeType:@"image/png"];
+//                       i++;
+//                   }
+//                   
+//               }];
+//    
+//    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+//    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
+//    
+//    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject)
+//     {
+//         NSData *data = (NSData *)responseObject;
+//         NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//         NSLog(@"Response -> %@",str);
+//         
+//     } failure:^(AFHTTPRequestOperation *operation, NSError *error)
+//     {
+//         NSLog(@"Error -> %@",[error localizedDescription]);
+//     }];
+    
+}
+
++ (void)Login
+{
+    // TODO : WebView 형태의 로그인 거친 후 Login
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    // [manager setParameterEncoding:AFJSONParameterEncoding];
+    //http://docbasket.com/users/32ea57d6-6f0e-4902-817a-544cae7cc189/heartbeat.json
+    
+    NSString *UserID = [[GlobalValue sharedInstance] userID];
+    
+    NSString *URL = @"http://docbasket.com/oauth/token";
+    
+    NSDictionary *OAuthInfo = @{ @"grant_type" : @"password",
+                                 @"username" : UserID,
+                                 @"password" : @"sekret",
+                                 @"client_id" : @"16f1cfc9121c9e923db62aa9db69bfd6ef507313fb55337563b2ffef07df269a",
+                                 @"client_secret" : @"232a36d50361f926bae965057170250226caca32fbb0817ed602a54ecdac3d32"};
+
+    [manager POST:URL parameters:OAuthInfo
+          success:^(AFHTTPRequestOperation *operation, id responseObject)
+     {
+         NSLog(@"JSON: %@", responseObject);
+         
+//         NSLog(@"access_token = %@", responseObject[@"access_token"]);
+//         NSLog(@"expires_in = %@", responseObject[@"expires_in"]);
+//         NSLog(@"token_type = %@", responseObject[@"token_type"]);
+         
+         [GVALUE setToken:responseObject[@"access_token"]];
+         
+         NSLog(@" token saved = %@", GVALUE.token);
+ 
      }
           failure:
      ^(AFHTTPRequestOperation *operation, NSError *error) {

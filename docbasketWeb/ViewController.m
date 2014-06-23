@@ -38,7 +38,7 @@
 
     currentCoordinate = [DBKLOCATION getCurrentCoordinate];
     
-    self.strURL = MAINURL;
+    //self.strURL = MAINURL;
     
     _webView.delegate = self;
 
@@ -189,9 +189,48 @@
 }
 
 
+#pragma mark - UITableViewDelegate
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [GVALUE.baskets count];
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *cellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+	
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+    }
+    
+    Docbasket *cellData = [GVALUE.baskets objectAtIndex:indexPath.row];
+    if(!IsEmpty(cellData)){
+        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
+        cell.textLabel.text = cellData.title;
+        cell.textLabel.numberOfLines = 4;
+    }
+
+	
+    return cell;
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 60.0;
+}
+
+
+
 #pragma mark - MKMapViewDelegate
 
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
+{
     if([annotation isKindOfClass:[RegionAnnotation class]]) {
         RegionAnnotation *currentAnnotation = (RegionAnnotation *)annotation;
         CLCircularRegion *region = currentAnnotation.region;
@@ -221,10 +260,11 @@
         
         NSString *annotationIdentifier = region.identifier; //[currentAnnotation title];
         
+        
         RegionAnnotationView *regionView = (RegionAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
         
         if (!regionView) {
-            regionView = [[RegionAnnotationView alloc] initWithAnnotation:annotation];
+            regionView = [[RegionAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
             regionView.map = _mapView;
             
             // Create a button for the left callout accessory view of each annotation to remove the annotation and region being monitored.
@@ -303,7 +343,8 @@
 }
 
 
-- (IBAction)refreshHandler:(id)sender {
+- (IBAction)refreshHandler:(id)sender
+{
     currentCoordinate = [DBKLOCATION getCurrentCoordinate];
     [self refreshMap];
     [self goCurrent];
@@ -314,7 +355,8 @@
     [self javaScriptFromString:func];
  }
 
-- (IBAction)buttonHandler:(id)sender {
+- (IBAction)buttonHandler:(id)sender
+{
     
 //    $("#basket_longitude")[0].value
 //    $("#basket_latitude")[0].value
@@ -325,16 +367,42 @@
     
     //NSLog(@"User : %@", [self javaScriptFromString:@" $('*[data-user-id]').data('user-id')"]); // 로그인된 사용자 ID값 받아오기
    
-    [self saveUserID];
-    [DocbaketAPIClient postUserTracking];
+//    [self saveUserID];
+//    [DocbaketAPIClient Login];
    
+    [DocbaketAPIClient getBaskets];
     
 }
 
-- (IBAction)tabHandler:(id)sender {
-    _mapView.hidden = !_mapView.hidden;
-    _webView.hidden = !_webView.hidden;
+- (IBAction)tabHandler:(id)sender
+{
+    UISegmentedControl *segmentedControl = sender;
+    
+    switch (segmentedControl.selectedSegmentIndex) {
+        case 0:
+            _mapView.hidden = NO;
+            _webView.hidden = YES;
+            _tableView.hidden = YES;
+            break;
+        case 1:
+            _mapView.hidden = YES;
+            _webView.hidden = NO;
+            _tableView.hidden = YES;
+            break;
+        case 2:
+            _mapView.hidden = YES;
+            _webView.hidden = YES;
+            _tableView.hidden = NO;
+            break;
+        default:
+            break;
+    }
+}
 
+
+- (IBAction)refreshCurrentLocation:(id)sender
+{
+    [self goCurrent];
 }
 
 - (NSString *)getUserID
@@ -351,9 +419,9 @@
         
         NSLog(@"Saved UserID = %@",[[GlobalValue sharedInstance] userID]);
         
-        //[[GlobalValue sharedInstance] writeObjectToDefault:userID withKey:KEY_USER_ID];
         
-    }
+        [DocbaketAPIClient Login];
+     }
 }
 
 - (NSString*)javaScriptFromString:(NSString*)str
@@ -364,7 +432,8 @@
 
 - (void)goCurrent
 {
-     [self.mapView setRegion:MKCoordinateRegionMake(currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
+    currentCoordinate = [DBKLOCATION getCurrentCoordinate];
+    [self.mapView setRegion:MKCoordinateRegionMake(currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
 }
 
 - (void)refreshMap
@@ -399,6 +468,11 @@
                 NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
 
                 NSLog(@"->Load %d regions : %@", (int)regions.count, regions );
+                
+                
+                if (!_tableView.hidden) {
+                    [_tableView reloadData];
+                }
              });
  
 
@@ -411,36 +485,26 @@
 
 - (void)LocationEventHandler:(NSNotification *)notification
 {
-//    - (MKAnnotationView *)viewForAnnotation:(id <MKAnnotation>)annotation;
 
-    
-    
     if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"monitoringDidFailForRegion"]) {
         
         id region = [[notification userInfo] objectForKey:@"region"];
-        if(!IsEmpty(region) && [NSStringFromClass([CLCircularRegion class]) isEqualToString:@"CLCircularRegion"]){
+        if(!IsEmpty(region) && [NSStringFromClass([region class]) isEqualToString:@"CLCircularRegion"]){
             NSLog(@"Msg : %@", [[notification userInfo] objectForKey:@"Msg"]);
             NSLog(@"region : %@", [[notification userInfo] objectForKey:@"region"]);
-            
-//            MKUserLocation *userLocation = 
-//            
-//            MKAnnotationView* annotationView = [_mapView viewForAnnotation:userLocation];
-//            
-//            
-//            CLCircularRegion *newRegion = (CLCircularRegion *)region;
-//            
-//
-//            RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
-//            annotation.coordinate = newRegion.center;
-//            annotation.radius = newRegion.radius;
-//
-//            
-//            RegionAnnotationView *annotationView = [_mapView viewForAnnotation:annotation];
-//
-//            annotationView.pinColor = MKPinAnnotationColorPurple;
+
         }
     }
     
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"currentAddress"]) {
+        
+        id address = [[notification userInfo] objectForKey:@"address"];
+        if(!IsEmpty(address)){
+            [_addressInfo setTitle:address forState:UIControlStateNormal];
+            
+        }
+    }
+
 }
 
 

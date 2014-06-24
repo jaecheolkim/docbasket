@@ -56,6 +56,7 @@
 		807556601951980D00F68F63 /* UIImage+WebP.m in Sources */ = {isa = PBXBuildFile; fileRef = 8075564F1951980D00F68F63 /* UIImage+WebP.m */; };
 		807556611951980D00F68F63 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 807556511951980D00F68F63 /* UIImageView+HighlightedWebCache.m */; };
 		807556621951980D00F68F63 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 807556531951980D00F68F63 /* UIImageView+WebCache.m */; };
+		80D08B83195939A800C17879 /* makeNewBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D08B82195939A800C17879 /* makeNewBasketViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -168,6 +169,8 @@
 		807556521951980D00F68F63 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+WebCache.h"; sourceTree = "<group>"; };
 		807556531951980D00F68F63 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		809B3608194FD0DC0099D3A8 /* docbasketURLInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = docbasketURLInfo.h; sourceTree = "<group>"; };
+		80D08B81195939A800C17879 /* makeNewBasketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeNewBasketViewController.h; sourceTree = "<group>"; };
+		80D08B82195939A800C17879 /* makeNewBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = makeNewBasketViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -357,6 +360,8 @@
 			children = (
 				805A321F194EE13500F213C1 /* ViewController.h */,
 				805A3220194EE13500F213C1 /* ViewController.m */,
+				80D08B81195939A800C17879 /* makeNewBasketViewController.h */,
+				80D08B82195939A800C17879 /* makeNewBasketViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -548,6 +553,7 @@
 				805A3221194EE13500F213C1 /* ViewController.m in Sources */,
 				8061B03A1950B47F00685336 /* RegionAnnotation.m in Sources */,
 				805A3218194EE13500F213C1 /* main.m in Sources */,
+				80D08B83195939A800C17879 /* makeNewBasketViewController.m in Sources */,
 				8061B03419503CA900685336 /* Docbasket.m in Sources */,
 				807556541951980D00F68F63 /* MKAnnotationView+WebCache.m in Sources */,
 				8061B02419503BE100685336 /* UIAlertView+AFNetworking.m in Sources */,

@@ -55,7 +55,7 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
         }
     }];
     
-    [UIAlertView showAlertViewForTaskWithErrorOnCompletion:task delegate:nil];
+    //[UIAlertView showAlertViewForTaskWithErrorOnCompletion:task delegate:nil];
     //    [self.refreshControl setRefreshingWithStateOfTask:task];
     
     

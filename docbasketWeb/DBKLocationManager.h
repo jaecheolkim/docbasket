@@ -33,6 +33,9 @@
 - (void)startMonitoringRegion:(CLCircularRegion *)region;
 - (void)stopMonitoringRegion:(CLCircularRegion *)region;
 
+
++ (void)reverseGeocodeLocation:(CLLocation *)location completionHandler:(void (^)(NSString *address))block;
+
 @end
 
 

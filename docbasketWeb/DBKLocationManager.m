@@ -30,6 +30,69 @@
     return self;
 }
 
++ (void)reverseGeocodeLocation:(CLLocation *)location completionHandler:(void (^)(NSString *address))block
+{
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
+    [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error)
+     {
+         NSString *currentAddress = nil;
+         
+         if (!(error))
+         {
+             CLPlacemark *placemark = [placemarks objectAtIndex:0];
+             
+             //             NSLog(@"placemark %@",placemark);
+             NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
+             NSString *Address = [[NSString alloc]initWithString:locatedAt];
+             NSString *Area = [[NSString alloc]initWithString:placemark.locality];
+             NSString *subLocality = [[NSString alloc]initWithString:(!IsEmpty(placemark.subLocality)?placemark.subLocality:@"")];
+             //NSString *Country = [[NSString alloc]initWithString:placemark.country];
+             NSString *Name = [[NSString alloc]initWithString:placemark.name];
+             //NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
+             
+             currentAddress = Address;
+             
+             NSLog(@"\nCurrent Location Detected\n");
+
+             NSLog(@"Address : %@", Address);
+             NSLog(@"Area : %@", Area);
+             NSLog(@"subLocality : %@", subLocality);
+             NSLog(@"Name : %@", Name);
+             
+         }
+         else
+         {
+             NSLog(@"Geocode failed with error %@", error);
+             
+             currentAddress = @"";
+             
+             //return;
+             //             CountryArea = NULL;
+         }
+         
+         
+         NSLog(@"%@",currentAddress);
+         
+         block(currentAddress);
+//         
+//         [[NSNotificationCenter defaultCenter] postNotificationName:@"LocationEventHandler"
+//                                                             object:self
+//                                                           userInfo:@{@"Msg":@"currentAddress", @"address":currentAddress}];
+//         
+         
+         /*---- For more results
+          placemark.region);
+          placemark.country);
+          placemark.locality);
+          placemark.name);
+          placemark.ocean);
+          placemark.postalCode);
+          placemark.subLocality);
+          placemark.location);
+          ------*/
+     }];
+}
+
 #pragma mark - CLLocationManagerDelegate
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
@@ -56,58 +119,66 @@
     
     
     _currentLocation = [locations objectAtIndex:0];
-    //[_locationManager stopUpdatingLocation];
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
-    [geocoder reverseGeocodeLocation:_currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
-     {
-         NSString *currentAddress = nil;
-         
-         if (!(error))
-         {
-             CLPlacemark *placemark = [placemarks objectAtIndex:0];
-             
-//             NSLog(@"placemark %@",placemark);
-             NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
-             NSString *Address = [[NSString alloc]initWithString:locatedAt];
-             NSString *Area = [[NSString alloc]initWithString:placemark.locality];
-             NSString *Country = [[NSString alloc]initWithString:placemark.country];
-             //NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
-             
-             currentAddress = Address;
-             
-             NSLog(@"\nCurrent Location Detected\n");
-             
-         }
-         else
-         {
-             NSLog(@"Geocode failed with error %@", error);
-
-             currentAddress = @"Current Location Not Detected";
-             
-             //return;
-//             CountryArea = NULL;
-         }
-         
-         
-         NSLog(@"%@",currentAddress);
-         
-         
-         [[NSNotificationCenter defaultCenter] postNotificationName:@"LocationEventHandler"
-                                                             object:self
-                                                           userInfo:@{@"Msg":@"currentAddress", @"address":currentAddress}];
-
-         
-         /*---- For more results
-          placemark.region);
-          placemark.country);
-          placemark.locality);
-          placemark.name);
-          placemark.ocean);
-          placemark.postalCode);
-          placemark.subLocality);
-          placemark.location);
-          ------*/
-     }];
+    
+    [DBKLocationManager reverseGeocodeLocation:_currentLocation completionHandler:^(NSString *address) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"LocationEventHandler"
+                                                            object:self
+                                                          userInfo:@{@"Msg":@"currentAddress", @"address":address}];
+    }];
+    
+//    //[_locationManager stopUpdatingLocation];
+//    CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
+//    [geocoder reverseGeocodeLocation:_currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
+//     {
+//         NSString *currentAddress = nil;
+//         
+//         if (!(error))
+//         {
+//             CLPlacemark *placemark = [placemarks objectAtIndex:0];
+//             
+////             NSLog(@"placemark %@",placemark);
+//             NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
+//             NSString *Address = [[NSString alloc]initWithString:locatedAt];
+//             NSString *Area = [[NSString alloc]initWithString:placemark.locality];
+//             NSString *Country = [[NSString alloc]initWithString:placemark.country];
+//             //NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
+//             
+//             currentAddress = Address;
+//             
+//             NSLog(@"\nCurrent Location Detected\n");
+//             
+//         }
+//         else
+//         {
+//             NSLog(@"Geocode failed with error %@", error);
+//
+//             currentAddress = @"Current Location Not Detected";
+//             
+//             //return;
+////             CountryArea = NULL;
+//         }
+//         
+//         
+//         NSLog(@"%@",currentAddress);
+//         
+//         
+//         [[NSNotificationCenter defaultCenter] postNotificationName:@"LocationEventHandler"
+//                                                             object:self
+//                                                           userInfo:@{@"Msg":@"currentAddress", @"address":currentAddress}];
+//
+//         
+//         /*---- For more results
+//          placemark.region);
+//          placemark.country);
+//          placemark.locality);
+//          placemark.name);
+//          placemark.ocean);
+//          placemark.postalCode);
+//          placemark.subLocality);
+//          placemark.location);
+//          ------*/
+//     }];
 }
 
 

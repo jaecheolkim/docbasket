@@ -56,6 +56,13 @@
 		807556601951980D00F68F63 /* UIImage+WebP.m in Sources */ = {isa = PBXBuildFile; fileRef = 8075564F1951980D00F68F63 /* UIImage+WebP.m */; };
 		807556611951980D00F68F63 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 807556511951980D00F68F63 /* UIImageView+HighlightedWebCache.m */; };
 		807556621951980D00F68F63 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 807556531951980D00F68F63 /* UIImageView+WebCache.m */; };
+		80778A59195B11B1003EF884 /* CHAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 80778A54195B11B1003EF884 /* CHAnimation.m */; };
+		80778A5A195B11B1003EF884 /* CHAnimationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 80778A56195B11B1003EF884 /* CHAnimationState.m */; };
+		80778A5B195B11B1003EF884 /* CHAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 80778A58195B11B1003EF884 /* CHAnimator.m */; };
+		80778A60195B122C003EF884 /* CHPopUpMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 80778A5F195B122C003EF884 /* CHPopUpMenu.m */; };
+		80778A62195B160C003EF884 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80778A61195B160C003EF884 /* CoreGraphics.framework */; };
+		80778A64195B1613003EF884 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80778A63195B1613003EF884 /* UIKit.framework */; };
+		80778A66195B161B003EF884 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80778A65195B161B003EF884 /* Foundation.framework */; };
 		80D08B83195939A800C17879 /* makeNewBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D08B82195939A800C17879 /* makeNewBasketViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -168,6 +175,17 @@
 		807556511951980D00F68F63 /* UIImageView+HighlightedWebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+HighlightedWebCache.m"; sourceTree = "<group>"; };
 		807556521951980D00F68F63 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+WebCache.h"; sourceTree = "<group>"; };
 		807556531951980D00F68F63 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
+		80778A53195B11B1003EF884 /* CHAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAnimation.h; sourceTree = "<group>"; };
+		80778A54195B11B1003EF884 /* CHAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAnimation.m; sourceTree = "<group>"; };
+		80778A55195B11B1003EF884 /* CHAnimationState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAnimationState.h; sourceTree = "<group>"; };
+		80778A56195B11B1003EF884 /* CHAnimationState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAnimationState.m; sourceTree = "<group>"; };
+		80778A57195B11B1003EF884 /* CHAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAnimator.h; sourceTree = "<group>"; };
+		80778A58195B11B1003EF884 /* CHAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAnimator.m; sourceTree = "<group>"; };
+		80778A5E195B122C003EF884 /* CHPopUpMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHPopUpMenu.h; sourceTree = "<group>"; };
+		80778A5F195B122C003EF884 /* CHPopUpMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHPopUpMenu.m; sourceTree = "<group>"; };
+		80778A61195B160C003EF884 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		80778A63195B1613003EF884 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		80778A65195B161B003EF884 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		809B3608194FD0DC0099D3A8 /* docbasketURLInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = docbasketURLInfo.h; sourceTree = "<group>"; };
 		80D08B81195939A800C17879 /* makeNewBasketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeNewBasketViewController.h; sourceTree = "<group>"; };
 		80D08B82195939A800C17879 /* makeNewBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = makeNewBasketViewController.m; sourceTree = "<group>"; };
@@ -178,6 +196,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80778A66195B161B003EF884 /* Foundation.framework in Frameworks */,
+				80778A64195B1613003EF884 /* UIKit.framework in Frameworks */,
+				80778A62195B160C003EF884 /* CoreGraphics.framework in Frameworks */,
 				805A3241194F9AA700F213C1 /* MapKit.framework in Frameworks */,
 				805A323F194F0EA500F213C1 /* CoreLocation.framework in Frameworks */,
 			);
@@ -196,6 +217,9 @@
 		805A3209194EE13500F213C1 = {
 			isa = PBXGroup;
 			children = (
+				80778A65195B161B003EF884 /* Foundation.framework */,
+				80778A63195B1613003EF884 /* UIKit.framework */,
+				80778A61195B160C003EF884 /* CoreGraphics.framework */,
 				807555B819518EA700F68F63 /* ToDO */,
 				805A3240194F9AA700F213C1 /* MapKit.framework */,
 				805A323E194F0EA500F213C1 /* CoreLocation.framework */,
@@ -272,9 +296,9 @@
 		8061AFF219503BB000685336 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				80778A52195B11B1003EF884 /* CHAnimation */,
 				807555F81951967200F68F63 /* ImageCache */,
 				8061AFF319503BE100685336 /* AFNetworking */,
-				8061B00719503BE100685336 /* UIKit+AFNetworking */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -282,6 +306,7 @@
 		8061AFF319503BE100685336 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				8061B00719503BE100685336 /* UIKit+AFNetworking */,
 				8061AFF419503BE100685336 /* AFHTTPRequestOperation.h */,
 				8061AFF519503BE100685336 /* AFHTTPRequestOperation.m */,
 				8061AFF619503BE100685336 /* AFHTTPRequestOperationManager.h */,
@@ -343,6 +368,8 @@
 		8061B02B19503C3B00685336 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				80778A5E195B122C003EF884 /* CHPopUpMenu.h */,
+				80778A5F195B122C003EF884 /* CHPopUpMenu.m */,
 				8061B0361950B47F00685336 /* RegionAnnotation.h */,
 				8061B0371950B47F00685336 /* RegionAnnotation.m */,
 				8061B0381950B47F00685336 /* RegionAnnotationView.h */,
@@ -410,6 +437,19 @@
 				807556531951980D00F68F63 /* UIImageView+WebCache.m */,
 			);
 			path = SDWebImage;
+			sourceTree = "<group>";
+		};
+		80778A52195B11B1003EF884 /* CHAnimation */ = {
+			isa = PBXGroup;
+			children = (
+				80778A53195B11B1003EF884 /* CHAnimation.h */,
+				80778A54195B11B1003EF884 /* CHAnimation.m */,
+				80778A55195B11B1003EF884 /* CHAnimationState.h */,
+				80778A56195B11B1003EF884 /* CHAnimationState.m */,
+				80778A57195B11B1003EF884 /* CHAnimator.h */,
+				80778A58195B11B1003EF884 /* CHAnimator.m */,
+			);
+			path = CHAnimation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -527,6 +567,7 @@
 				8075565E1951980D00F68F63 /* UIImage+GIF.m in Sources */,
 				8061B03519503CA900685336 /* User.m in Sources */,
 				8061B02119503BE100685336 /* AFURLSessionManager.m in Sources */,
+				80778A5B195B11B1003EF884 /* CHAnimator.m in Sources */,
 				805A323D194F0C8B00F213C1 /* DBKLocationManager.m in Sources */,
 				805A321B194EE13500F213C1 /* AppDelegate.m in Sources */,
 				8061B01C19503BE100685336 /* AFNetworkReachabilityManager.m in Sources */,
@@ -535,6 +576,7 @@
 				807556561951980D00F68F63 /* SDImageCache.m in Sources */,
 				8061B03B1950B47F00685336 /* RegionAnnotationView.m in Sources */,
 				807556571951980D00F68F63 /* SDWebImageCompat.m in Sources */,
+				80778A5A195B11B1003EF884 /* CHAnimationState.m in Sources */,
 				8061B01E19503BE100685336 /* AFURLConnectionOperation.m in Sources */,
 				807556611951980D00F68F63 /* UIImageView+HighlightedWebCache.m in Sources */,
 				8075565C1951980D00F68F63 /* SDWebImagePrefetcher.m in Sources */,
@@ -550,6 +592,7 @@
 				8061B02619503BE100685336 /* UIImageView+AFNetworking.m in Sources */,
 				807556621951980D00F68F63 /* UIImageView+WebCache.m in Sources */,
 				8075565B1951980D00F68F63 /* SDWebImageManager.m in Sources */,
+				80778A60195B122C003EF884 /* CHPopUpMenu.m in Sources */,
 				805A3221194EE13500F213C1 /* ViewController.m in Sources */,
 				8061B03A1950B47F00685336 /* RegionAnnotation.m in Sources */,
 				805A3218194EE13500F213C1 /* main.m in Sources */,
@@ -558,6 +601,7 @@
 				807556541951980D00F68F63 /* MKAnnotationView+WebCache.m in Sources */,
 				8061B02419503BE100685336 /* UIAlertView+AFNetworking.m in Sources */,
 				8061B02E19503C4F00685336 /* DocbaketAPIClient.m in Sources */,
+				80778A59195B11B1003EF884 /* CHAnimation.m in Sources */,
 				8061B02919503BE100685336 /* UIWebView+AFNetworking.m in Sources */,
 				8075565F1951980D00F68F63 /* UIImage+MultiFormat.m in Sources */,
 				807556601951980D00F68F63 /* UIImage+WebP.m in Sources */,
@@ -687,7 +731,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = docbasketWeb/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -702,7 +746,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = docbasketWeb/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

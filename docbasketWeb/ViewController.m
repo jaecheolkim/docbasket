@@ -15,6 +15,7 @@
 #import "RegionAnnotationView.h"
 #import "Docbasket.h"
 #import "UIButton+WebCache.h"
+#import "CHPopUpMenu.h"
 
 //#import "Docbasket.h"
 //#import "AFHTTPRequestOperationManager.h"
@@ -25,8 +26,9 @@
 @interface ViewController ()
 {
     CLLocationCoordinate2D currentCoordinate;
-    
-
+    CGRect screenFrame;
+    BOOL isChangingScreen;
+    CHPopUpMenu *popUp;
 }
 
 @end
@@ -35,6 +37,8 @@
             
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    isChangingScreen = YES;
 
     currentCoordinate = [DBKLOCATION getCurrentCoordinate];
     
@@ -48,9 +52,26 @@
     
     
     self.mapView.showsUserLocation=YES;
-    [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
+    //[self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
     
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    self.basketPin.hidden = YES;
+    
+    [self fixScreenFrame];
+    
+    [self.view addSubview:({
+        NSArray *icons = @[[UIImage imageNamed:@"files.png"],[UIImage imageNamed:@"photo.png"],[UIImage imageNamed:@"sound.png"],[UIImage imageNamed:@"time.png"],[UIImage imageNamed:@"Vault.png"]];
+        
+        popUp = [[CHPopUpMenu alloc]initWithFrame:CGRectMake(145, 420, 30, 30)
+                                                     direction:M_PI/2
+                                                     iconArray:icons];
+        popUp;
+    })];
+    
+    self.createHereButton.hidden = YES;
+    popUp.hidden = YES;
+
+    NSLog(@"Navi frame = %@", NSStringFromCGRect(self.navigationController.navigationBar.frame));
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -63,6 +84,8 @@
     
     [self refreshMap];
     [self goCurrent];
+    
+    isChangingScreen = NO;
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -73,11 +96,44 @@
     
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    NSLog(@"willRotateToInterfaceOrientation");
+    isChangingScreen = YES;
+}
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+     NSLog(@"didRotateFromInterfaceOrientation");
+    
+    isChangingScreen = NO;
+    
+    [self fixScreenFrame];
+}
+
+- (void)fixScreenFrame
+{
+    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
+    screenFrame = [[UIScreen mainScreen] bounds];
+    
+    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
+        screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
+    }
+    
+    self.basketPin.center = CGPointMake(screenFrame.size.width/2, screenFrame.size.height/2);
+    popUp.center =  CGPointMake(screenFrame.size.width/2,self.basketPin.center.y - 10);
+}
 
 #pragma mark - WebViewDelegate
 
@@ -229,6 +285,30 @@
 
 #pragma mark - MKMapViewDelegate
 
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
+{
+    NSLog(@"regionWillChangeAnimated");
+    
+    if(isChangingScreen || self.basketPin.hidden) return;
+
+    [self showNavigationBar:NO];
+    
+    
+}
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    if(isChangingScreen || self.basketPin.hidden) return;
+    
+    NSLog(@"regionDidChangeAnimated");
+
+    [self catchCurrentCenterAddress:^(bool find) {
+        [self showNavigationBar:YES];
+    }];
+
+    
+}
+
+
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
     if([annotation isKindOfClass:[RegionAnnotation class]]) {
@@ -343,6 +423,18 @@
 }
 
 
+//- (void)fixBasketPinOrient
+//{
+//    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
+//    CGRect  bounds = [[UIScreen mainScreen] bounds];
+//    
+//    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
+//        bounds = CGRectMake(0, 0, bounds.size.height, bounds.size.width);
+//    }
+//    
+//    self.basketPin.center = CGPointMake(bounds.size.width/2, bounds.size.height/2);
+//}
+
 - (IBAction)refreshHandler:(id)sender
 {
     currentCoordinate = [DBKLOCATION getCurrentCoordinate];
@@ -370,7 +462,21 @@
 //    [self saveUserID];
 //    [DocbaketAPIClient Login];
    
-    [DocbaketAPIClient getBaskets];
+//    [DocbaketAPIClient getBaskets];
+    
+    
+    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
+    CGRect  bounds = [[UIScreen mainScreen] bounds];
+    
+    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
+        bounds = CGRectMake(0, 0, bounds.size.height, bounds.size.width);
+    }
+    
+    self.basketPin.center = CGPointMake(bounds.size.width/2, bounds.size.height/2);
+    popUp.center =  CGPointMake(bounds.size.width/2,self.basketPin.center.y - 10);
+    self.basketPin.hidden = ! self.basketPin.hidden;
+    //self.createHereButton.hidden =  ! self.createHereButton.hidden;
+    popUp.hidden =  ! popUp.hidden;
     
 }
 
@@ -403,6 +509,76 @@
 - (IBAction)refreshCurrentLocation:(id)sender
 {
     [self goCurrent];
+}
+
+
+- (IBAction)createNewBasket:(id)sender
+{
+//    [self showNavigationBar:NO];
+//    
+//    UIToolbar *blurbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+//    blurbar.barStyle = UIBarStyleBlack;
+//    [self.view addSubview:blurbar];
+
+}
+
+- (IBAction)createHereBasket:(id)sender
+{
+    
+}
+
+
+
+- (void)showNavigationBar:(BOOL)show
+{
+    if(!show){
+        self.navigationItem.leftBarButtonItem.customView.alpha = 0;
+        [self.navigationItem.rightBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* obj, NSUInteger idx, BOOL *stop) {
+            obj.customView.alpha = 0;
+        }];
+        self.navigationItem.rightBarButtonItem.customView.alpha = 0;
+        self.navigationItem.titleView.alpha = 0;
+        self.navigationController.navigationBar.tintColor = [self.navigationController.navigationBar.tintColor colorWithAlphaComponent:0];
+        
+        if(popUp._isMenuPresented) [popUp dismissSubMenu];
+        
+        //{{0, 20}, {320, 44}}
+        [UIView animateWithDuration:0.7 animations:^{
+            self.navigationController.navigationBar.frame = CGRectMake(0, 20, screenFrame.size.width, 0);
+            
+            popUp.alpha = 0;
+        } completion:^(BOOL finished) {
+            
+        }];
+    } else {
+        [UIView animateWithDuration:0.2 animations:^{
+            self.navigationController.navigationBar.frame = CGRectMake(0, 20, screenFrame.size.width, 44);
+            popUp.alpha = 1;
+        } completion:^(BOOL finished) {
+            self.navigationItem.leftBarButtonItem.customView.alpha = 1;
+            self.navigationItem.rightBarButtonItem.customView.alpha = 1;
+            self.navigationItem.titleView.alpha = 1;
+            self.navigationController.navigationBar.tintColor = [self.navigationController.navigationBar.tintColor colorWithAlphaComponent:1];
+        }];
+    }
+}
+
+-(void)catchCurrentCenterAddress:(void (^)(bool find))block
+{
+    CGPoint interestPoint = CGPointMake(self.basketPin.center.x, self.basketPin.center.y + self.basketPin.frame.size.height /2) ;
+    
+    CLLocationCoordinate2D coord= [_mapView convertPoint:interestPoint toCoordinateFromView:_mapView];
+    NSLog(@"screen Point : %@  / lat : %f / long : %f", NSStringFromCGPoint(interestPoint), coord.latitude, coord.longitude);
+    
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
+    
+    [DBKLocationManager reverseGeocodeLocation:location completionHandler:^(NSString *address) {
+        
+        [_addressInfo setTitle:address forState:UIControlStateNormal];
+        
+        block(YES);
+        
+    }];
 }
 
 - (NSString *)getUserID

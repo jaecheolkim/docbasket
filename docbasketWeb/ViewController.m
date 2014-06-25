@@ -437,14 +437,15 @@
 
 - (IBAction)refreshHandler:(id)sender
 {
-    currentCoordinate = [DBKLOCATION getCurrentCoordinate];
-    [self refreshMap];
-    [self goCurrent];
-    
-    [_webView reload];
-    
-    NSString *func = [NSString stringWithFormat:@"goCurrentPosition(%f,%f)",currentCoordinate.latitude, currentCoordinate.longitude];
-    [self javaScriptFromString:func];
+ 
+//    currentCoordinate = [DBKLOCATION getCurrentCoordinate];
+//    [self refreshMap];
+//    [self goCurrent];
+//    
+//    [_webView reload];
+//    
+//    NSString *func = [NSString stringWithFormat:@"goCurrentPosition(%f,%f)",currentCoordinate.latitude, currentCoordinate.longitude];
+//    [self javaScriptFromString:func];
  }
 
 - (IBAction)buttonHandler:(id)sender

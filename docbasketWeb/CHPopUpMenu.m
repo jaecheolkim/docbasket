@@ -78,28 +78,44 @@
 }
 
 
-
+- (void)buttonClicked:(id)Sender
+{
+    UIButton *button = (UIButton*)Sender;
+    
+    NSLog(@"Button clicked %d", (int)button.tag);
+}
 
 - (void) presentSubMenu {
     self._isMenuPresented = YES;
 
+    int buttonCount = 0;
     
     if (!_iconViews) {
         _iconViews = [[NSMutableArray alloc]init];
         for (UIImage *iconImage in self.icons) {
             [self addSubview:({
-                UIImageView *iconView = [[UIImageView alloc]initWithImage:iconImage];
-                iconView.frame = CGRectMake(self.bounds.size.width/2 - CHPpopUpMenuItemSize/2, self.bounds.size.height/2 - CHPpopUpMenuItemSize/2, CHPpopUpMenuItemSize, CHPpopUpMenuItemSize);
-                iconView.alpha = 0.0;
-                [_iconViews addObject:iconView];
-                iconView;
+//                UIImageView *iconView = [[UIImageView alloc]initWithImage:iconImage];
+//                iconView.frame = CGRectMake(self.bounds.size.width/2 - CHPpopUpMenuItemSize/2, self.bounds.size.height/2 - CHPpopUpMenuItemSize/2, CHPpopUpMenuItemSize, CHPpopUpMenuItemSize);
+//                iconView.alpha = 0.0;
+//                [_iconViews addObject:iconView];
+//                iconView;
+                
+                UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(self.bounds.size.width/2 - CHPpopUpMenuItemSize/2, self.bounds.size.height/2 - CHPpopUpMenuItemSize/2, CHPpopUpMenuItemSize, CHPpopUpMenuItemSize)];
+                [button setBackgroundImage:iconImage forState:UIControlStateNormal];
+                [button addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
+                button.tag = buttonCount;
+                
+                buttonCount ++;
+                
+                [_iconViews addObject:button];
+                button;
             })];
         }
 
     }
     
 
-    int nIcons = [self.icons count];
+    int nIcons = (int)[self.icons count];
     int iconNumber = 0;
     
     CHAnimation *degree = [CHAnimation new];
@@ -113,7 +129,7 @@
     
     
     
-    for (UIImageView *icon in _iconViews) {
+    for (UIButton *icon in _iconViews) {
         CHAnimation *alpha = [CHAnimation new];
         alpha.fromValue = @0.0;
         alpha.toValue = @1.0;
@@ -157,7 +173,7 @@
     [_imageView.layer ch_addAnimation:degree forKey:@"degree1"];
     
     
-    for (UIImageView *icon in _iconViews) {
+    for (UIButton *icon in _iconViews) {
         CHAnimation *alpha = [CHAnimation new];
         alpha.toValue = @0.0;
         alpha.fromValue = @1.0;

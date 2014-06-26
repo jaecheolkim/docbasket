@@ -31,6 +31,37 @@
     self.delegate = self;
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(SideMenuEventHandler:)
+                                                 name:@"SideMenuEventHandler" object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SideMenuEventHandler" object:nil];
+}
+
+
+
+- (void)SideMenuEventHandler:(NSNotification *)notification
+{
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"presentLeftMenuViewController"]) {
+        
+        [self presentLeftMenuViewController];
+    }
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"hideMenuViewController"]) {
+
+        [self hideMenuViewController];
+    }
+    
+}
+
 #pragma mark -
 #pragma mark RESideMenu Delegate
 
@@ -52,6 +83,11 @@
 - (void)sideMenu:(RESideMenu *)sideMenu didHideMenuViewController:(UIViewController *)menuViewController
 {
     NSLog(@"didHideMenuViewController: %@", NSStringFromClass([menuViewController class]));
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
+                                                        object:self
+                                                      userInfo:@{@"Msg":@"didHideMenuViewController"}];
+
 }
 
 @end

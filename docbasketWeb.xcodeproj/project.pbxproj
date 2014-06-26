@@ -10,7 +10,7 @@
 		805A3218194EE13500F213C1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A3217194EE13500F213C1 /* main.m */; };
 		805A321B194EE13500F213C1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A321A194EE13500F213C1 /* AppDelegate.m */; };
 		805A321E194EE13500F213C1 /* docbasketWeb.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 805A321C194EE13500F213C1 /* docbasketWeb.xcdatamodeld */; };
-		805A3221194EE13500F213C1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A3220194EE13500F213C1 /* ViewController.m */; };
+		805A3221194EE13500F213C1 /* DBMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A3220194EE13500F213C1 /* DBMapViewController.m */; };
 		805A3224194EE13500F213C1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 805A3222194EE13500F213C1 /* Main.storyboard */; };
 		805A3226194EE13500F213C1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 805A3225194EE13500F213C1 /* Images.xcassets */; };
 		805A3232194EE13500F213C1 /* docbasketWebTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A3231194EE13500F213C1 /* docbasketWebTests.m */; };
@@ -68,6 +68,9 @@
 		80778A62195B160C003EF884 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80778A61195B160C003EF884 /* CoreGraphics.framework */; };
 		80778A64195B1613003EF884 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80778A63195B1613003EF884 /* UIKit.framework */; };
 		80778A66195B161B003EF884 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80778A65195B161B003EF884 /* Foundation.framework */; };
+		8097679F195C1ABE0048CA13 /* DBCommonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8097679E195C1ABE0048CA13 /* DBCommonViewController.m */; };
+		809767A5195C7D7D0048CA13 /* DBListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 809767A4195C7D7D0048CA13 /* DBListViewController.m */; };
+		809767A8195C84800048CA13 /* DBLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 809767A7195C84800048CA13 /* DBLoginViewController.m */; };
 		80D08B83195939A800C17879 /* makeNewBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D08B82195939A800C17879 /* makeNewBasketViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -88,8 +91,8 @@
 		805A3219194EE13500F213C1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		805A321A194EE13500F213C1 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		805A321D194EE13500F213C1 /* docbasketWeb.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = docbasketWeb.xcdatamodel; sourceTree = "<group>"; };
-		805A321F194EE13500F213C1 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		805A3220194EE13500F213C1 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		805A321F194EE13500F213C1 /* DBMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBMapViewController.h; sourceTree = "<group>"; };
+		805A3220194EE13500F213C1 /* DBMapViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBMapViewController.m; sourceTree = "<group>"; };
 		805A3223194EE13500F213C1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		805A3225194EE13500F213C1 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		805A322B194EE13500F213C1 /* docbasketWebTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = docbasketWebTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,6 +204,12 @@
 		80778A61195B160C003EF884 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		80778A63195B1613003EF884 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		80778A65195B161B003EF884 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		8097679D195C1ABE0048CA13 /* DBCommonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBCommonViewController.h; sourceTree = "<group>"; };
+		8097679E195C1ABE0048CA13 /* DBCommonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBCommonViewController.m; sourceTree = "<group>"; };
+		809767A3195C7D7D0048CA13 /* DBListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBListViewController.h; sourceTree = "<group>"; };
+		809767A4195C7D7D0048CA13 /* DBListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBListViewController.m; sourceTree = "<group>"; };
+		809767A6195C84800048CA13 /* DBLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBLoginViewController.h; sourceTree = "<group>"; };
+		809767A7195C84800048CA13 /* DBLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBLoginViewController.m; sourceTree = "<group>"; };
 		809B3608194FD0DC0099D3A8 /* docbasketURLInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = docbasketURLInfo.h; sourceTree = "<group>"; };
 		80D08B81195939A800C17879 /* makeNewBasketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeNewBasketViewController.h; sourceTree = "<group>"; };
 		80D08B82195939A800C17879 /* makeNewBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = makeNewBasketViewController.m; sourceTree = "<group>"; };
@@ -401,14 +410,20 @@
 		8061B02F19503C7100685336 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				8097679D195C1ABE0048CA13 /* DBCommonViewController.h */,
+				8097679E195C1ABE0048CA13 /* DBCommonViewController.m */,
 				807115E2195B30DB00E953B1 /* DEMOLeftMenuViewController.h */,
 				807115E3195B30DB00E953B1 /* DEMOLeftMenuViewController.m */,
 				807115E4195B30DB00E953B1 /* DEMORootViewController.h */,
 				807115E5195B30DB00E953B1 /* DEMORootViewController.m */,
-				805A321F194EE13500F213C1 /* ViewController.h */,
-				805A3220194EE13500F213C1 /* ViewController.m */,
+				805A321F194EE13500F213C1 /* DBMapViewController.h */,
+				805A3220194EE13500F213C1 /* DBMapViewController.m */,
 				80D08B81195939A800C17879 /* makeNewBasketViewController.h */,
 				80D08B82195939A800C17879 /* makeNewBasketViewController.m */,
+				809767A3195C7D7D0048CA13 /* DBListViewController.h */,
+				809767A4195C7D7D0048CA13 /* DBListViewController.m */,
+				809767A6195C84800048CA13 /* DBLoginViewController.h */,
+				809767A7195C84800048CA13 /* DBLoginViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -597,6 +612,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				809767A8195C84800048CA13 /* DBLoginViewController.m in Sources */,
 				8075565E1951980D00F68F63 /* UIImage+GIF.m in Sources */,
 				8061B03519503CA900685336 /* User.m in Sources */,
 				8061B02119503BE100685336 /* AFURLSessionManager.m in Sources */,
@@ -626,8 +642,9 @@
 				8061B02619503BE100685336 /* UIImageView+AFNetworking.m in Sources */,
 				807556621951980D00F68F63 /* UIImageView+WebCache.m in Sources */,
 				8075565B1951980D00F68F63 /* SDWebImageManager.m in Sources */,
+				8097679F195C1ABE0048CA13 /* DBCommonViewController.m in Sources */,
 				80778A60195B122C003EF884 /* CHPopUpMenu.m in Sources */,
-				805A3221194EE13500F213C1 /* ViewController.m in Sources */,
+				805A3221194EE13500F213C1 /* DBMapViewController.m in Sources */,
 				8061B03A1950B47F00685336 /* RegionAnnotation.m in Sources */,
 				805A3218194EE13500F213C1 /* main.m in Sources */,
 				80D08B83195939A800C17879 /* makeNewBasketViewController.m in Sources */,
@@ -635,6 +652,7 @@
 				8061B03419503CA900685336 /* Docbasket.m in Sources */,
 				807115DF195B2EEC00E953B1 /* RECommonFunctions.m in Sources */,
 				807556541951980D00F68F63 /* MKAnnotationView+WebCache.m in Sources */,
+				809767A5195C7D7D0048CA13 /* DBListViewController.m in Sources */,
 				8061B02419503BE100685336 /* UIAlertView+AFNetworking.m in Sources */,
 				8061B02E19503C4F00685336 /* DocbaketAPIClient.m in Sources */,
 				80778A59195B11B1003EF884 /* CHAnimation.m in Sources */,

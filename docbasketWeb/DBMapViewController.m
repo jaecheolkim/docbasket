@@ -6,24 +6,13 @@
 //  Copyright (c) 2014 jaecheol kim. All rights reserved.
 //
 
-#import "ViewController.h"
-#import "DBKLocationManager.h"
-#import "docbasketURLInfo.h"
-#import "GlobalValue.h"
-#import "DocbaketAPIClient.h"
+#import "DBMapViewController.h"
 #import "RegionAnnotation.h"
 #import "RegionAnnotationView.h"
-#import "Docbasket.h"
 #import "UIButton+WebCache.h"
 #import "CHPopUpMenu.h"
 
-//#import "Docbasket.h"
-//#import "AFHTTPRequestOperationManager.h"
-//#import "UIRefreshControl+AFNetworking.h"
-//#import "UIAlertView+AFNetworking.h"
-
-
-@interface ViewController ()
+@interface DBMapViewController ()
 {
     CLLocationCoordinate2D currentCoordinate;
     CGRect screenFrame;
@@ -33,7 +22,7 @@
 
 @end
 
-@implementation ViewController
+@implementation DBMapViewController
             
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -41,20 +30,9 @@
     isChangingScreen = YES;
 
     currentCoordinate = [DBKLOCATION getCurrentCoordinate];
-    
-    //self.strURL = MAINURL;
-    
-    _webView.delegate = self;
-
-    [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:MAINURL]]];
-    
-    _webView.hidden = YES;
-    
-    
+ 
     self.mapView.showsUserLocation=YES;
-    //[self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
-    
-    
+  
     self.basketPin.hidden = YES;
     
     [self fixScreenFrame];
@@ -68,19 +46,10 @@
         popUp;
     })];
     
-    self.createHereButton.hidden = YES;
     popUp.hidden = YES;
 
     NSLog(@"Navi frame = %@", NSStringFromCGRect(self.navigationController.navigationBar.frame));
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(LocationEventHandler:)
-                                                 name:@"LocationEventHandler" object:nil];
-
     
     [self refreshMap];
     [self goCurrent];
@@ -88,10 +57,27 @@
     isChangingScreen = NO;
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
+{
+     [super viewWillAppear:animated];
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"LocationEventHandler" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MapViewEventHandler:)
+                                                 name:@"MapViewEventHandler" object:nil];
+
+    
+
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MapViewEventHandler" object:nil];
 
     
 }
@@ -113,6 +99,7 @@
     NSLog(@"willRotateToInterfaceOrientation");
     isChangingScreen = YES;
 }
+
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
      NSLog(@"didRotateFromInterfaceOrientation");
@@ -120,165 +107,6 @@
     isChangingScreen = NO;
     
     [self fixScreenFrame];
-}
-
-- (void)fixScreenFrame
-{
-    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
-    screenFrame = [[UIScreen mainScreen] bounds];
-    
-    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
-        screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
-    }
-    
-    self.basketPin.center = CGPointMake(screenFrame.size.width/2, screenFrame.size.height/2);
-    popUp.center =  CGPointMake(screenFrame.size.width/2,self.basketPin.center.y - 10);
-}
-
-#pragma mark - WebViewDelegate
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)theRequest navigationType:(UIWebViewNavigationType)navigationType
-{
-    NSString *url = [[theRequest URL] absoluteString];
-    //NSString *keyURL = [[theRequest URL] host];
-    NSString *path = [[theRequest URL] path];
-    
-    //NSArray *arr = [url componentsSeparatedByString:@"?"];
-    NSLog(@"path : %@", path);
-    NSLog(@"currentURL : %@", url);
-    
-    if([path isEqualToString:@"/auth/facebook"] ||
-       [path isEqualToString:@"/auth/linkedin"] ) {
-        
-        GVALUE.START_LOGIN = YES;
-        
-    }
-    
-    if( GVALUE.START_LOGIN &&
-       ([path isEqualToString:@"/auth/facebook/callback"] ||
-        [path isEqualToString:@"/auth/linkedin/callback"] )) {
-           
-           GVALUE.FIND_USERID = YES;
-           
-       }
-    
-//
-//    if(keyURL != nil && ![[arr objectAtIndex:0] isEqualToString:@"http://help.paran.com/faq/mobile/wk/mFaqView.jsp"]
-//       && ![[arr objectAtIndex:0] isEqualToString:@"http://help.paran.com/faq/global/english/mFaqView.jsp"]
-//       && ![[arr objectAtIndex:0] isEqualToString:@"http://help.paran.com/faq/mobile/wk/mRarView.jsp"]
-//       && ![[arr objectAtIndex:0] isEqualToString:@"http://help.paran.com/faq/global/english/mRarView.jsp"]
-//       )
-//    {
-//        [indicator startAnimating];
-//        [indicatorBg setHidden:NO];
-//    }
-    
-    return YES;
-}
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-//    [indicator startAnimating];
-//    [indicatorBg setHidden:NO];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webview
-{
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
-    if(GVALUE.START_LOGIN && GVALUE.FIND_USERID) {
-        [self saveUserID];
-        GVALUE.START_LOGIN = GVALUE.FIND_USERID = NO;
-     }
-}
-
-- (void)webView:(UIWebView *)webview didFailLoadWithError:(NSError *)error
-{
-//    NSString *errorMsg = nil;
-//    
-//    if ([[error domain] isEqualToString:NSURLErrorDomain]) {
-//        switch ([error code]) {
-//            case NSURLErrorCannotFindHost:
-//                errorMsg = NSLocalizedString(@"Can't find the specified server. Please re-type URL.", @"");
-//                break;
-//            case NSURLErrorCannotConnectToHost:
-//                errorMsg = NSLocalizedString(@"Can't connect to the server. Please try it again.", @"");
-//                break;
-//            case NSURLErrorNotConnectedToInternet:
-//                errorMsg = NSLocalizedString(@"Can't connect to the network. Please check your network.", @"");
-//                
-//                if(WIFIView == nil) {
-//                    WIFIView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"WIFI.png"]];
-//                    [WIFIView setFrame:webview.frame];
-//                    [WIFIView setBackgroundColor:[UIColor whiteColor]];
-//                    [WIFIView setContentMode:UIViewContentModeScaleAspectFit];
-//                    [self.view addSubview:WIFIView];
-//                }
-//                
-//                if(WIFILabel == nil){
-//                    WIFILabel = [[UILabel alloc] initWithFrame:CGRectMake(57.0f, 300.0f, 207.0f, 89.0)];
-//                    WIFILabel.textColor = [UIColor whiteColor];
-//                    WIFILabel.text = NSLocalizedString(@"You are not connected to the network. Please connect to Wi-Fi or check your network again.", @"");
-//                    [WIFILabel setFont:BASIC_BOLD_FONT(12)];
-//                    WIFILabel.backgroundColor = [UIColor clearColor ];
-//                    [WIFILabel setTextColor:[UIColor blackColor]];
-//                    WIFILabel.lineBreakMode = UILineBreakModeTailTruncation;
-//                    WIFILabel.textAlignment = UITextAlignmentCenter;
-//                    WIFILabel.numberOfLines = 3;
-//                    [self.view  addSubview:WIFILabel];
-//                }
-//                
-//                break;
-//            default:
-//                errorMsg = [error localizedDescription]; 
-//                break;
-//        }
-//    } else {
-//        errorMsg = [error localizedDescription];
-//    }
-//    
-//    NSLog(@"didFailLoadWithError: %@", errorMsg);
-//    
-//    [indicator stopAnimating];
-//    [indicatorBg setHidden:YES];
-}
-
-
-#pragma mark - UITableViewDelegate
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [GVALUE.baskets count];
-}
-
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *cellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-	
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-    }
-    
-    Docbasket *cellData = [GVALUE.baskets objectAtIndex:indexPath.row];
-    if(!IsEmpty(cellData)){
-        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
-        cell.textLabel.text = cellData.title;
-        cell.textLabel.numberOfLines = 4;
-    }
-
-	
-    return cell;
-}
-
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return 60.0;
 }
 
 
@@ -415,38 +243,10 @@
     RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
     
     [self.mapView setRegion:MKCoordinateRegionMake(regionAnnotation.coordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
-//
-//    // Stop monitoring the region, remove the radius overlay, and finally remove the annotation from the map.
-//    [DBKLOCATION stopMonitoringRegion:regionAnnotation.region];
-//    [regionView removeRadiusOverlay];
-//    [_mapView removeAnnotation:regionAnnotation];
 }
 
 
-//- (void)fixBasketPinOrient
-//{
-//    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
-//    CGRect  bounds = [[UIScreen mainScreen] bounds];
-//    
-//    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
-//        bounds = CGRectMake(0, 0, bounds.size.height, bounds.size.width);
-//    }
-//    
-//    self.basketPin.center = CGPointMake(bounds.size.width/2, bounds.size.height/2);
-//}
 
-- (IBAction)refreshHandler:(id)sender
-{
- 
-//    currentCoordinate = [DBKLOCATION getCurrentCoordinate];
-//    [self refreshMap];
-//    [self goCurrent];
-//    
-//    [_webView reload];
-//    
-//    NSString *func = [NSString stringWithFormat:@"goCurrentPosition(%f,%f)",currentCoordinate.latitude, currentCoordinate.longitude];
-//    [self javaScriptFromString:func];
- }
 
 - (IBAction)buttonHandler:(id)sender
 {
@@ -466,45 +266,15 @@
 //    [DocbaketAPIClient getBaskets];
     
     
-    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
-    CGRect  bounds = [[UIScreen mainScreen] bounds];
+
+    [self fixScreenFrame];
     
-    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
-        bounds = CGRectMake(0, 0, bounds.size.height, bounds.size.width);
-    }
-    
-    self.basketPin.center = CGPointMake(bounds.size.width/2, bounds.size.height/2);
-    popUp.center =  CGPointMake(bounds.size.width/2,self.basketPin.center.y - 10);
     self.basketPin.hidden = ! self.basketPin.hidden;
-    //self.createHereButton.hidden =  ! self.createHereButton.hidden;
     popUp.hidden =  ! popUp.hidden;
     
 }
 
-- (IBAction)tabHandler:(id)sender
-{
-    UISegmentedControl *segmentedControl = sender;
-    
-    switch (segmentedControl.selectedSegmentIndex) {
-        case 0:
-            _mapView.hidden = NO;
-            _webView.hidden = YES;
-            _tableView.hidden = YES;
-            break;
-        case 1:
-            _mapView.hidden = YES;
-            _webView.hidden = NO;
-            _tableView.hidden = YES;
-            break;
-        case 2:
-            _mapView.hidden = YES;
-            _webView.hidden = YES;
-            _tableView.hidden = NO;
-            break;
-        default:
-            break;
-    }
-}
+
 
 
 - (IBAction)refreshCurrentLocation:(id)sender
@@ -523,11 +293,19 @@
 
 }
 
-- (IBAction)createHereBasket:(id)sender
-{
-    
-}
 
+- (void)fixScreenFrame
+{
+    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
+    screenFrame = [[UIScreen mainScreen] bounds];
+    
+    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
+        screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
+    }
+    
+    self.basketPin.center = CGPointMake(screenFrame.size.width/2, screenFrame.size.height/2);
+    popUp.center =  CGPointMake(screenFrame.size.width/2,self.basketPin.center.y - 10);
+}
 
 
 - (void)showNavigationBar:(BOOL)show
@@ -582,30 +360,6 @@
     }];
 }
 
-- (NSString *)getUserID
-{
-    return [self javaScriptFromString:@" $('*[data-user-id]').data('user-id')"];
-}
-
-- (void)saveUserID
-{
-    id userID =  [self javaScriptFromString:@" $('*[data-user-id]').data('user-id')"];
-    if ([userID isKindOfClass:[NSString class]]) {
-
-        [[GlobalValue sharedInstance] setUserID:userID];
-        
-        NSLog(@"Saved UserID = %@",[[GlobalValue sharedInstance] userID]);
-        
-        
-        [DocbaketAPIClient Login];
-     }
-}
-
-- (NSString*)javaScriptFromString:(NSString*)str
-{
-    return [_webView stringByEvaluatingJavaScriptFromString:str];
-}
-
 
 - (void)goCurrent
 {
@@ -647,9 +401,9 @@
                 NSLog(@"->Load %d regions : %@", (int)regions.count, regions );
                 
                 
-                if (!_tableView.hidden) {
-                    [_tableView reloadData];
-                }
+//                if (!_tableView.hidden) {
+//                    [_tableView reloadData];
+//                }
              });
  
 
@@ -660,7 +414,7 @@
 
 }
 
-- (void)LocationEventHandler:(NSNotification *)notification
+- (void)MapViewEventHandler:(NSNotification *)notification
 {
 
     if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"monitoringDidFailForRegion"]) {
@@ -681,12 +435,14 @@
             
         }
     }
+    
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"didHideMenuViewController"]) {
+        
+        [self fixScreenFrame];
+        
+    }
 
 }
-
-
-//[[NSUserDefaults standardUserDefaults] setObject:cookieData forKey:@"MySavedCookies"];
-//NSData *cookiesdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"MySavedCookies"];
-
 
 @end

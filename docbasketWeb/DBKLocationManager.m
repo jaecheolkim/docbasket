@@ -65,31 +65,14 @@
              NSLog(@"Geocode failed with error %@", error);
              
              currentAddress = @"";
-             
-             //return;
-             //             CountryArea = NULL;
+ 
          }
          
          
          NSLog(@"%@",currentAddress);
          
          block(currentAddress);
-//         
-//         [[NSNotificationCenter defaultCenter] postNotificationName:@"LocationEventHandler"
-//                                                             object:self
-//                                                           userInfo:@{@"Msg":@"currentAddress", @"address":currentAddress}];
-//         
-         
-         /*---- For more results
-          placemark.region);
-          placemark.country);
-          placemark.locality);
-          placemark.name);
-          placemark.ocean);
-          placemark.postalCode);
-          placemark.subLocality);
-          placemark.location);
-          ------*/
+
      }];
 }
 
@@ -106,79 +89,15 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    
-////- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-////    NSLog(@"didUpdateToLocation %@ from %@", newLocation, oldLocation);
-//    
-////    // Work around a bug in MapKit where user location is not initially zoomed to.
-////    if (oldLocation == nil) {
-////        // Zoom to the current user location.
-//////        MKCoordinateRegion userLocation = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 1500.0, 1500.0);
-//////        [_mapView setRegion:userLocation animated:YES];
-////    }
-    
-    
+
     _currentLocation = [locations objectAtIndex:0];
     
     [DBKLocationManager reverseGeocodeLocation:_currentLocation completionHandler:^(NSString *address) {
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"LocationEventHandler"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
                                                             object:self
                                                           userInfo:@{@"Msg":@"currentAddress", @"address":address}];
     }];
-    
-//    //[_locationManager stopUpdatingLocation];
-//    CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
-//    [geocoder reverseGeocodeLocation:_currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
-//     {
-//         NSString *currentAddress = nil;
-//         
-//         if (!(error))
-//         {
-//             CLPlacemark *placemark = [placemarks objectAtIndex:0];
-//             
-////             NSLog(@"placemark %@",placemark);
-//             NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
-//             NSString *Address = [[NSString alloc]initWithString:locatedAt];
-//             NSString *Area = [[NSString alloc]initWithString:placemark.locality];
-//             NSString *Country = [[NSString alloc]initWithString:placemark.country];
-//             //NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
-//             
-//             currentAddress = Address;
-//             
-//             NSLog(@"\nCurrent Location Detected\n");
-//             
-//         }
-//         else
-//         {
-//             NSLog(@"Geocode failed with error %@", error);
-//
-//             currentAddress = @"Current Location Not Detected";
-//             
-//             //return;
-////             CountryArea = NULL;
-//         }
-//         
-//         
-//         NSLog(@"%@",currentAddress);
-//         
-//         
-//         [[NSNotificationCenter defaultCenter] postNotificationName:@"LocationEventHandler"
-//                                                             object:self
-//                                                           userInfo:@{@"Msg":@"currentAddress", @"address":currentAddress}];
-//
-//         
-//         /*---- For more results
-//          placemark.region);
-//          placemark.country);
-//          placemark.locality);
-//          placemark.name);
-//          placemark.ocean);
-//          placemark.postalCode);
-//          placemark.subLocality);
-//          placemark.location);
-//          ------*/
-//     }];
 }
 
 
@@ -228,7 +147,7 @@
     
     NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"LocationEventHandler"
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
                                                         object:self
                                                       userInfo:@{@"Msg":@"monitoringDidFailForRegion", @"region":region}];
     
@@ -249,8 +168,8 @@
     //[UIApplication sharedApplication].applicationIconBadgeNumber++;
 
     UIApplication *app = [UIApplication sharedApplication];
-    NSArray *oldNotifications = [app scheduledLocalNotifications];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    NSArray *oldNotifications = [app scheduledLocalNotifications];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     // Clear out the old notification before scheduling a new one.
 //    if ([oldNotifications count] > 0)

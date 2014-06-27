@@ -27,9 +27,8 @@
 
     [[DBKLocationManager sharedInstance] startLocationManager];
     
-    
-    
-    
+    [self checkNewBasket];
+
     return YES;
 }
 
@@ -177,6 +176,36 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
+
+
+- (void)checkNewBasket
+{
+
+    [DocbaketAPIClient loadDocBaskets:^(BOOL success){
+        if(success){
+            
+            NSLog(@"Basket count = %d", (int)[GVALUE.baskets count]);
+            
+            for(Docbasket *basket in GVALUE.baskets){
+                if(!IsEmpty(basket)){
+                    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
+                    [[DBKLocationManager sharedInstance] makeNewRegionMonitoring:coord withID:basket.basketID withMap:nil];
+                }
+            }
+            
+            NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
+            NSLog(@"->Load %d regions : %@", (int)regions.count, regions );
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
+                                                                object:self
+                                                              userInfo:@{@"Msg":@"refreshMap"}];
+
+        } else {
+            NSLog(@"Load Baskets : FAIL");
+        }
+    }];
+    
+}
 
 
 #pragma mark - Application's Cookie Handler 

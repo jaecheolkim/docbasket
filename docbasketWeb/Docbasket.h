@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 
 @class User;
 
@@ -45,6 +46,9 @@
 @property (nonatomic, strong) User *user;
 
 - (instancetype)initWithAttributes:(NSDictionary *)attributes;
+
+- (CLCircularRegion *)region;
+
 
 + (NSURLSessionDataTask *)getBasktesWithBlock:(void (^)(NSArray *basktes, NSError *error))block;
 

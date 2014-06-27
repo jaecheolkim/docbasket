@@ -50,7 +50,7 @@
     self.poi_id = [attributes valueForKeyPath:@"poi_id"];
     self.poi_title = [attributes valueForKeyPath:@"poi_title"];
     self.url = [attributes valueForKeyPath:@"url"];
-    self.image = [attributes valueForKey:@"image"];
+    self.image = [attributes valueForKey:@"image_small_thumb"];
     
     //self.permission = [[attributes valueForKeyPath:@"permission"] integerValue];
     //self.address = [attributes valueForKeyPath:@"address"];
@@ -58,6 +58,16 @@
 
     
     return self;
+}
+
+
+- (CLCircularRegion *)region
+{
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(self.latitude, self.longitude);
+    CLCircularRegion *newRegion = [[CLCircularRegion alloc] initWithCenter:coord
+                                                                    radius:50
+                                                                identifier:self.basketID];
+    return newRegion;
 }
 
 #pragma mark -

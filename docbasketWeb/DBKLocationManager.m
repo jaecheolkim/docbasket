@@ -139,10 +139,6 @@
 }
 
 
-
-
-
-
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
     
     NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
@@ -196,6 +192,9 @@
 
 #pragma mark - Public Methods
 
+
+
+
 - (void)startLocationManager
 {
     if(nil == self.locationManager){
@@ -204,7 +203,7 @@
     
     self.locationManager.delegate = self;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    self.locationManager.distanceFilter = 5;
+    self.locationManager.distanceFilter = 50;
 
     [self.locationManager startUpdatingLocation];
 
@@ -264,11 +263,14 @@
                                                                       radius:50
                                                                   identifier:identifier];
         
-        // Create an annotation to show where the region is located on the map.
-        RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
-        myRegionAnnotation.coordinate = newRegion.center;
-        myRegionAnnotation.radius = newRegion.radius;
-        [mapView addAnnotation:myRegionAnnotation];
+        if(!IsEmpty(mapView)){
+            // Create an annotation to show where the region is located on the map.
+            RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
+            myRegionAnnotation.coordinate = newRegion.center;
+            myRegionAnnotation.radius = newRegion.radius;
+            [mapView addAnnotation:myRegionAnnotation];
+        }
+
         
         [self startMonitoringRegion:newRegion];
     }

@@ -367,9 +367,8 @@
     [self.mapView setRegion:MKCoordinateRegionMake(currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
 }
 
-- (void)refreshMap
+- (void)removeAllAnnotations
 {
-
     [_mapView removeAnnotations:_mapView.annotations];
     
     for (id overlay in [_mapView overlays]) {
@@ -377,40 +376,61 @@
             [_mapView removeOverlay:overlay];
         }
     }
+
+}
+
+- (void)refreshMap
+{
+    [self removeAllAnnotations];
     
-    NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
-    for(CLCircularRegion *oldregion in regions){
-        [[DBKLocationManager sharedInstance] stopMonitoringRegion:oldregion];
+    
+    for(Docbasket *basket in GVALUE.baskets){
+        if(!IsEmpty(basket)){
+            //CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
+            CLCircularRegion * newRegion = [basket region];
+            
+            RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
+            myRegionAnnotation.coordinate = newRegion.center;
+            myRegionAnnotation.radius = newRegion.radius;
+            [_mapView addAnnotation:myRegionAnnotation];
+         }
     }
+    
+    
 
-    [DocbaketAPIClient loadDocBaskets:^(BOOL success){
-        if(success){
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-
-                NSLog(@"Basket count = %d", (int)[GVALUE.baskets count]);
-                
-                for(Docbasket *basket in GVALUE.baskets){
-                    if(!IsEmpty(basket)){
-                        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
-                        [[DBKLocationManager sharedInstance] makeNewRegionMonitoring:coord withID:basket.basketID withMap:_mapView];
-                    }
-                }
-                
-                NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
-
-                NSLog(@"->Load %d regions : %@", (int)regions.count, regions );
-                
-                
-//                if (!_tableView.hidden) {
-//                    [_tableView reloadData];
+//    NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
+//    for(CLCircularRegion *oldregion in regions){
+//        [[DBKLocationManager sharedInstance] stopMonitoringRegion:oldregion];
+//    }
+//
+//    [DocbaketAPIClient loadDocBaskets:^(BOOL success){
+//        if(success){
+//            dispatch_async(dispatch_get_main_queue(), ^(void) {
+//
+//                NSLog(@"Basket count = %d", (int)[GVALUE.baskets count]);
+//                
+//                for(Docbasket *basket in GVALUE.baskets){
+//                    if(!IsEmpty(basket)){
+//                        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
+//                        [[DBKLocationManager sharedInstance] makeNewRegionMonitoring:coord withID:basket.basketID withMap:_mapView];
+//                    }
 //                }
-             });
- 
-
-        } else {
-            NSLog(@"Load Baskets : FAIL");
-        }
-    }];
+//                
+//                NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
+//
+//                NSLog(@"->Load %d regions : %@", (int)regions.count, regions );
+//                
+//                
+////                if (!_tableView.hidden) {
+////                    [_tableView reloadData];
+////                }
+//             });
+// 
+//
+//        } else {
+//            NSLog(@"Load Baskets : FAIL");
+//        }
+//    }];
 
 }
 
@@ -440,6 +460,13 @@
     if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"didHideMenuViewController"]) {
         
         [self fixScreenFrame];
+        
+    }
+    
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"refreshMap"]) {
+        
+        [self refreshMap];
         
     }
 

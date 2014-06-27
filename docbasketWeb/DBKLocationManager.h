@@ -20,6 +20,8 @@
 @property (nonatomic, retain) CLLocationManager *locationManager;
 @property (nonatomic, retain) CLLocation *currentLocation;
 
+
+
 - (void)startLocationManager;
 
 - (void)startMonitoringSignificantLocationChanges;

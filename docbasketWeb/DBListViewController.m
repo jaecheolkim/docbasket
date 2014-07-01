@@ -7,6 +7,7 @@
 //
 
 #import "DBListViewController.h"
+#import "SCQRGeneratorViewController.h"
 
 @interface DBListViewController ()
 
@@ -72,6 +73,25 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 60.0;
 }
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    Docbasket *cellData = [GVALUE.baskets objectAtIndex:indexPath.row];
+    if(!IsEmpty(cellData)){
+        
+        SCQRGeneratorViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"SCQRGeneratorViewController"];
+        viewcontroller.basketID = cellData.basketID;
+        
+        [self.navigationController pushViewController:viewcontroller animated:YES];
+
+    }
+
+}
+
+
 
 
 /*

@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		800A4D4E196281CB00E60B8A /* PopButtonImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D4D196281CB00E60B8A /* PopButtonImageView.m */; };
+		800A4D5419628D7800E60B8A /* Barcode.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5119628D7800E60B8A /* Barcode.m */; };
+		800A4D5519628D7800E60B8A /* ScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5319628D7800E60B8A /* ScannerViewController.m */; };
+		800A4D5819629ACE00E60B8A /* SCQRGeneratorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5719629ACE00E60B8A /* SCQRGeneratorViewController.m */; };
+		800A4D5D19629AFE00E60B8A /* SCShapeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5A19629AFE00E60B8A /* SCShapeView.m */; };
+		800A4D5E19629AFE00E60B8A /* SCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5C19629AFE00E60B8A /* SCViewController.m */; };
 		805A3218194EE13500F213C1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A3217194EE13500F213C1 /* main.m */; };
 		805A321B194EE13500F213C1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A321A194EE13500F213C1 /* AppDelegate.m */; };
 		805A321E194EE13500F213C1 /* docbasketWeb.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 805A321C194EE13500F213C1 /* docbasketWeb.xcdatamodeld */; };
@@ -85,6 +91,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		800A4D4C196281CB00E60B8A /* PopButtonImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopButtonImageView.h; sourceTree = "<group>"; };
+		800A4D4D196281CB00E60B8A /* PopButtonImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopButtonImageView.m; sourceTree = "<group>"; };
+		800A4D5019628D7800E60B8A /* Barcode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Barcode.h; sourceTree = "<group>"; };
+		800A4D5119628D7800E60B8A /* Barcode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Barcode.m; sourceTree = "<group>"; };
+		800A4D5219628D7800E60B8A /* ScannerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScannerViewController.h; sourceTree = "<group>"; };
+		800A4D5319628D7800E60B8A /* ScannerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScannerViewController.m; sourceTree = "<group>"; };
+		800A4D5619629ACE00E60B8A /* SCQRGeneratorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCQRGeneratorViewController.h; sourceTree = "<group>"; };
+		800A4D5719629ACE00E60B8A /* SCQRGeneratorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCQRGeneratorViewController.m; sourceTree = "<group>"; };
+		800A4D5919629AFE00E60B8A /* SCShapeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCShapeView.h; sourceTree = "<group>"; };
+		800A4D5A19629AFE00E60B8A /* SCShapeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCShapeView.m; sourceTree = "<group>"; };
+		800A4D5B19629AFE00E60B8A /* SCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCViewController.h; sourceTree = "<group>"; };
+		800A4D5C19629AFE00E60B8A /* SCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCViewController.m; sourceTree = "<group>"; };
 		805A3212194EE13500F213C1 /* docbasketWeb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = docbasketWeb.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		805A3216194EE13500F213C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		805A3217194EE13500F213C1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -238,6 +256,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		800A4D4F19628D7800E60B8A /* BarCodeScanner */ = {
+			isa = PBXGroup;
+			children = (
+				800A4D5919629AFE00E60B8A /* SCShapeView.h */,
+				800A4D5A19629AFE00E60B8A /* SCShapeView.m */,
+				800A4D5B19629AFE00E60B8A /* SCViewController.h */,
+				800A4D5C19629AFE00E60B8A /* SCViewController.m */,
+				800A4D5619629ACE00E60B8A /* SCQRGeneratorViewController.h */,
+				800A4D5719629ACE00E60B8A /* SCQRGeneratorViewController.m */,
+				800A4D5019628D7800E60B8A /* Barcode.h */,
+				800A4D5119628D7800E60B8A /* Barcode.m */,
+				800A4D5219628D7800E60B8A /* ScannerViewController.h */,
+				800A4D5319628D7800E60B8A /* ScannerViewController.m */,
+			);
+			path = BarCodeScanner;
+			sourceTree = "<group>";
+		};
 		805A3209194EE13500F213C1 = {
 			isa = PBXGroup;
 			children = (
@@ -320,6 +355,7 @@
 		8061AFF219503BB000685336 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				800A4D4F19628D7800E60B8A /* BarCodeScanner */,
 				807115D8195B2EEC00E953B1 /* RESideMenu */,
 				80778A52195B11B1003EF884 /* CHAnimation */,
 				807555F81951967200F68F63 /* ImageCache */,
@@ -393,6 +429,8 @@
 		8061B02B19503C3B00685336 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				800A4D4C196281CB00E60B8A /* PopButtonImageView.h */,
+				800A4D4D196281CB00E60B8A /* PopButtonImageView.m */,
 				80778A5E195B122C003EF884 /* CHPopUpMenu.h */,
 				80778A5F195B122C003EF884 /* CHPopUpMenu.m */,
 				8061B0361950B47F00685336 /* RegionAnnotation.h */,
@@ -615,11 +653,14 @@
 				809767A8195C84800048CA13 /* DBLoginViewController.m in Sources */,
 				8075565E1951980D00F68F63 /* UIImage+GIF.m in Sources */,
 				8061B03519503CA900685336 /* User.m in Sources */,
+				800A4D5819629ACE00E60B8A /* SCQRGeneratorViewController.m in Sources */,
 				8061B02119503BE100685336 /* AFURLSessionManager.m in Sources */,
 				80778A5B195B11B1003EF884 /* CHAnimator.m in Sources */,
 				805A323D194F0C8B00F213C1 /* DBKLocationManager.m in Sources */,
 				805A321B194EE13500F213C1 /* AppDelegate.m in Sources */,
 				8061B01C19503BE100685336 /* AFNetworkReachabilityManager.m in Sources */,
+				800A4D5419628D7800E60B8A /* Barcode.m in Sources */,
+				800A4D5519628D7800E60B8A /* ScannerViewController.m in Sources */,
 				8061B02219503BE100685336 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				8061AFF01950163800685336 /* GlobalValue.m in Sources */,
 				807556561951980D00F68F63 /* SDImageCache.m in Sources */,
@@ -627,6 +668,7 @@
 				807556571951980D00F68F63 /* SDWebImageCompat.m in Sources */,
 				80778A5A195B11B1003EF884 /* CHAnimationState.m in Sources */,
 				8061B01E19503BE100685336 /* AFURLConnectionOperation.m in Sources */,
+				800A4D4E196281CB00E60B8A /* PopButtonImageView.m in Sources */,
 				807556611951980D00F68F63 /* UIImageView+HighlightedWebCache.m in Sources */,
 				8075565C1951980D00F68F63 /* SDWebImagePrefetcher.m in Sources */,
 				8075565A1951980D00F68F63 /* SDWebImageDownloaderOperation.m in Sources */,
@@ -637,6 +679,7 @@
 				8061B01B19503BE100685336 /* AFHTTPSessionManager.m in Sources */,
 				8061B01F19503BE100685336 /* AFURLRequestSerialization.m in Sources */,
 				805A321E194EE13500F213C1 /* docbasketWeb.xcdatamodeld in Sources */,
+				800A4D5D19629AFE00E60B8A /* SCShapeView.m in Sources */,
 				807556581951980D00F68F63 /* SDWebImageDecoder.m in Sources */,
 				8061B02519503BE100685336 /* UIButton+AFNetworking.m in Sources */,
 				8061B02619503BE100685336 /* UIImageView+AFNetworking.m in Sources */,
@@ -667,6 +710,7 @@
 				8061B01D19503BE100685336 /* AFSecurityPolicy.m in Sources */,
 				8061B02019503BE100685336 /* AFURLResponseSerialization.m in Sources */,
 				8061B01919503BE100685336 /* AFHTTPRequestOperation.m in Sources */,
+				800A4D5E19629AFE00E60B8A /* SCViewController.m in Sources */,
 				807115E1195B2EEC00E953B1 /* UIViewController+RESideMenu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

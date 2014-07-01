@@ -23,9 +23,20 @@
 @end
 
 @implementation DBMapViewController
-            
+- (void)awakeFromNib
+{
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+//    UISearchBar *searchBar = [UISearchBar new];
+//    searchBar.showsCancelButton = YES;
+//    [searchBar sizeToFit];
+//    UIView *barWrapper = [[UIView alloc]initWithFrame:searchBar.bounds];
+//    [barWrapper addSubview:searchBar];
+//    self.navigationItem.titleView = barWrapper;
     
     isChangingScreen = YES;
 
@@ -37,14 +48,18 @@
     
     [self fixScreenFrame];
     
-    [self.view addSubview:({
-        NSArray *icons = @[[UIImage imageNamed:@"files.png"],[UIImage imageNamed:@"photo.png"],[UIImage imageNamed:@"sound.png"],[UIImage imageNamed:@"time.png"],[UIImage imageNamed:@"Vault.png"]];
-        
-        popUp = [[CHPopUpMenu alloc]initWithFrame:CGRectMake(145, 420, 30, 30)
-                                                     direction:M_PI/2
-                                                     iconArray:icons];
-        popUp;
-    })];
+    if(IsEmpty(popUp)){
+        [self.view addSubview:({
+            NSArray *icons = @[[UIImage imageNamed:@"files.png"],[UIImage imageNamed:@"photo.png"],[UIImage imageNamed:@"sound.png"],[UIImage imageNamed:@"time.png"],[UIImage imageNamed:@"Vault.png"]];
+            
+            popUp = [[CHPopUpMenu alloc]initWithFrame:CGRectMake(145, 420, 30, 30)
+                                            direction:M_PI/2
+                                            iconArray:icons];
+            popUp;
+        })];
+    }
+    
+
     
     popUp.hidden = YES;
 
@@ -264,8 +279,6 @@
 //    [DocbaketAPIClient Login];
    
 //    [DocbaketAPIClient getBaskets];
-    
-    
 
     [self fixScreenFrame];
     
@@ -467,6 +480,16 @@
     if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"refreshMap"]) {
         
         [self refreshMap];
+        
+    }
+    
+    
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"PopMenuPressed"]) {
+        
+        CGPoint point = [[[notification userInfo] objectForKey:@"touchPoint"] CGPointValue];
+        
+        NSLog(@"%@", NSStringFromCGPoint(point));
         
     }
 

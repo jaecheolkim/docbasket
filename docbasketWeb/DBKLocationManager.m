@@ -32,10 +32,12 @@
 
 + (void)reverseGeocodeLocation:(CLLocation *)location completionHandler:(void (^)(NSString *address))block
 {
+    if(IsEmpty(location)) block(@"");
+    
     CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error)
      {
-         NSString *currentAddress = nil;
+         NSString *currentAddress = @"";
          
          if (!(error))
          {
@@ -43,14 +45,14 @@
              
              //             NSLog(@"placemark %@",placemark);
              NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
-             NSString *Address = [[NSString alloc]initWithString:locatedAt];
-             NSString *Area = [[NSString alloc]initWithString:placemark.locality];
-             NSString *subLocality = [[NSString alloc]initWithString:(!IsEmpty(placemark.subLocality)?placemark.subLocality:@"")];
+             NSString *Address = IsEmpty(locatedAt)? @"" : locatedAt; // [[NSString alloc]initWithString:locatedAt];
+             NSString *Area = IsEmpty(placemark.locality) ? @"" : placemark.locality; //[[NSString alloc]initWithString:placemark.locality];
+             NSString *subLocality = IsEmpty(placemark.subLocality) ? @"" : placemark.subLocality; //[[NSString alloc]initWithString:(!IsEmpty(placemark.subLocality)?placemark.subLocality:@"")];
              //NSString *Country = [[NSString alloc]initWithString:placemark.country];
-             NSString *Name = [[NSString alloc]initWithString:placemark.name];
+             NSString *Name = IsEmpty(placemark.name) ? @"" : placemark.name; //[[NSString alloc]initWithString:placemark.name];
              //NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
              
-             currentAddress = Address;
+             currentAddress = (!IsEmpty(Address))?Address : @"";
              
              NSLog(@"\nCurrent Location Detected\n");
 

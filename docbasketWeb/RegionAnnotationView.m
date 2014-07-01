@@ -59,9 +59,14 @@
 		self.multipleTouchEnabled = NO;
 		self.draggable = YES;
 		self.animatesDrop = YES;
+        
 		self.map = nil;
 		theAnnotation = (RegionAnnotation *)annotation;
-		self.pinColor = MKPinAnnotationColorGreen;
+		//self.pinColor = MKPinAnnotationColorGreen;
+        
+        self.image = [UIImage imageNamed:@"basket_1_1.png"];
+        self.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        
 		radiusOverlay = [MKCircle circleWithCenterCoordinate:theAnnotation.coordinate radius:theAnnotation.radius];
 		
 		[map addOverlay:radiusOverlay];

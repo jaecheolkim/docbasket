@@ -28,8 +28,8 @@
 
 #define CHPpopUpMenuItemSize 60
 
-@interface CHPopUpMenu () {
-
+@interface CHPopUpMenu ()
+{
     CGFloat _direction;
     NSMutableArray *_iconViews;
     UIImageView* _imageView;
@@ -63,6 +63,28 @@
         })];
         
         [self addTarget:self action:@selector(controlPressed) forControlEvents:UIControlEventTouchUpInside];
+
+        int buttonCount = 0;
+        if (!_iconViews) {
+            _iconViews = [[NSMutableArray alloc]init];
+            for (UIImage *iconImage in self.icons) {
+                
+                CGRect frame = CGRectMake(self.bounds.size.width/2 - CHPpopUpMenuItemSize/2, self.bounds.size.height/2 - CHPpopUpMenuItemSize/2, CHPpopUpMenuItemSize, CHPpopUpMenuItemSize);
+                PopButtonImageView *button = [[PopButtonImageView alloc] initWithFrame:frame withImage:iconImage];
+                
+                //[button setImage:iconImage];
+                button.tag = buttonCount;
+                
+                buttonCount ++;
+                
+                [self addSubview:button];
+                
+                [_iconViews addObject:button];
+            }
+        }
+        
+        [self dismissSubMenu];
+
     }
     return self;
 }
@@ -80,40 +102,13 @@
 
 - (void)buttonClicked:(id)Sender
 {
-    UIButton *button = (UIButton*)Sender;
+    UIImageView *button = (UIImageView*)Sender;
     
     NSLog(@"Button clicked %d", (int)button.tag);
 }
 
 - (void) presentSubMenu {
     self._isMenuPresented = YES;
-
-    int buttonCount = 0;
-    
-    if (!_iconViews) {
-        _iconViews = [[NSMutableArray alloc]init];
-        for (UIImage *iconImage in self.icons) {
-            [self addSubview:({
-//                UIImageView *iconView = [[UIImageView alloc]initWithImage:iconImage];
-//                iconView.frame = CGRectMake(self.bounds.size.width/2 - CHPpopUpMenuItemSize/2, self.bounds.size.height/2 - CHPpopUpMenuItemSize/2, CHPpopUpMenuItemSize, CHPpopUpMenuItemSize);
-//                iconView.alpha = 0.0;
-//                [_iconViews addObject:iconView];
-//                iconView;
-                
-                UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(self.bounds.size.width/2 - CHPpopUpMenuItemSize/2, self.bounds.size.height/2 - CHPpopUpMenuItemSize/2, CHPpopUpMenuItemSize, CHPpopUpMenuItemSize)];
-                [button setBackgroundImage:iconImage forState:UIControlStateNormal];
-                [button addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
-                button.tag = buttonCount;
-                
-                buttonCount ++;
-                
-                [_iconViews addObject:button];
-                button;
-            })];
-        }
-
-    }
-    
 
     int nIcons = (int)[self.icons count];
     int iconNumber = 0;
@@ -127,9 +122,7 @@
     };
     [_imageView.layer ch_addAnimation:degree forKey:@"degree1"];
     
-    
-    
-    for (UIButton *icon in _iconViews) {
+    for (PopButtonImageView *icon in _iconViews) {
         CHAnimation *alpha = [CHAnimation new];
         alpha.fromValue = @0.0;
         alpha.toValue = @1.0;
@@ -154,7 +147,9 @@
         [icon ch_addAnimation:push forKey:@"push1"];
         
         iconNumber += 1;
-    }
+        
+        //[icon addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
+     }
 }
 
 
@@ -173,7 +168,7 @@
     [_imageView.layer ch_addAnimation:degree forKey:@"degree1"];
     
     
-    for (UIButton *icon in _iconViews) {
+    for (PopButtonImageView *icon in _iconViews) {
         CHAnimation *alpha = [CHAnimation new];
         alpha.toValue = @0.0;
         alpha.fromValue = @1.0;
@@ -199,9 +194,6 @@
         
         iconNumber += 1;
     }
-    
-    
-    
 }
 
 - (CGFloat) angleForIcon:(int)iconNumber numberOfIcons:(int)nIcons {
@@ -211,5 +203,30 @@
     
     return startAngle + iconNumber*interSpace;
 }
+
+
+//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+//	UITouch *touch = [touches anyObject];
+////	if ([touch tapCount] == 1) {
+////        
+////	} else if ([touch tapCount] == 2) {
+////        
+////	}
+//    
+//    CGPoint point = [touch locationInView:self];
+//    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
+//                                                        object:self
+//                                                      userInfo:@{@"Msg":@"PopMenuPressed", @"touchPoint" : [NSValue valueWithCGPoint:point]}];
+////                                                                 CGPoint point = [[[notification userInfo] objectForKey:@"touchPoint"] CGPointValue];
+////}];
+//
+//    if (CGRectContainsPoint(self.bounds, point)){
+//        [self controlPressed];
+//    } else {
+//        NSLog(@"test..");
+//    }
+//}
+
 
 @end

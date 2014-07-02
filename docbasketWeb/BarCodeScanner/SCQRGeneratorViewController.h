@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Docbasket.h"
 
 @interface SCQRGeneratorViewController : UIViewController
 
@@ -15,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *generateButton;
 
 @property (strong, nonatomic) NSString *basketID;
+@property (strong, nonatomic) Docbasket *basket;
 
 - (IBAction)handleGenerateButtonPressed:(id)sender;
 

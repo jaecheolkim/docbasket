@@ -337,7 +337,7 @@
         //{{0, 20}, {320, 44}}
         [UIView animateWithDuration:0.7 animations:^{
             self.navigationController.navigationBar.frame = CGRectMake(0, 20, screenFrame.size.width, 0);
-            
+            //[self hideAllAnnotations];
             popUp.alpha = 0;
         } completion:^(BOOL finished) {
             
@@ -346,6 +346,7 @@
         [UIView animateWithDuration:0.2 animations:^{
             self.navigationController.navigationBar.frame = CGRectMake(0, 20, screenFrame.size.width, 44);
             popUp.alpha = 1;
+            //[self showAllAnnotations];
         } completion:^(BOOL finished) {
             self.navigationItem.leftBarButtonItem.customView.alpha = 1;
             self.navigationItem.rightBarButtonItem.customView.alpha = 1;
@@ -378,6 +379,24 @@
 {
     currentCoordinate = [DBKLOCATION getCurrentCoordinate];
     [self.mapView setRegion:MKCoordinateRegionMake(currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
+}
+
+- (void)hideAllAnnotations
+{
+    for(id anno in _mapView.annotations){
+        if ([anno isKindOfClass:[RegionAnnotation class]])
+            
+            [self.mapView deselectAnnotation:anno animated:YES];
+    }
+}
+
+- (void)showAllAnnotations
+{
+    for(id anno in _mapView.annotations){
+        if ([anno isKindOfClass:[RegionAnnotation class]])
+            
+            [self.mapView selectAnnotation:anno animated:YES];
+    }
 }
 
 - (void)removeAllAnnotations

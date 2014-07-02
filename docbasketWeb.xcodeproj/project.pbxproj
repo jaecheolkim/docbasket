@@ -13,6 +13,15 @@
 		800A4D5819629ACE00E60B8A /* SCQRGeneratorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5719629ACE00E60B8A /* SCQRGeneratorViewController.m */; };
 		800A4D5D19629AFE00E60B8A /* SCShapeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5A19629AFE00E60B8A /* SCShapeView.m */; };
 		800A4D5E19629AFE00E60B8A /* SCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5C19629AFE00E60B8A /* SCViewController.m */; };
+		800A4D621963A7C000E60B8A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D611963A7C000E60B8A /* AudioToolbox.framework */; };
+		800A4D641963A7C700E60B8A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D631963A7C700E60B8A /* CFNetwork.framework */; };
+		800A4D661963A7D600E60B8A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D651963A7D600E60B8A /* libz.dylib */; };
+		800A4D681963A7DF00E60B8A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D671963A7DF00E60B8A /* MobileCoreServices.framework */; };
+		800A4D6A1963A7E800E60B8A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D691963A7E800E60B8A /* QuartzCore.framework */; };
+		800A4D6C1963A7EF00E60B8A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D6B1963A7EF00E60B8A /* Security.framework */; };
+		800A4D6E1963A7F800E60B8A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D6D1963A7F800E60B8A /* StoreKit.framework */; };
+		800A4D701963A80200E60B8A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D6F1963A80200E60B8A /* SystemConfiguration.framework */; };
+		800A4D721963A92800E60B8A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D711963A92800E60B8A /* Parse.framework */; };
 		805A3218194EE13500F213C1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A3217194EE13500F213C1 /* main.m */; };
 		805A321B194EE13500F213C1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A321A194EE13500F213C1 /* AppDelegate.m */; };
 		805A321E194EE13500F213C1 /* docbasketWeb.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 805A321C194EE13500F213C1 /* docbasketWeb.xcdatamodeld */; };
@@ -103,6 +112,15 @@
 		800A4D5A19629AFE00E60B8A /* SCShapeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCShapeView.m; sourceTree = "<group>"; };
 		800A4D5B19629AFE00E60B8A /* SCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCViewController.h; sourceTree = "<group>"; };
 		800A4D5C19629AFE00E60B8A /* SCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCViewController.m; sourceTree = "<group>"; };
+		800A4D611963A7C000E60B8A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		800A4D631963A7C700E60B8A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		800A4D651963A7D600E60B8A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		800A4D671963A7DF00E60B8A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		800A4D691963A7E800E60B8A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		800A4D6B1963A7EF00E60B8A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		800A4D6D1963A7F800E60B8A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		800A4D6F1963A80200E60B8A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		800A4D711963A92800E60B8A /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		805A3212194EE13500F213C1 /* docbasketWeb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = docbasketWeb.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		805A3216194EE13500F213C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		805A3217194EE13500F213C1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -238,8 +256,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				800A4D701963A80200E60B8A /* SystemConfiguration.framework in Frameworks */,
+				800A4D6E1963A7F800E60B8A /* StoreKit.framework in Frameworks */,
+				800A4D6C1963A7EF00E60B8A /* Security.framework in Frameworks */,
+				800A4D6A1963A7E800E60B8A /* QuartzCore.framework in Frameworks */,
+				800A4D681963A7DF00E60B8A /* MobileCoreServices.framework in Frameworks */,
+				800A4D661963A7D600E60B8A /* libz.dylib in Frameworks */,
+				800A4D641963A7C700E60B8A /* CFNetwork.framework in Frameworks */,
+				800A4D621963A7C000E60B8A /* AudioToolbox.framework in Frameworks */,
 				80778A66195B161B003EF884 /* Foundation.framework in Frameworks */,
 				80778A64195B1613003EF884 /* UIKit.framework in Frameworks */,
+				800A4D721963A92800E60B8A /* Parse.framework in Frameworks */,
 				80778A62195B160C003EF884 /* CoreGraphics.framework in Frameworks */,
 				805A3241194F9AA700F213C1 /* MapKit.framework in Frameworks */,
 				805A323F194F0EA500F213C1 /* CoreLocation.framework in Frameworks */,
@@ -276,6 +303,15 @@
 		805A3209194EE13500F213C1 = {
 			isa = PBXGroup;
 			children = (
+				800A4D711963A92800E60B8A /* Parse.framework */,
+				800A4D6F1963A80200E60B8A /* SystemConfiguration.framework */,
+				800A4D6D1963A7F800E60B8A /* StoreKit.framework */,
+				800A4D6B1963A7EF00E60B8A /* Security.framework */,
+				800A4D691963A7E800E60B8A /* QuartzCore.framework */,
+				800A4D671963A7DF00E60B8A /* MobileCoreServices.framework */,
+				800A4D651963A7D600E60B8A /* libz.dylib */,
+				800A4D631963A7C700E60B8A /* CFNetwork.framework */,
+				800A4D611963A7C000E60B8A /* AudioToolbox.framework */,
 				80778A65195B161B003EF884 /* Foundation.framework */,
 				80778A63195B1613003EF884 /* UIKit.framework */,
 				80778A61195B160C003EF884 /* CoreGraphics.framework */,
@@ -830,11 +866,15 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = docbasketWeb/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "298D2547-7D91-4E6E-AA5B-59E014F023FC";
 			};
 			name = Debug;
 		};
@@ -845,11 +885,15 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = docbasketWeb/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "298D2547-7D91-4E6E-AA5B-59E014F023FC";
 			};
 			name = Release;
 		};

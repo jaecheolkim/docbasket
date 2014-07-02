@@ -19,8 +19,17 @@
 @import AVFoundation;
 #import "SCShapeView.h"
 
-@interface SCViewController () <AVCaptureMetadataOutputObjectsDelegate> {
+@interface SCViewController () <AVCaptureMetadataOutputObjectsDelegate>
+{
+    AVCaptureSession *captureSession;
+    AVCaptureDevice *device;
+    AVCaptureDeviceInput *input;
+    AVCaptureMetadataOutput *metadataOutput;
+    
     AVCaptureVideoPreviewLayer *_previewLayer;
+    
+    BOOL running;
+    
     SCShapeView *_boundingBox;
     NSTimer *_boxHideTimer;
     UILabel *_decodedMessage;
@@ -42,29 +51,30 @@
     self.title = @"QRScanner";
     
     // Create a new AVCaptureSession
-    AVCaptureSession *session = [[AVCaptureSession alloc] init];
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    NSError *error = nil;
+    captureSession = [[AVCaptureSession alloc] init];
     
+    device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+ 
     // Want the normal device
-    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
+    NSError *error = nil;
+    input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     
     if(input) {
         // Add the input to the session
-        [session addInput:input];
+        [captureSession addInput:input];
     } else {
         NSLog(@"error: %@", error);
         return;
     }
     
-    AVCaptureMetadataOutput *output = [[AVCaptureMetadataOutput alloc] init];
+    metadataOutput = [[AVCaptureMetadataOutput alloc] init];
     // Have to add the output before setting metadata types
-    [session addOutput:output];
+    [captureSession addOutput:metadataOutput];
     // What different things can we register to recognise?
-    NSLog(@"%@", [output availableMetadataObjectTypes]);
+    NSLog(@"%@", [metadataOutput availableMetadataObjectTypes]);
     
-    NSArray *metadataObjectTypes = [output availableMetadataObjectTypes];
-    [output setMetadataObjectTypes:metadataObjectTypes];
+//    NSArray *metadataObjectTypes = [metadataOutput availableMetadataObjectTypes];
+//    [metadataOutput setMetadataObjectTypes:metadataObjectTypes];
     
 //    NSArray *metadataObjectTypes = @[
 //    AVMetadataObjectTypeUPCECode, AVMetadataObjectTypeCode39Code, AVMetadataObjectTypeCode39Mod43Code, AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code,
@@ -75,10 +85,10 @@
 
 
     // This VC is the delegate. Please call us on the main queue
-    [output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+    [metadataOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
     
     // Display on screen
-    _previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:session];
+    _previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:captureSession];
     _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     _previewLayer.bounds = self.view.bounds;
     _previewLayer.position = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
@@ -100,8 +110,37 @@
     [self.view addSubview:_decodedMessage];
     
     // Start the AVSession running
-    [session startRunning];
+//    [captureSession startRunning];
+    
+    //[self startRunning];
 }
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self startRunning];
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self stopRunning];
+}
+
+
+
+- (void)startRunning {
+    if (running) return;
+    [captureSession startRunning];
+    metadataOutput.metadataObjectTypes = metadataOutput.availableMetadataObjectTypes;
+    running = YES;
+}
+- (void)stopRunning {
+    if (!running) return;
+    [captureSession stopRunning];
+    running = NO;
+}
+
+
 
 #pragma mark - AVCaptureMetadataOutputObjectsDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection

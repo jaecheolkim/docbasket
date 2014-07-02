@@ -17,4 +17,6 @@
 
 @interface DBCommonViewController : UIViewController
 
+- (void)handleTakePhotoButtonPressed:(id)sender;
+
 @end

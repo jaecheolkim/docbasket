@@ -89,10 +89,13 @@
 
 
 - (NSString *)subtitle {
-	return [NSString stringWithFormat: @"Lat: %.4F, Lon: %.4F, Rad: %.1fm", coordinate.latitude, coordinate.longitude, radius];	
+	return [NSString stringWithFormat: @" %.4F / %.4F / %.1fm", coordinate.latitude, coordinate.longitude, radius];	
 }
 
-
+- (void)hide
+{
+    
+}
 
 
 

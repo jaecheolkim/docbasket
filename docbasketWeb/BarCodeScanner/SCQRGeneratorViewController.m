@@ -18,7 +18,9 @@
 {
     [super viewDidLoad];
     
-    CIImage *qrCode = [self createQRForString:self.basketID];
+    self.title = self.basket.title;
+    
+    CIImage *qrCode = [self createQRForString:self.basket.basketID];
     
     // Convert to an UIImage
     UIImage *qrCodeImg = [self createNonInterpolatedUIImageFromCIImage:qrCode withScale:2*[[UIScreen mainScreen] scale]];

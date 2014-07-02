@@ -8,6 +8,7 @@
 
 #import "DBListViewController.h"
 #import "SCQRGeneratorViewController.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface DBListViewController ()
 
@@ -58,10 +59,24 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     
-    Docbasket *cellData = [GVALUE.baskets objectAtIndex:indexPath.row];
-    if(!IsEmpty(cellData)){
+    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    if(!IsEmpty(basket)){
         cell.textLabel.font = [UIFont systemFontOfSize:12.0];
-        cell.textLabel.text = cellData.title;
+        cell.textLabel.text = basket.title;
+        
+        NSString *image = basket.image;
+        if(!IsEmpty(image)){
+            NSString *MyURL = [NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
+            if(!IsEmpty(MyURL)){
+               
+                UIImageView *imgView = [[UIImageView alloc] init];
+                [imgView setImageWithURL:[NSURL URLWithString:MyURL] placeholderImage:nil];
+                //cell.imageView = imgView ;
+            }
+            
+        }
+        
+        
         cell.textLabel.numberOfLines = 4;
     }
     
@@ -79,11 +94,12 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    Docbasket *cellData = [GVALUE.baskets objectAtIndex:indexPath.row];
-    if(!IsEmpty(cellData)){
+    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    if(!IsEmpty(basket)){
         
         SCQRGeneratorViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"SCQRGeneratorViewController"];
-        viewcontroller.basketID = cellData.basketID;
+        viewcontroller.basketID = basket.basketID;
+        viewcontroller.basket = basket;
         
         [self.navigationController pushViewController:viewcontroller animated:YES];
 

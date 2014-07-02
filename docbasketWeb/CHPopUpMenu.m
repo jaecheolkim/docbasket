@@ -45,16 +45,15 @@
     return [self initWithFrame:frame direction:0 iconArray:nil];
 }
 
-- (id) initWithFrame:(CGRect)frame direction:(CGFloat)directionInRadians iconArray:(NSArray *)icons{
-    
-    self = [super initWithFrame:frame];
+- (id) initWithFrame:(CGRect)frame direction:(CGFloat)directionInRadians iconArray:(NSArray *)icons
+{
+     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
         self._isMenuPresented = NO;
         _direction = directionInRadians;
         self.icons = [[NSArray alloc]initWithArray:icons];
-        
-        
+ 
         [self addSubview:({
             _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plus.png"]];
             _imageView.frame = self.bounds;
@@ -71,8 +70,7 @@
                 
                 CGRect frame = CGRectMake(self.bounds.size.width/2 - CHPpopUpMenuItemSize/2, self.bounds.size.height/2 - CHPpopUpMenuItemSize/2, CHPpopUpMenuItemSize, CHPpopUpMenuItemSize);
                 PopButtonImageView *button = [[PopButtonImageView alloc] initWithFrame:frame withImage:iconImage];
-                
-                //[button setImage:iconImage];
+
                 button.tag = buttonCount;
                 
                 buttonCount ++;
@@ -90,7 +88,8 @@
 }
 
 
-- (void) controlPressed {
+- (void) controlPressed
+{
     if (self._isMenuPresented) {
         [self dismissSubMenu];
     }
@@ -107,7 +106,8 @@
     NSLog(@"Button clicked %d", (int)button.tag);
 }
 
-- (void) presentSubMenu {
+- (void) presentSubMenu
+{
     self._isMenuPresented = YES;
 
     int nIcons = (int)[self.icons count];
@@ -153,10 +153,11 @@
 }
 
 
-- (void)dismissSubMenu {
+- (void)dismissSubMenu
+{
     self._isMenuPresented = NO;
     int iconNumber = 0;
-    int nIcons = [self.icons count];
+    int nIcons = (int)[self.icons count];
 
     CHAnimation *degree = [CHAnimation new];
     degree.fromValue = @M_PI;
@@ -168,7 +169,8 @@
     [_imageView.layer ch_addAnimation:degree forKey:@"degree1"];
     
     
-    for (PopButtonImageView *icon in _iconViews) {
+    for (PopButtonImageView *icon in _iconViews)
+    {
         CHAnimation *alpha = [CHAnimation new];
         alpha.toValue = @0.0;
         alpha.fromValue = @1.0;
@@ -196,7 +198,8 @@
     }
 }
 
-- (CGFloat) angleForIcon:(int)iconNumber numberOfIcons:(int)nIcons {
+- (CGFloat) angleForIcon:(int)iconNumber numberOfIcons:(int)nIcons
+{
     CGFloat interSpace = M_PI_4;
     CGFloat totalAngle = (nIcons -1) * interSpace;
     CGFloat startAngle = _direction - totalAngle/2;

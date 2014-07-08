@@ -18,5 +18,6 @@
 @interface DBCommonViewController : UIViewController
 
 - (void)handleTakePhotoButtonPressed:(id)sender;
+- (UIImage*)rescaleImage:(UIImage*)image toSize:(CGSize)newSize;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 
 #define GVALUE              [GlobalValue sharedInstance]
 
@@ -34,6 +35,13 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, strong) NSArray *baskets;
 @property (nonatomic) BOOL START_LOGIN;
 @property (nonatomic) BOOL FIND_USERID;
+
+@property (nonatomic, assign) double longitude;
+@property (nonatomic, assign) double latitude;
+
+@property (nonatomic, assign) CLLocationCoordinate2D screenCenterCoordinate2D;
+@property (nonatomic, strong) CLLocation *screenCenterLocation;
+@property (nonatomic, assign) CLLocationCoordinate2D currentCoordinate;
 
 +(GlobalValue*)sharedInstance;
 

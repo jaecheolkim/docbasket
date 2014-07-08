@@ -27,6 +27,10 @@
 #import "UIRefreshControl+AFNetworking.h"
 #import "UIAlertView+AFNetworking.h"
 
+#import "AFDownloadRequestOperation.h"
+
+#import "DBUtil.h"
+
 
 static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 
@@ -63,48 +67,97 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 }
 
 
-- (void)getJSONFromAFHTTP
++ (void)checkNewDocBaskets:(CLLocation *)currentLocation completionHandler:(void (^)(BOOL success))block
 {
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"bearer" password:@"61410252b906e22f2fdbbc06e43ea1ec10ce472eb92c1cdcc2c5c1bbfe5ad752"];
 
-    [manager GET:@"http://docbasket.com/baskets.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
+    NSDictionary *param = nil;
+    
+    // 위치값이 없을 때는 전체 닥바스켓 리스트 가져온다.
+    if(!IsEmpty(currentLocation)){
+        double longitude = currentLocation.coordinate.longitude;
+        double latitude = currentLocation.coordinate.latitude;
+        param = @{@"longitude":@(longitude), @"latitude":@(latitude), @"radius":@(10000)};
+    }
+    
+    [[DocbaketAPIClient sharedClient] GET:@"baskets.json" parameters:param success:^(NSURLSessionDataTask * __unused task, id JSON) {
         NSUInteger count = 0;
-        if(!IsEmpty(responseObject)) {
-            for(id basket in responseObject){
-                if([basket isKindOfClass:[NSDictionary class]]) {
-                    NSLog(@"basket %d : %@", (int)count, basket);
-                    NSLog(@"begin_at : %@", NSStringFromClass([basket[@"begin_at"] class]));
-                    NSLog(@"end_at : %@", NSStringFromClass([basket[@"end_at"] class]));
-                    NSLog(@"description : %@", NSStringFromClass([basket[@"description"] class]));
-                    NSLog(@"id : %@", NSStringFromClass([basket[@"id"] class]));
-                    NSLog(@"latitude : %@", NSStringFromClass([basket[@"latitude"] class]));
-                    NSLog(@"longitude : %@", NSStringFromClass([basket[@"longitude"] class]));
-                    NSLog(@"permission : %@", NSStringFromClass([basket[@"permission"] class]));
-                    NSLog(@"poi_id : %@", NSStringFromClass([basket[@"poi_id"] class]));
-                    NSLog(@"poi_title : %@", NSStringFromClass([basket[@"poi_title"] class]));
-                    NSLog(@"range : %@", NSStringFromClass([basket[@"range"] class]));
-                    NSLog(@"title : %@", NSStringFromClass([basket[@"title"] class]));
-                    NSLog(@"url : %@", NSStringFromClass([basket[@"url"] class]));
-                    NSLog(@"user_id : %@", NSStringFromClass([basket[@"user_id"] class]));
+        if(!IsEmpty(JSON)) {
+            //NSLog(@"JSON : %@", JSON);
+            
+            NSMutableArray *mutableBaskets = [NSMutableArray arrayWithCapacity:[JSON count]];
+            for(id attributes in JSON){
+                if([attributes isKindOfClass:[NSDictionary class]]) {
                     
+                    Docbasket *basket = [[Docbasket alloc] initWithAttributes:attributes];
+                    [mutableBaskets addObject:basket];
+
                 }
                 
                 count++;
             }
+            
+            if (block) {
+                [GVALUE setBaskets:mutableBaskets];
+                
+                block(YES);
+            }
+            
+        } else {
+            if (block) {
+                block(NO);
+            }
         }
         
-        //NSLog(@"Class name : %@  || count = %d", NSStringFromClass([responseObject class]), (int)[responseObject count]);
-        //NSLog(@"JSON : %@ ",  responseObject[0] );
-        //NSLog(@"id: %@ ",  responseObject[0][@"id"] );
-        //NSLog(@"JSON: %@", responseObject);
-        
-        
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
+    } failure:^(NSURLSessionDataTask *__unused task, NSError *error) {
+        if (block) {
+            block(NO);
+        }
     }];
+
+    
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//    [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"bearer" password:@"61410252b906e22f2fdbbc06e43ea1ec10ce472eb92c1cdcc2c5c1bbfe5ad752"];
+//
+//    double longitude = currentLocation.coordinate.longitude;
+//    double latitude = currentLocation.coordinate.latitude;
+//    
+//    NSDictionary *param = nil;//@{@"longitude":@(longitude), @"latitude":@(latitude), @"radius":@(1000)};
+//    [manager GET:@"http://docbasket.com/baskets.json" parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        
+//        NSUInteger count = 0;
+//        if(!IsEmpty(responseObject)) {
+//            NSLog(@"JSON : %@", responseObject);
+//            
+//            NSMutableArray *mutableBaskets = [NSMutableArray arrayWithCapacity:[responseObject count]];
+//            for(id attributes in responseObject){
+//                if([attributes isKindOfClass:[NSDictionary class]]) {
+//                    
+//                    Docbasket *basket = [[Docbasket alloc] initWithAttributes:attributes];
+//                    [mutableBaskets addObject:basket];
+//                    
+//                    
+//                }
+//                
+//                count++;
+//            }
+//            
+//            if (block) {
+//                [GVALUE setBaskets:mutableBaskets];
+//                
+//                block(YES);
+//            }
+//            
+//        } else {
+//            if (block) {
+//               block(NO);
+//            }
+//        }
+//        
+//        
+//        
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        NSLog(@"Error: %@", error);
+//    }];
     
 }
 
@@ -201,61 +254,322 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
     }];
 }
 
-+ (void)postUserTracking {
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-   // [manager setParameterEncoding:AFJSONParameterEncoding];
++ (void)postUserTracking:(NSDictionary *)parameters {
+    // [manager setParameterEncoding:AFJSONParameterEncoding];
     //http://docbasket.com/users/32ea57d6-6f0e-4902-817a-544cae7cc189/heartbeat.json
-    NSString *UserID = @"bb5774c9-2c4e-41d0-b792-530e295e1ca6";
-    NSString *URL = [NSString stringWithFormat:@"%@%@%@", @"http://docbasket.com/users/", UserID, @"/heartbeat.json"];
+
     
-    NSDictionary *trackingInfo = @{@"longitude":@(127.00000001), @"latitude": @(37.0000001), @"tracked_at": @"2014-06-23 02:12:36.502347"};
+    NSString *UserID = GVALUE.userID; // @"bb5774c9-2c4e-41d0-b792-530e295e1ca6";
     
-    NSDictionary *params = @{@"trackings" : @[trackingInfo,] };
-    [manager POST:URL parameters:params
-          success:^(AFHTTPRequestOperation *operation, id responseObject)
-     {
-         NSLog(@"JSON: %@", responseObject);
+    if(!IsEmpty(UserID) && !IsEmpty(parameters)) {
+        NSString *URL = [NSString stringWithFormat:@"%@%@%@", @"http://docbasket.com/users/", UserID, @"/heartbeat.json"];
+
+        double longitude = (IsEmpty(parameters[@"longitude"])) ? 0 : [parameters[@"longitude"] doubleValue];
+        double latitude =  (IsEmpty(parameters[@"latitude"])) ? 0 : [parameters[@"latitude"] doubleValue];
+        
+        if(!(longitude == 0 && latitude == 0)) {
+            
+            NSDate *today = [NSDate date];
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];//]@"yyyyMMdd"];//@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"
+            NSString *timestamp = [formatter stringFromDate:today];
+
+            
+            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+            manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    
+            NSDictionary *trackingInfo = @{@"longitude":@(longitude), @"latitude": @(latitude), @"tracked_at": timestamp};
+            
+            NSDictionary *params = @{@"trackings" : @[trackingInfo,] };
+            [manager POST:URL parameters:params
+                  success:^(AFHTTPRequestOperation *operation, id responseObject)
+             {
+                 NSLog(@"JSON: %@", responseObject);
+             }
+                  failure:
+             ^(AFHTTPRequestOperation *operation, NSError *error) {
+                 NSLog(@"Error: %@", error);
+             }];
+
+        }
      }
-          failure:
-     ^(AFHTTPRequestOperation *operation, NSError *error) {
-         NSLog(@"Error: %@", error);
-     }];
+
 
 }
 
-+ (void)createBasket {
+
+//NSDictionary *parameters = @{@"user_id": UserID, @"basket[title]": @"테스트", @"basket[longitude]": @(127.00000001), @"basket[latitude]": @(37.0000001), @"files" : arrayFilesData};
+
++ (void)getBasketInfo:(NSString*)basketID completionHandler:(void (^)(NSDictionary *result))block
+{
     
+    NSString *token = GVALUE.token;
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    if(!IsEmpty(token)) {
+        [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"bearer" password:token];
+    }
+    
+    //http://docbasket.com/baskets/a5741eba-d943-4c07-970f-dfc6f86df0d1.json
+    
+    NSString *baseURL = [NSString stringWithFormat:@"http://docbasket.com/baskets/%@.json", basketID];
+    [manager GET:baseURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
+    {
+        if(!IsEmpty(responseObject))
+        {
+            NSLog(@"JSON: %@", responseObject);
+            block(responseObject);
+        }
+    }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error)
+    {
+        NSLog(@"Error: %@", error);
+        block(nil);
+    }];
+}
+
+
+//+ (void)getZipBasket
+//{
+//     NSString *url = @"http://d93564098306bf104b0a-08a7db9a8bc7bb0993d1bb9ea1fa4fbb.r55.cf6.rackcdn.com/Seoul.zip";
+    //[DocbaketAPIClient performDownload:url];
+    
+//    NSString *token = GVALUE.token;
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//    
+//    if(!IsEmpty(token)) {
+//        [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"bearer" password:token];
+//    }
+//    
+//    //http://docbasket.com/baskets/a5741eba-d943-4c07-970f-dfc6f86df0d1.json
+//    
+//    NSString *baseURL = @"http://d93564098306bf104b0a-08a7db9a8bc7bb0993d1bb9ea1fa4fbb.r55.cf6.rackcdn.com/Seoul.zip";
+//    [manager GET:baseURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
+//     {
+//         if(!IsEmpty(responseObject))
+//         {
+//             NSLog(@"response: %@", responseObject);
+//             //block(responseObject);
+//         }
+//     }
+//         failure:^(AFHTTPRequestOperation *operation, NSError *error)
+//     {
+//         NSLog(@"Error: %@", error);
+//         //block(nil);
+//     }];
+
+//}
+
+
+#pragma mark - download & unzip
+
++ (void)performDownload:(NSString *)url completionHandler:(void (^)(id result))block
+{
+    
+    //다운로드 Path
+    NSString *downloadPath = [[DBUtil getCacheDirectory] stringByAppendingPathComponent:[NSString stringWithFormat:@"temp.zip"]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+    
+    AFDownloadRequestOperation *fileDownOperation = [[AFDownloadRequestOperation alloc] initWithRequest:request
+                                                                 targetPath:downloadPath
+                                                               shouldResume:NO];
+    
+    //__weak id weakSelf = self;
+    [fileDownOperation setProgressiveDownloadProgressBlock:^(AFDownloadRequestOperation *operation,
+                                                             NSInteger bytesRead,
+                                                             long long totalBytesRead,
+                                                             long long totalBytesExpected,
+                                                             long long totalBytesReadForFile,
+                                                             long long totalBytesExpectedToReadForFile) {
+        //code
+        NSLog(@"bytesRead : %d", (int)bytesRead);
+        NSLog(@"totalBytesRead : %lld", totalBytesRead);
+        NSLog(@"totalBytesExpected : %lld", totalBytesExpected);
+        NSLog(@"totalBytesReadForFile : %lld", totalBytesReadForFile);
+        NSLog(@"totalBytesExpectedToReadForFile : %lld", totalBytesExpectedToReadForFile);
+        
+        //        CGFloat progress = ((CGFloat)totalBytesRead / (CGFloat)[fileSize floatValue]) * 100.0f;
+        CGFloat progress = ((CGFloat)totalBytesRead / (CGFloat)totalBytesExpected) * 100.0f;
+        NSLog(@">>>progress : %f",progress);
+        
+        //[weakSelf setProgress:progress animated:YES];
+        
+    }];
+    
+    [fileDownOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"다운로드 성공 : %@", responseObject);
+        
+        block(responseObject);
+
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"다운로드 실패 : %@", error);
+        
+        block(nil);
+        
+    }];
+
+    [fileDownOperation start];
+}
+
+
++ (void)getZipBasket:(void (^)(id result))block
+{
+    NSString *token = GVALUE.token;
+    double latitude = 37.5446;// GVALUE.latitude;
+    double longitude = 126.9722;// GVALUE.longitude;
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *UserID = @"bb5774c9-2c4e-41d0-b792-530e295e1ca6";
-    NSDictionary *parameters = @{@"user_id": UserID, @"basket[title]": @"테스트", @"basket[longitude]": @(127.00000001), @"basket[latitude]": @(37.0000001)};
     
-    //NSURL *filePath = [NSURL fileURLWithPath:@"file://path/to/image.png"];
-    [manager POST:@"http://docbasket.com/baskets.json" parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
+    if(!IsEmpty(token)) {
+        [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"bearer" password:token];
+    }
+    NSString *baseURL = [NSString stringWithFormat:@"http://docbasket.com/api/packages.json?latitude=%f&longitude=%f", latitude, longitude];
+    [manager GET:baseURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
      {
-         //[formData appendPartWithFileURL:filePath name:@"image" error:nil];
-         
-         NSData *imageData = UIImagePNGRepresentation([UIImage imageNamed:@"RemoveRegion"]);
-         
-         [formData appendPartWithFileData:imageData name:@"documents[file][]" fileName:[NSString stringWithFormat:@"upload.png"] mimeType:@"image/png"];
-         [formData appendPartWithFileData:imageData name:@"documents[file][]" fileName:[NSString stringWithFormat:@"abc%d.png",1] mimeType:@"image/png"];
-         [formData appendPartWithFileData:imageData name:@"documents[file][]" fileName:[NSString stringWithFormat:@"abc%d.png",2] mimeType:@"image/png"];
- 
-         NSError* err;
-         NSURL *movieURL = [NSURL URLWithString:@"http://movietrailers.apple.com/movies/disney/planesfireandrescue/planesandrescue-tlr4_480p.mov"];
-         
-         [formData appendPartWithFileURL:movieURL name:@"documents[file][]" fileName:[NSString stringWithFormat:@"video.mov"] mimeType:@"video/quicktime" error:&err];
-         
-         NSLog(@"video error : %@", err);
-//          NSError* err;
-//          [formData appendPartWithFileURL:[NSURL fileURLWithPath:filePathToUpload] name:[fileInfo objectForKey:@"fileName"] error:&err];
+         if(!IsEmpty(responseObject))
+         {
+             NSLog(@"response: %@", responseObject);
+             // 도시가 나를 중심으로 여러개 걸칠 수 있으므로 배열로 시티정보가 넘어오면
+             // 이를 하나씩 url 추출해서 DB에 저장
+             
+             NSMutableArray *array = [NSMutableArray array];
+             __block int counter = (int)[responseObject count];
+             for(NSDictionary *city in responseObject)
+             {
+                 
+                 NSString *url = city[@"url"];  //왜 배열로 넘어오지?
+                 
+                 [DocbaketAPIClient performDownload:url completionHandler:^(id result) {
+                     
+                     if(!IsEmpty(result)){
+                         
+                         if([result isKindOfClass:[NSString class]] ) {
+                             
+                             NSString *downPath = (NSString*)result;
+                             
+                             NSString *cacheDir =[DBUtil getCacheFilePath:@"temp"];
+                             [DBUtil unzip:downPath withUnzipPath:cacheDir];
+                             [DBUtil deleteZipFile:downPath];
+                             
+                             NSString *fileName = [[url lastPathComponent] stringByDeletingPathExtension];
+                             //NSString *extention = [url pathExtension];
+                             //NSString *dataPath = [NSString stringWithFormat:@"%@/Seoul.json",cacheDir];
+                             NSString *dataPath = [NSString stringWithFormat:@"%@/%@.json",cacheDir, fileName];
 
-     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         NSLog(@"Success: %@", responseObject);
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                             NSData* data = [NSData dataWithContentsOfFile:dataPath];
+                             __autoreleasing NSError* error = nil;
+                             NSDictionary *jsonData = [NSJSONSerialization JSONObjectWithData:data
+                                                                                      options:kNilOptions error:&error];
+
+                             [array addObject:jsonData];
+                         }
+                         
+                     } else {
+
+                     }
+                     
+                     counter--;
+                     if(counter == 0) {
+                         block(array);
+                     }
+                     
+                 }];
+
+             }
+         }
+     }
+         failure:^(AFHTTPRequestOperation *operation, NSError *error)
+     {
          NSLog(@"Error: %@", error);
+         block(nil);
      }];
+
+    
+    
+    
+    
+//    //http://docbasket.com/api/packages.json?latitude=37.56863031268756&longitude=126.98216915130615
+//    
+//    NSString *url = @"http://d93564098306bf104b0a-08a7db9a8bc7bb0993d1bb9ea1fa4fbb.r55.cf6.rackcdn.com/Seoul.zip";
+//    
+//    [DocbaketAPIClient performDownload:url completionHandler:^(id result) {
+//        
+//        if(!IsEmpty(result)){
+//            
+//            if([result isKindOfClass:[NSString class]] ) {
+//                
+//                NSString *downPath = (NSString*)result;
+//                
+//                NSString *cacheDir =[DBUtil getCacheFilePath:@"temp"];
+//                [DBUtil unzip:downPath withUnzipPath:cacheDir];
+//                [DBUtil deleteZipFile:downPath];
+//                
+//                NSData* data = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/Seoul.json",cacheDir]];
+//                __autoreleasing NSError* error = nil;
+//                NSDictionary *jsonData = [NSJSONSerialization JSONObjectWithData:data
+//                                                                       options:kNilOptions error:&error];
+//                
+//                
+//                
+//                block(jsonData);
+//            }
+//
+//            
+//        } else {
+//            
+//            block(nil);
+//        }
+//    }];
+}
+
+
++ (void)createBasket:(NSDictionary*)parameters completionHandler:(void (^)(NSDictionary *result))block
+{
+    
+    NSString *UserID = parameters[@"user_id"]; // GVALUE.userID ||  @"bb5774c9-2c4e-41d0-b792-530e295e1ca6";
+    if(!IsEmpty(UserID)){
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager POST:@"http://docbasket.com/baskets.json" parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
+        {
+
+            NSArray *files = parameters[@"files"];
+            if(!IsEmpty(files)){
+                int count = 0;
+                for(id file in files){
+                    if ([file isKindOfClass:[UIImage class]])
+                    {
+                        //NSData *imageData = UIImagePNGRepresentation((UIImage *)file);
+                        NSData *imageData = UIImageJPEGRepresentation((UIImage *)file, 0.82);
+                        NSString *fileName = [NSString stringWithFormat:@"Image%d.jpg", count];
+                        [formData appendPartWithFileData:imageData name:@"documents[file][]" fileName:fileName mimeType:@"image/jpeg"];
+                        count++;
+                    }
+                }
+                
+//                NSError* err;
+//                NSURL *movieURL = [NSURL URLWithString:@"http://movietrailers.apple.com/movies/disney/planesfireandrescue/planesandrescue-tlr4_480p.mov"];
+//                
+//                [formData appendPartWithFileURL:movieURL name:@"documents[file][]" fileName:[NSString stringWithFormat:@"video.mov"] mimeType:@"video/quicktime" error:&err];
+//                
+//                NSLog(@"video error : %@", err);
+            }
+
+            
+            
+         } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             block(responseObject);
+             NSLog(@"Success: %@", responseObject);
+         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             block(nil);
+             NSLog(@"Error: %@", error);
+         }];
+        
+
+    } else {
+        
+        // Alert no user information.
+        NSLog(@"Error: no user information");
+    }
     
     
     

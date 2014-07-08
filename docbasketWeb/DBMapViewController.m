@@ -11,10 +11,14 @@
 #import "RegionAnnotationView.h"
 #import "UIButton+WebCache.h"
 #import "CHPopUpMenu.h"
+#import "DocbasketService.h"
 
 @interface DBMapViewController ()
 {
-    CLLocationCoordinate2D currentCoordinate;
+//    CLLocationCoordinate2D screenCenterCoordinate2D;
+//    CLLocation *screenCenterLocation;
+    
+//    CLLocationCoordinate2D currentCoordinate;
     CGRect screenFrame;
     BOOL isChangingScreen;
     CHPopUpMenu *popUp;
@@ -40,9 +44,11 @@
     
     isChangingScreen = YES;
 
-    currentCoordinate = [DBKLOCATION getCurrentCoordinate];
  
     self.mapView.showsUserLocation=YES;
+    self.mapView.camera.altitude = 200;
+    self.mapView.camera.pitch = 70;
+    self.mapView.showsBuildings = YES;
   
     self.basketPin.hidden = YES;
     
@@ -66,10 +72,14 @@
     NSLog(@"Navi frame = %@", NSStringFromCGRect(self.navigationController.navigationBar.frame));
     
     
-    [self refreshMap];
+    //[self refreshMap];
     [self goCurrent];
     
     isChangingScreen = NO;
+    
+    
+    
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -84,6 +94,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MapViewEventHandler:)
                                                  name:@"MapViewEventHandler" object:nil];
+    
+    [self refreshMap];
 
     
 
@@ -172,7 +184,7 @@
             if([ext isEqualToString:@"png"] || [ext isEqualToString:@"PNG"] ||
                [ext isEqualToString:@"jpg"] || [ext isEqualToString:@"JPG"] ){
                 
-                MyURL = [NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
+                MyURL = image;//[NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
 //                icon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:MyURL]]];
 
             }
@@ -285,6 +297,9 @@
     self.basketPin.hidden = ! self.basketPin.hidden;
     popUp.hidden =  ! popUp.hidden;
     
+    
+    [self handleTakePhotoButtonPressed:nil];
+    
 }
 
 
@@ -356,16 +371,17 @@
     }
 }
 
+
 -(void)catchCurrentCenterAddress:(void (^)(bool find))block
 {
     CGPoint interestPoint = CGPointMake(self.basketPin.center.x, self.basketPin.center.y + self.basketPin.frame.size.height /2) ;
     
-    CLLocationCoordinate2D coord= [_mapView convertPoint:interestPoint toCoordinateFromView:_mapView];
-    NSLog(@"screen Point : %@  / lat : %f / long : %f", NSStringFromCGPoint(interestPoint), coord.latitude, coord.longitude);
+    GVALUE.screenCenterCoordinate2D = [_mapView convertPoint:interestPoint toCoordinateFromView:_mapView];
+    NSLog(@"screen Point : %@  / lat : %f / long : %f", NSStringFromCGPoint(interestPoint), GVALUE.screenCenterCoordinate2D.latitude, GVALUE.screenCenterCoordinate2D.longitude);
     
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
+    GVALUE.screenCenterLocation = [[CLLocation alloc] initWithLatitude:GVALUE.screenCenterCoordinate2D.latitude longitude:GVALUE.screenCenterCoordinate2D.longitude];
     
-    [DBKLocationManager reverseGeocodeLocation:location completionHandler:^(NSString *address) {
+    [DBKLocationManager reverseGeocodeLocation:GVALUE.screenCenterLocation completionHandler:^(NSString *address) {
         
         [_addressInfo setTitle:address forState:UIControlStateNormal];
         
@@ -377,8 +393,10 @@
 
 - (void)goCurrent
 {
-    currentCoordinate = [DBKLOCATION getCurrentCoordinate];
-    [self.mapView setRegion:MKCoordinateRegionMake(currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
+    GVALUE.currentCoordinate = [DBKLOCATION getCurrentCoordinate];
+    GVALUE.screenCenterCoordinate2D = GVALUE.currentCoordinate;
+
+    [self.mapView setRegion:MKCoordinateRegionMake(GVALUE.currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
 }
 
 - (void)hideAllAnnotations
@@ -427,43 +445,6 @@
             [_mapView addAnnotation:myRegionAnnotation];
          }
     }
-    
-    
-
-//    NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
-//    for(CLCircularRegion *oldregion in regions){
-//        [[DBKLocationManager sharedInstance] stopMonitoringRegion:oldregion];
-//    }
-//
-//    [DocbaketAPIClient loadDocBaskets:^(BOOL success){
-//        if(success){
-//            dispatch_async(dispatch_get_main_queue(), ^(void) {
-//
-//                NSLog(@"Basket count = %d", (int)[GVALUE.baskets count]);
-//                
-//                for(Docbasket *basket in GVALUE.baskets){
-//                    if(!IsEmpty(basket)){
-//                        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
-//                        [[DBKLocationManager sharedInstance] makeNewRegionMonitoring:coord withID:basket.basketID withMap:_mapView];
-//                    }
-//                }
-//                
-//                NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
-//
-//                NSLog(@"->Load %d regions : %@", (int)regions.count, regions );
-//                
-//                
-////                if (!_tableView.hidden) {
-////                    [_tableView reloadData];
-////                }
-//             });
-// 
-//
-//        } else {
-//            NSLog(@"Load Baskets : FAIL");
-//        }
-//    }];
-
 }
 
 - (void)MapViewEventHandler:(NSNotification *)notification
@@ -504,14 +485,51 @@
     
     
     
-    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"PopMenuPressed"]) {
-        
-        CGPoint point = [[[notification userInfo] objectForKey:@"touchPoint"] CGPointValue];
-        
-        NSLog(@"%@", NSStringFromCGPoint(point));
-        
-    }
+//    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"PopMenuPressed"]) {
+//        
+//        CGPoint point = [[[notification userInfo] objectForKey:@"touchPoint"] CGPointValue];
+//        
+//        NSLog(@"%@", NSStringFromCGPoint(point));
+//        
+//    }
 
 }
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+
+    UIImage *photo = info[UIImagePickerControllerOriginalImage];
+    UIImage *smallerPhoto = [self rescaleImage:photo toSize:CGSizeMake(800, 600)];
+//    NSData *jpeg = UIImageJPEGRepresentation(smallerPhoto, 0.82);
+    
+    double latitude = GVALUE.screenCenterCoordinate2D.latitude;
+    double longitude = GVALUE.screenCenterCoordinate2D.longitude;
+    
+    NSArray *arrayFilesData = @[smallerPhoto,];
+    NSString *userID = GVALUE.userID;
+    
+    NSDictionary *parameters = @{@"user_id": userID, @"basket[title]": @"울사무실", @"basket[longitude]": @(longitude), @"basket[latitude]": @(latitude), @"files" : arrayFilesData};
+
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+        [DocbaketAPIClient createBasket:parameters completionHandler:^(NSDictionary *result)
+        {
+            if(!IsEmpty(result)){
+                NSLog(@"result = %@", result);
+                
+                CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([result[@"latitude"] doubleValue], [result[@"longitude"] doubleValue]);
+                [DBKLOCATION makeNewRegionMonitoring:coord withID:result[@"id"] withMap:self.mapView];
+
+            } else {
+                NSLog(@"Error ...");
+            }
+        }];
+        
+        //[DocbaketAPIClient createBasket:parameters];
+        //        NSError *error = nil;
+        //        [_session sendData:jpeg toPeers:[_session connectedPeers] withMode:MCSessionSendDataReliable error:&error];
+    }];
+}
+
 
 @end

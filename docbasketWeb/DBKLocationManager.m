@@ -10,6 +10,16 @@
 #import "GlobalValue.h"
 #import "RegionAnnotation.h"
 #import "DocbaketAPIClient.h"
+#import "DocbasketService.h"
+
+@interface DBKLocationManager ()
+{
+    
+}
+@property (nonatomic, strong) NSTimer *timer;
+
+@end
+
 @implementation DBKLocationManager
 
 +(DBKLocationManager*)sharedInstance
@@ -18,6 +28,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         locationMgr = [[DBKLocationManager alloc] init];
+        
     });
     return locationMgr;
 }
@@ -29,6 +40,7 @@
     }
     return self;
 }
+
 
 + (void)reverseGeocodeLocation:(CLLocation *)location completionHandler:(void (^)(NSString *address))block
 {
@@ -54,24 +66,23 @@
              
              currentAddress = (!IsEmpty(Address))?Address : @"";
              
-             NSLog(@"\nCurrent Location Detected\n");
-
-             NSLog(@"Address : %@", Address);
-             NSLog(@"Area : %@", Area);
-             NSLog(@"subLocality : %@", subLocality);
-             NSLog(@"Name : %@", Name);
+//             NSLog(@"\nCurrent Location Detected\n");
+//
+//             NSLog(@"Address : %@", Address);
+//             NSLog(@"Area : %@", Area);
+//             NSLog(@"subLocality : %@", subLocality);
+//             NSLog(@"Name : %@", Name);
              
          }
          else
          {
-             NSLog(@"Geocode failed with error %@", error);
+             //NSLog(@"Geocode failed with error %@", error);
              
              currentAddress = @"";
  
          }
-         
-         
-         NSLog(@"%@",currentAddress);
+
+         //NSLog(@"%@",currentAddress);
          
          block(currentAddress);
 
@@ -84,8 +95,37 @@
     NSLog(@"didFailWithError: %@", error);
 }
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-    NSLog(@"didUpdateToLocation %@ from %@", newLocation, oldLocation);
+//- (void)locationManager:(CLLocationManager *)manager
+//      didDetermineState:(CLRegionState)state
+//              forRegion:(CLRegion *)region
+//{
+//    if ([region isEqualToString:@”Departure”]) {
+//        if (CLRegionStateOutside == state) {
+//            // TODO: notify user of departure
+//        }
+//    }
+//}
+
+
+- (void)locationManager:(CLLocationManager *)manager
+      didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
+{
+    NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
+    NSString *title = [findBasket valueForKey:@"title"];
+    
+    NSString *regionState = @"";
+    
+    switch (state) {
+        case CLRegionStateUnknown: regionState = @"Unknown"; break;
+        case CLRegionStateInside: regionState = @"Enter"; break;
+        case CLRegionStateOutside: regionState = @"Exit"; break;
+            
+        default: break;
+    }
+
+    NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, regionState];
+    
+    [DBKSERVICE pushLocalNotification:msg];
 
 }
 
@@ -94,12 +134,6 @@
 
     _currentLocation = [locations objectAtIndex:0];
     
-    [DBKLocationManager reverseGeocodeLocation:_currentLocation completionHandler:^(NSString *address) {
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
-                                                            object:self
-                                                          userInfo:@{@"Msg":@"currentAddress", @"address":address}];
-    }];
 }
 
 
@@ -204,13 +238,54 @@
     }
     
     self.locationManager.delegate = self;
+    self.locationManager.distanceFilter = kCLDistanceFilterNone;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    self.locationManager.distanceFilter = 50;
-
+ 
     [self.locationManager startUpdatingLocation];
+    
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(count) userInfo:nil repeats:YES];
 
+    self.isLocationServiceStarted = NO;
 }
 
+
+- (void)stopLocationManager
+{
+    [self.timer invalidate];
+    self.timer = nil;
+}
+
+- (void)count
+{
+    GVALUE.longitude = _currentLocation.coordinate.longitude;
+    GVALUE.latitude = _currentLocation.coordinate.latitude;
+
+    CLLocationDistance distance = [_currentLocation distanceFromLocation:_lastLocation];
+    NSLog(@"================== distance = %f", distance);
+    
+    
+    [DBKLocationManager reverseGeocodeLocation:_currentLocation completionHandler:^(NSString *address) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
+                                                            object:self
+                                                          userInfo:@{@"Msg":@"currentAddress", @"address":address}];
+    }];
+
+    
+    
+    if(fabs(distance) > 3 ){
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ServiceEventHandler"
+                                                            object:self
+                                                          userInfo:@{@"Msg":@"locationChanged", @"currentLocation":_currentLocation}];
+        
+        
+
+    }
+    //_lastLocation
+    
+
+}
 
 - (CLLocationCoordinate2D)getCurrentCoordinate
 {
@@ -265,6 +340,9 @@
                                                                       radius:50
                                                                   identifier:identifier];
         
+        newRegion.notifyOnEntry = YES;
+        newRegion.notifyOnExit = YES;
+        
         if(!IsEmpty(mapView)){
             // Create an annotation to show where the region is located on the map.
             RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
@@ -274,11 +352,18 @@
         }
 
         
-        [self startMonitoringRegion:newRegion];
+        //[self startMonitoringRegion:newRegion];
     }
 
 }
 
+- (void)cleanAllMonitoringRegions
+{
+    NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
+    for(CLRegion *region in regions){
+        [self stopMonitoringRegion:region];
+    }
+}
 
 - (void)startMonitoringRegion:(CLCircularRegion *)region
 {

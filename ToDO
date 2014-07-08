@@ -1,12 +1,53 @@
+
+========================
+- 파일 뷰어 관련 UI개발 (메모 기능 포함)
+- (중요) 도시 단위 Basket 데이터 연동 및 DB 저장 (앱 스타트 시 GZip)
+- (중요) 동적 geofence 연동 모듈 개발 20개씩 현재 위치 기반 (DB Geo query / BG work / Noti)
+- (중요) 위치정보 오차 해결 (지오펜스 쓰래기값 필터링)
+- Geofence 핀 색깔 다르게 표시 (퍼블릭 / 마이닥바스킷)
+- 마이 닥바스켓 UI 개발
+- 로컬 DB
+========================
+
+
+1. 맵뷰 / 리스트뷰
+한화면에서 보여주기
+리스트 -> 바스켓뷰 로 이동 (거리순으로 정렬 : 이미지 / 타이틀 / 거리)
+핀 -> 바스켓뷰로 이동
+
+2. 마이닥바스켓
+-> [마이바스켓 / RSVP] 분류
+
+3. 노티센터
+-> 노티 내용들이 시간순으로 정렬됨 
+-> 노티 선택시 -> 바스켓뷰로 이동
+(핀 지났을 때 노티 / 친구의 초대 노티 + 알파)
+
+4. 핀타입
+퍼블릭 : 그린
+프라이빗 : 레드
+크리에이트 : 블루
+
+
+5. 바스켓 뷰어
+-> 바스켓 정보 / 파일 리스트 / 코멘트 & 마이닥바스켓
+-> 파일 뷰어 / 코멘트 
+
+6. 백그라운드 작업
+(주기적으로 현재 위치 기준 지오펜스 리프래싱 및 노티  /  트래킹 정보 서버 동기)
+
+zip 파일은 퍼블릭 바스켓 정보만 저장되어 있고
+
+
+
+
+
 - Image Cache Lib 넣기
-
-- Docbasket 생성 
+- Docbasket 생성
 - 내 위치 이동
-
 - /baskets/:id/checkin    POST    trans_id, user_id, checkin_at, checkout_at (ISO8601)
 
 https://github.com/AFNetworking/AFOAuth2Client
-
 
 사용자 위치 트래킹 
 /users/:id/heartbeat POST latitude, longitude
@@ -46,10 +87,3 @@ Geofence 핀 색깔 다르게 표시
 
 RESideMenu
 SWTableViewCell
-
-
-
-
-
-
- 

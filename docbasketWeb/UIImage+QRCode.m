@@ -1,62 +1,32 @@
 //
-//  SCSecondViewController.m
-//  ImageFilter
+//  UIImage+QRCode.m
+//  docbasketWeb
 //
-//  Created by Sam Davies on 08/10/2013.
-//  Copyright (c) 2013 Shinobi Controls. All rights reserved.
+//  Created by jaecheol kim on 7/4/14.
+//  Copyright (c) 2014 jaecheol kim. All rights reserved.
 //
 
-#import "SCQRGeneratorViewController.h"
+#import "UIImage+QRCode.h"
+#import <CoreImage/CoreImage.h>
 
-@interface SCQRGeneratorViewController ()
+@interface UIImage ()
 
 @end
 
-@implementation SCQRGeneratorViewController
+@implementation UIImage (QRCode)
 
-- (void)viewDidLoad
+
+- (UIImage*)drawQRCode:(NSString*)msg
 {
-    [super viewDidLoad];
-    
-    self.title = self.basket.title;
-    
-    CIImage *qrCode = [self createQRForString:self.basket.basketID];
+
+    CIImage *qrCode = [self createQRForString:msg];
     
     // Convert to an UIImage
     UIImage *qrCodeImg = [self createNonInterpolatedUIImageFromCIImage:qrCode withScale:2*[[UIScreen mainScreen] scale]];
-    
-    // And push the image on to the screen
-    self.qrImageView.image = qrCodeImg;
 
-    
-	// Do any additional setup after loading the view, typically from a nib.
+    return qrCodeImg;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
-- (IBAction)handleGenerateButtonPressed:(id)sender {
-    // Disable the UI
-    [self setUIElementsAsEnabled:NO];
-    [self.stringTextField resignFirstResponder];
-
-    // Get the string
-    NSString *stringToEncode = self.stringTextField.text;
-    
-    // Generate the image
-    CIImage *qrCode = [self createQRForString:stringToEncode];
-    
-    // Convert to an UIImage
-    UIImage *qrCodeImg = [self createNonInterpolatedUIImageFromCIImage:qrCode withScale:2*[[UIScreen mainScreen] scale]];
-    
-    // And push the image on to the screen
-    self.qrImageView.image = qrCodeImg;
-    
-    // Re-enable the UI
-    [self setUIElementsAsEnabled:YES];
-}
 
 #pragma mark - Utility methods
 - (CIImage *)createQRForString:(NSString *)qrString
@@ -74,11 +44,6 @@
     return qrFilter.outputImage;
 }
 
-- (void)setUIElementsAsEnabled:(BOOL)enabled
-{
-    self.generateButton.enabled = enabled;
-    self.stringTextField.enabled = enabled;
-}
 
 - (UIImage *)createNonInterpolatedUIImageFromCIImage:(CIImage *)image withScale:(CGFloat)scale
 {
@@ -100,7 +65,7 @@
     UIImage *flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
                                                 scale:scaledImage.scale
                                           orientation:UIImageOrientationDownMirrored];
-
+    
     return flippedImage;
 }
 

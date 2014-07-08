@@ -12,8 +12,9 @@
 #import "DBKLocationManager.h"
 #import "DocbaketAPIClient.h"
 #import "Docbasket.h"
+#import "DocbasketService.h"
+
 @interface AppDelegate ()
-            
 
 @end
 
@@ -33,17 +34,16 @@
     
     [Parse setApplicationId:@"4uXSfqyezD0qo8XcooiyipZqwKJzIHkMi54IlIpV"
                   clientKey:@"34UZWTxKQrmH4L3NxP7EV0nqGbla3t90BulBvIzR"];
-    
- 
-    
-    [[DBKLocationManager sharedInstance] startLocationManager];
-    
-    [self checkNewBasket];
 
+    
+    
+    [DBKSERVICE startmanager];
+ 
     return YES;
 }
 
 
+// Parse remote push notification
 - (void)application:(UIApplication *)application
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
@@ -53,6 +53,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [currentInstallation saveInBackground];
 }
 
+// Parse remote push notification
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
@@ -90,6 +91,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
+    
+    [DBKSERVICE startmanager];
     
     [self saveContext];
 }
@@ -205,34 +208,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
 
 
-- (void)checkNewBasket
-{
-
-    [DocbaketAPIClient loadDocBaskets:^(BOOL success){
-        if(success){
-            
-            NSLog(@"Basket count = %d", (int)[GVALUE.baskets count]);
-            
-            for(Docbasket *basket in GVALUE.baskets){
-                if(!IsEmpty(basket)){
-                    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
-                    [[DBKLocationManager sharedInstance] makeNewRegionMonitoring:coord withID:basket.basketID withMap:nil];
-                }
-            }
-            
-            NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
-            NSLog(@"->Load %d regions : %@", (int)regions.count, regions );
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
-                                                                object:self
-                                                              userInfo:@{@"Msg":@"refreshMap"}];
-
-        } else {
-            NSLog(@"Load Baskets : FAIL");
-        }
-    }];
-    
-}
 
 
 #pragma mark - Application's Cookie Handler 

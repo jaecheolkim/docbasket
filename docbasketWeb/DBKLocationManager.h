@@ -17,12 +17,20 @@
 
 +(DBKLocationManager*)sharedInstance;
 
+// physical location
 @property (nonatomic, retain) CLLocationManager *locationManager;
 @property (nonatomic, retain) CLLocation *currentLocation;
+@property (nonatomic, retain) CLLocation *lastLocation;
+@property (nonatomic, assign) BOOL isLocationServiceStarted;
+//
+//// maps location
+//@property (nonatomic, assign) CLLocationCoordinate2D mapCenterCoordinate2D;
+//@property (nonatomic, retain) CLLocation *mapCenterLocation;
 
 
 
 - (void)startLocationManager;
+- (void)stopLocationManager;
 
 - (void)startMonitoringSignificantLocationChanges;
 
@@ -33,8 +41,8 @@
 - (void)makeNewRegionMonitoring:( CLLocationCoordinate2D) coord withID:(NSString*)identifier withMap:(MKMapView*)mapView;
 
 - (void)startMonitoringRegion:(CLCircularRegion *)region;
-- (void)stopMonitoringRegion:(CLCircularRegion *)region;
-
+- (void)stopMonitoringRegion:(CLRegion *)region;
+- (void)cleanAllMonitoringRegions;
 
 + (void)reverseGeocodeLocation:(CLLocation *)location completionHandler:(void (^)(NSString *address))block;
 

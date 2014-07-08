@@ -67,6 +67,7 @@
 - (void)handleTakePhotoButtonPressed:(id)sender {
     UIImagePickerController *imagePicker = [UIImagePickerController new];
     imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    imagePicker.allowsEditing = YES;
     imagePicker.delegate = self;
     [self presentViewController:imagePicker animated:YES completion:NULL];
 }
@@ -74,13 +75,13 @@
 #pragma mark - UIImagePickerControllerDelegate methods
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    UIImage *photo = info[UIImagePickerControllerOriginalImage];
-    UIImage *smallerPhoto = [self rescaleImage:photo toSize:CGSizeMake(800, 600)];
-    NSData *jpeg = UIImageJPEGRepresentation(smallerPhoto, 0.82);
-    [self dismissViewControllerAnimated:YES completion:^{
-//        NSError *error = nil;
-//        [_session sendData:jpeg toPeers:[_session connectedPeers] withMode:MCSessionSendDataReliable error:&error];
-    }];
+//    UIImage *photo = info[UIImagePickerControllerOriginalImage];
+//    UIImage *smallerPhoto = [self rescaleImage:photo toSize:CGSizeMake(800, 600)];
+//    NSData *jpeg = UIImageJPEGRepresentation(smallerPhoto, 0.82);
+//    [self dismissViewControllerAnimated:YES completion:^{
+////        NSError *error = nil;
+////        [_session sendData:jpeg toPeers:[_session connectedPeers] withMode:MCSessionSendDataReliable error:&error];
+//    }];
 }
 
 

@@ -7,7 +7,8 @@
 //
 
 #import "DBListViewController.h"
-#import "SCQRGeneratorViewController.h"
+//#import "SCQRGeneratorViewController.h"
+#import "DBBasketViewController.h"
 #import "UIImageView+AFNetworking.h"
 
 @interface DBListViewController ()
@@ -97,9 +98,13 @@
     Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
     if(!IsEmpty(basket)){
         
-        SCQRGeneratorViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"SCQRGeneratorViewController"];
-        viewcontroller.basketID = basket.basketID;
+//        SCQRGeneratorViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"SCQRGeneratorViewController"];
+//        viewcontroller.basketID = basket.basketID;
+//        viewcontroller.basket = basket;
+
+        DBBasketViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"DBBasketViewController"];
         viewcontroller.basket = basket;
+
         
         [self.navigationController pushViewController:viewcontroller animated:YES];
 

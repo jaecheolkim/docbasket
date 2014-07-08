@@ -53,7 +53,7 @@
     self.image = [attributes valueForKey:@"image_small_thumb"];
     
     //self.permission = [[attributes valueForKeyPath:@"permission"] integerValue];
-    //self.address = [attributes valueForKeyPath:@"address"];
+    self.address = [attributes valueForKeyPath:@"address"];
 
 
     
@@ -73,14 +73,15 @@
 #pragma mark -
 
 + (NSURLSessionDataTask *)getBasktesWithBlock:(void (^)(NSArray *basktes, NSError *error))block {
-    
-
-    return [[DocbaketAPIClient sharedClient] GET:@"baskets.json" parameters:nil success:^(NSURLSessionDataTask * __unused task, id JSON) {
+    double longitude = GVALUE.screenCenterCoordinate2D.longitude;
+    double latitude = GVALUE.screenCenterCoordinate2D.latitude;
+    NSDictionary *param = @{@"longitude":@(longitude), @"latitude":@(latitude), @"radius":@(10000)};
+    return [[DocbaketAPIClient sharedClient] GET:@"baskets.json" parameters:param success:^(NSURLSessionDataTask * __unused task, id JSON) {
         
         
         NSUInteger count = 0;
         if(!IsEmpty(JSON)) {
-            //NSLog(@"JSON : %@", JSON);
+            NSLog(@"JSON : %@", JSON);
             
             NSMutableArray *mutableBaskets = [NSMutableArray arrayWithCapacity:[JSON count]];
             for(id attributes in JSON){

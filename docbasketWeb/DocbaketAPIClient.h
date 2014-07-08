@@ -22,15 +22,26 @@
 
 #import <Foundation/Foundation.h>
 #import "AFHTTPSessionManager.h"
+#import <CoreLocation/CoreLocation.h>
 
 @interface DocbaketAPIClient : AFHTTPSessionManager
 
 + (instancetype)sharedClient;
 + (void)loadDocBaskets:(void (^)(BOOL success))block;
 + (void)postRegionCheck:(NSDictionary *)parameters withBasketID:(NSString*)basketID;
-+ (void)postUserTracking;
-+ (void)createBasket;
++ (void)postUserTracking:(NSDictionary *)parameters;
+
+//+ (void)createBasket:(NSDictionary*)parameters;
++ (void)createBasket:(NSDictionary*)parameters completionHandler:(void (^)(NSDictionary *result))block;
+
 + (void)Login;
 
 + (void)getBaskets;
++ (void)getZipBasket:(void (^)(id result))block;
+
++ (void)checkNewDocBaskets:(CLLocation *)currentLocation completionHandler:(void (^)(BOOL success))block;
++ (void)getBasketInfo:(NSString*)basketID completionHandler:(void (^)(NSDictionary *result))block;
+
++ (void)performDownload:(NSString *)url completionHandler:(void (^)(id result))block;
+
 @end

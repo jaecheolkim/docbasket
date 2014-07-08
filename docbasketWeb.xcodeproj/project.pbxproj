@@ -343,6 +343,17 @@
 			path = BarCodeScanner;
 			sourceTree = "<group>";
 		};
+		800BC5AE196C3F1B006D8240 /* SideMenuController */ = {
+			isa = PBXGroup;
+			children = (
+				807115E2195B30DB00E953B1 /* DEMOLeftMenuViewController.h */,
+				807115E3195B30DB00E953B1 /* DEMOLeftMenuViewController.m */,
+				807115E4195B30DB00E953B1 /* DEMORootViewController.h */,
+				807115E5195B30DB00E953B1 /* DEMORootViewController.m */,
+			);
+			name = SideMenuController;
+			sourceTree = "<group>";
+		};
 		8016E87219650FBE001C029E /* Service */ = {
 			isa = PBXGroup;
 			children = (
@@ -563,14 +574,11 @@
 		8061B02F19503C7100685336 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				800BC5AE196C3F1B006D8240 /* SideMenuController */,
 				805A321F194EE13500F213C1 /* DBMapViewController.h */,
 				805A3220194EE13500F213C1 /* DBMapViewController.m */,
 				8097679D195C1ABE0048CA13 /* DBCommonViewController.h */,
 				8097679E195C1ABE0048CA13 /* DBCommonViewController.m */,
-				807115E2195B30DB00E953B1 /* DEMOLeftMenuViewController.h */,
-				807115E3195B30DB00E953B1 /* DEMOLeftMenuViewController.m */,
-				807115E4195B30DB00E953B1 /* DEMORootViewController.h */,
-				807115E5195B30DB00E953B1 /* DEMORootViewController.m */,
 				80D08B81195939A800C17879 /* makeNewBasketViewController.h */,
 				80D08B82195939A800C17879 /* makeNewBasketViewController.m */,
 				809767A3195C7D7D0048CA13 /* DBListViewController.h */,

@@ -12,6 +12,8 @@
 #import "UIButton+WebCache.h"
 #import "CHPopUpMenu.h"
 #import "DocbasketService.h"
+#import "DBBasketViewController.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface DBMapViewController ()
 {
@@ -27,6 +29,9 @@
 @end
 
 @implementation DBMapViewController
+
+#pragma mark - ViewController
+
 - (void)awakeFromNib
 {
     
@@ -77,9 +82,9 @@
     
     isChangingScreen = NO;
     
+    self.tableView.hidden = YES;
     
-    
-    
+    [self refreshMap];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -95,7 +100,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MapViewEventHandler:)
                                                  name:@"MapViewEventHandler" object:nil];
     
-    [self refreshMap];
+    
 
     
 
@@ -138,142 +143,10 @@
 
 
 
-#pragma mark - MKMapViewDelegate
-
-- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
-{
-    NSLog(@"regionWillChangeAnimated");
-    
-    if(isChangingScreen || self.basketPin.hidden) return;
-
-    [self showNavigationBar:NO];
-    
-    
-}
-- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
-{
-    if(isChangingScreen || self.basketPin.hidden) return;
-    
-    NSLog(@"regionDidChangeAnimated");
-
-    [self catchCurrentCenterAddress:^(bool find) {
-        [self showNavigationBar:YES];
-    }];
-
-    
-}
-
-
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
-{
-    if([annotation isKindOfClass:[RegionAnnotation class]]) {
-        RegionAnnotation *currentAnnotation = (RegionAnnotation *)annotation;
-        CLCircularRegion *region = currentAnnotation.region;
-        
-        NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
-        NSString *title = [findBasket valueForKey:@"title"];
-        
-        NSString *image = [findBasket valueForKey:@"image"];
-        NSString *ext = nil;
-        UIImage *icon = [UIImage imageNamed:@"RemoveRegion"];
-        NSString *MyURL = nil;
-        
-        if(!IsEmpty(image)){
-            
-            ext = [image pathExtension];
-            if([ext isEqualToString:@"png"] || [ext isEqualToString:@"PNG"] ||
-               [ext isEqualToString:@"jpg"] || [ext isEqualToString:@"JPG"] ){
-                
-                MyURL = image;//[NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
-//                icon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:MyURL]]];
-
-            }
-        }
-        NSLog(@"%@ / %@ / ext = %@", title, image, ext);
-        
-        currentAnnotation.title = title;
-        
-        NSString *annotationIdentifier = region.identifier; //[currentAnnotation title];
-        
-        
-        RegionAnnotationView *regionView = (RegionAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
-        
-        if (!regionView) {
-            regionView = [[RegionAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
-            regionView.map = _mapView;
-            
-            // Create a button for the left callout accessory view of each annotation to remove the annotation and region being monitored.
-            UIButton *removeRegionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            [removeRegionButton setFrame:CGRectMake(0., 0., 25., 25.)];
-            if(!IsEmpty(MyURL)){
-                [removeRegionButton setImageWithURL:[NSURL URLWithString:MyURL] forState:UIControlStateNormal];
-            } else {
-                [removeRegionButton setImage:icon forState:UIControlStateNormal];
-            }
-            
-            
-            regionView.leftCalloutAccessoryView = removeRegionButton;
-        } else {
-            regionView.annotation = annotation;
-            regionView.theAnnotation = annotation;
-        }
-        
-        // Update or add the overlay displaying the radius of the region around the annotation.
-        [regionView updateRadiusOverlay];
-        
-        return regionView;
-    }
-    
-    return nil;
-}
-
-
-- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
-    if([overlay isKindOfClass:[MKCircle class]]) {
-        // Create the view for the radius overlay.
-        MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
-        circleView.strokeColor = [[UIColor grayColor] colorWithAlphaComponent:0.2];
-        circleView.fillColor = [[UIColor yellowColor] colorWithAlphaComponent:0.1];
-        
-        return circleView;
-    }
-    
-    return nil;
-}
-
-
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)annotationView didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
-    if([annotationView isKindOfClass:[RegionAnnotationView class]]) {
-        RegionAnnotationView *regionView = (RegionAnnotationView *)annotationView;
-        RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
-        
-        // If the annotation view is starting to be dragged, remove the overlay and stop monitoring the region.
-        if (newState == MKAnnotationViewDragStateStarting) {
-            [regionView removeRadiusOverlay];
-            
-            [DBKLOCATION stopMonitoringRegion:regionAnnotation.region];
-        }
-        
-        // Once the annotation view has been dragged and placed in a new location, update and add the overlay and begin monitoring the new region.
-        if (oldState == MKAnnotationViewDragStateDragging && newState == MKAnnotationViewDragStateEnding) {
-            [regionView updateRadiusOverlay];
-            
-            
-            [DBKLOCATION makeNewRegionMonitoring:regionAnnotation.coordinate withID:regionAnnotation.region.identifier withMap:self.mapView];
-        }
-    }
-}
-
-
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
-    RegionAnnotationView *regionView = (RegionAnnotationView *)view;
-    RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
-    
-    [self.mapView setRegion:MKCoordinateRegionMake(regionAnnotation.coordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
-}
 
 
 
+#pragma mark - IBOutlet
 
 - (IBAction)buttonHandler:(id)sender
 {
@@ -291,15 +164,32 @@
 //    [DocbaketAPIClient Login];
    
 //    [DocbaketAPIClient getBaskets];
+    
+    
+//////////////////////////////////////////////////////////
 
-    [self fixScreenFrame];
+//    [self fixScreenFrame];
+//    
+//    self.basketPin.hidden = ! self.basketPin.hidden;
+//    popUp.hidden =  ! popUp.hidden;
+//    
+//    
+//    [self handleTakePhotoButtonPressed:nil];
     
-    self.basketPin.hidden = ! self.basketPin.hidden;
-    popUp.hidden =  ! popUp.hidden;
+    self.mapView.hidden = !self.mapView.hidden;
+    self.tableView.hidden = !self.tableView.hidden;
     
-    
-    [self handleTakePhotoButtonPressed:nil];
-    
+    if(!self.tableView.hidden) {
+        self.addressInfo.hidden = YES;
+        self.currentButton.hidden = YES;
+        
+        self.addBasketButton.title = @"Map";
+    } else {
+        self.addressInfo.hidden = NO;
+        self.currentButton.hidden = NO;
+        
+        self.addBasketButton.title = @"List";
+    }
 }
 
 
@@ -321,6 +211,9 @@
 
 }
 
+
+
+#pragma mark - Methods
 
 - (void)fixScreenFrame
 {
@@ -447,53 +340,7 @@
     }
 }
 
-- (void)MapViewEventHandler:(NSNotification *)notification
-{
 
-    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"monitoringDidFailForRegion"]) {
-        
-        id region = [[notification userInfo] objectForKey:@"region"];
-        if(!IsEmpty(region) && [NSStringFromClass([region class]) isEqualToString:@"CLCircularRegion"]){
-            NSLog(@"Msg : %@", [[notification userInfo] objectForKey:@"Msg"]);
-            NSLog(@"region : %@", [[notification userInfo] objectForKey:@"region"]);
-
-        }
-    }
-    
-    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"currentAddress"]) {
-        
-        id address = [[notification userInfo] objectForKey:@"address"];
-        if(!IsEmpty(address)){
-            [_addressInfo setTitle:address forState:UIControlStateNormal];
-            
-        }
-    }
-    
-    
-    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"didHideMenuViewController"]) {
-        
-        [self fixScreenFrame];
-        
-    }
-    
-    
-    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"refreshMap"]) {
-        
-        [self refreshMap];
-        
-    }
-    
-    
-    
-//    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"PopMenuPressed"]) {
-//        
-//        CGPoint point = [[[notification userInfo] objectForKey:@"touchPoint"] CGPointValue];
-//        
-//        NSLog(@"%@", NSStringFromCGPoint(point));
-//        
-//    }
-
-}
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
@@ -531,5 +378,273 @@
     }];
 }
 
+#pragma mark - MapViewEventHandler
+- (void)MapViewEventHandler:(NSNotification *)notification
+{
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"monitoringDidFailForRegion"]) {
+        
+        id region = [[notification userInfo] objectForKey:@"region"];
+        if(!IsEmpty(region) && [NSStringFromClass([region class]) isEqualToString:@"CLCircularRegion"]){
+            NSLog(@"Msg : %@", [[notification userInfo] objectForKey:@"Msg"]);
+            NSLog(@"region : %@", [[notification userInfo] objectForKey:@"region"]);
+            
+        }
+    }
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"currentAddress"]) {
+        
+        id address = [[notification userInfo] objectForKey:@"address"];
+        if(!IsEmpty(address)){
+            [_addressInfo setTitle:address forState:UIControlStateNormal];
+            
+        }
+    }
+    
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"didHideMenuViewController"]) {
+        
+        [self fixScreenFrame];
+        
+    }
+    
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"refreshMap"]) {
+        
+        [self refreshMap];
+        
+    }
+    
+    
+    
+    //    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"PopMenuPressed"]) {
+    //
+    //        CGPoint point = [[[notification userInfo] objectForKey:@"touchPoint"] CGPointValue];
+    //
+    //        NSLog(@"%@", NSStringFromCGPoint(point));
+    //        
+    //    }
+    
+}
+
+
+#pragma mark - MKMapViewDelegate
+
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
+{
+    NSLog(@"regionWillChangeAnimated");
+    
+    if(isChangingScreen || self.basketPin.hidden) return;
+    
+    [self showNavigationBar:NO];
+    
+    
+}
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    if(isChangingScreen || self.basketPin.hidden) return;
+    
+    NSLog(@"regionDidChangeAnimated");
+    
+    [self catchCurrentCenterAddress:^(bool find) {
+        [self showNavigationBar:YES];
+    }];
+    
+    
+}
+
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
+{
+    if([annotation isKindOfClass:[RegionAnnotation class]]) {
+        RegionAnnotation *currentAnnotation = (RegionAnnotation *)annotation;
+        CLCircularRegion *region = currentAnnotation.region;
+        
+        NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
+        NSString *title = [findBasket valueForKey:@"title"];
+        
+        NSString *image = [findBasket valueForKey:@"image"];
+        NSString *ext = nil;
+        UIImage *icon = [UIImage imageNamed:@"RemoveRegion"];
+        NSString *MyURL = nil;
+        
+        if(!IsEmpty(image)){
+            
+            ext = [image pathExtension];
+            if([ext isEqualToString:@"png"] || [ext isEqualToString:@"PNG"] ||
+               [ext isEqualToString:@"jpg"] || [ext isEqualToString:@"JPG"] ){
+                
+                MyURL = image;//[NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
+                //                icon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:MyURL]]];
+                
+            }
+        }
+        NSLog(@"%@ / %@ / ext = %@", title, image, ext);
+        
+        currentAnnotation.title = title;
+        
+        NSString *annotationIdentifier = region.identifier; //[currentAnnotation title];
+        
+        
+        RegionAnnotationView *regionView = (RegionAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
+        
+        if (!regionView) {
+            regionView = [[RegionAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
+            regionView.map = _mapView;
+            
+            // Create a button for the left callout accessory view of each annotation to remove the annotation and region being monitored.
+            UIButton *removeRegionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [removeRegionButton setFrame:CGRectMake(0., 0., 25., 25.)];
+            if(!IsEmpty(MyURL)){
+                [removeRegionButton setImageWithURL:[NSURL URLWithString:MyURL] forState:UIControlStateNormal];
+            } else {
+                [removeRegionButton setImage:icon forState:UIControlStateNormal];
+            }
+            
+            
+            regionView.leftCalloutAccessoryView = removeRegionButton;
+        } else {
+            regionView.annotation = annotation;
+            regionView.theAnnotation = annotation;
+        }
+        
+        // Update or add the overlay displaying the radius of the region around the annotation.
+        [regionView updateRadiusOverlay];
+        
+        return regionView;
+    }
+    
+    return nil;
+}
+
+
+- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
+    if([overlay isKindOfClass:[MKCircle class]]) {
+        // Create the view for the radius overlay.
+        MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
+        circleView.strokeColor = [[UIColor grayColor] colorWithAlphaComponent:0.2];
+        circleView.fillColor = [[UIColor yellowColor] colorWithAlphaComponent:0.1];
+        
+        return circleView;
+    }
+    
+    return nil;
+}
+
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)annotationView didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
+    if([annotationView isKindOfClass:[RegionAnnotationView class]]) {
+        RegionAnnotationView *regionView = (RegionAnnotationView *)annotationView;
+        RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
+        
+        // If the annotation view is starting to be dragged, remove the overlay and stop monitoring the region.
+        if (newState == MKAnnotationViewDragStateStarting) {
+            [regionView removeRadiusOverlay];
+            
+            [DBKLOCATION stopMonitoringRegion:regionAnnotation.region];
+        }
+        
+        // Once the annotation view has been dragged and placed in a new location, update and add the overlay and begin monitoring the new region.
+        if (oldState == MKAnnotationViewDragStateDragging && newState == MKAnnotationViewDragStateEnding) {
+            [regionView updateRadiusOverlay];
+            
+            
+            [DBKLOCATION makeNewRegionMonitoring:regionAnnotation.coordinate withID:regionAnnotation.region.identifier withMap:self.mapView];
+        }
+    }
+}
+
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
+    RegionAnnotationView *regionView = (RegionAnnotationView *)view;
+    RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
+    NSString *basketID = regionAnnotation.region.identifier;
+    NSLog(@"basketID = %@", basketID);
+    
+    NSArray *array = [SQLManager getDocBasketsForQuery:[NSString stringWithFormat:@"SELECT * FROM Docbasket WHERE id = '%@';", basketID]];
+    if(!IsEmpty(array)) {
+        Docbasket *basket = array[0];
+        
+        DBBasketViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"DBBasketViewController"];
+        viewcontroller.basket = basket;
+        
+        
+        [self.navigationController pushViewController:viewcontroller animated:YES];
+        
+    }
+//    [self.mapView setRegion:MKCoordinateRegionMake(regionAnnotation.coordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
+}
+
+#pragma mark - UITableViewDelegate
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [GVALUE.baskets count];
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *cellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+    }
+    
+    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    if(!IsEmpty(basket)){
+        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
+        cell.textLabel.text = basket.title;
+        
+        NSString *image = basket.image;
+        if(!IsEmpty(image)){
+            NSString *MyURL = [NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
+            if(!IsEmpty(MyURL)){
+                
+                UIImageView *imgView = [[UIImageView alloc] init];
+                [imgView setImageWithURL:[NSURL URLWithString:MyURL] placeholderImage:nil];
+                //cell.imageView = imgView ;
+            }
+            
+        }
+        
+        
+        cell.textLabel.numberOfLines = 4;
+    }
+    
+    
+    return cell;
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 60.0;
+}
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    if(!IsEmpty(basket)){
+        
+        //        SCQRGeneratorViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"SCQRGeneratorViewController"];
+        //        viewcontroller.basketID = basket.basketID;
+        //        viewcontroller.basket = basket;
+        
+        DBBasketViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"DBBasketViewController"];
+        viewcontroller.basket = basket;
+        
+        
+        [self.navigationController pushViewController:viewcontroller animated:YES];
+        
+    }
+    
+}
 
 @end

@@ -10,12 +10,13 @@
 #import <MapKit/MapKit.h>
 #import "DBCommonViewController.h"
 
-@interface DBMapViewController : DBCommonViewController <MKMapViewDelegate>
+@interface DBMapViewController : DBCommonViewController <MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource>
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *addressInfo;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addBasketButton;
 @property (weak, nonatomic) IBOutlet UIButton *basketPin;
-
+@property (weak, nonatomic) IBOutlet UIButton *currentButton;
 - (IBAction)buttonHandler:(id)sender;
 - (IBAction)refreshCurrentLocation:(id)sender;
 - (IBAction)createNewBasket:(id)sender;

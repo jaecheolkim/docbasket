@@ -145,8 +145,9 @@
 #pragma mark - AVCaptureMetadataOutputObjectsDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection
 {
-    for (AVMetadataObject *metadata in metadataObjects) {
-        //if ([metadata.type isEqualToString:AVMetadataObjectTypeQRCode]) {
+    if(running){
+        for (AVMetadataObject *metadata in metadataObjects) {
+            //if ([metadata.type isEqualToString:AVMetadataObjectTypeQRCode]) {
             // Transform the meta-data coordinates to screen coords
             AVMetadataMachineReadableCodeObject *transformed = (AVMetadataMachineReadableCodeObject *)[_previewLayer transformedMetadataObjectForMetadataObject:metadata];
             // Update the frame on the _boundingBox view, and show it
@@ -166,8 +167,10 @@
             
             // Start the timer which will hide the overlay
             [self startOverlayHideTimer];
-        //}
+            //}
+        }
     }
+
 }
 
 #pragma mark - Utility Methods

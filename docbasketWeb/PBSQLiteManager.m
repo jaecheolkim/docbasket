@@ -52,6 +52,7 @@
 }
 
 #pragma mark SQLite Operations
+#pragma mark SQLite init Database
 
 - (void)initDataBase
 {
@@ -69,7 +70,117 @@
         }
     }
     
+    [self createFunctions];
+    
 }
+
+void sqlite_acos(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    int dataType = sqlite3_value_numeric_type(argv[0]);
+    
+    if (dataType == SQLITE_INTEGER || dataType == SQLITE_FLOAT) {
+        double value = sqlite3_value_double(argv[0]);
+        sqlite3_result_double(context, acos(value));
+    } else {
+        sqlite3_result_null(context);
+    }
+}
+
+double radians(double degrees)
+{
+    return degrees * M_PI / 180.0;
+}
+
+void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    double values[4];
+    
+    // get the double values for the four arguments
+    
+    for (int i = 0; i < 4; i++) {
+        int dataType = sqlite3_value_numeric_type(argv[i]);
+        
+        if (dataType == SQLITE_INTEGER || dataType == SQLITE_FLOAT) {
+            values[i] = sqlite3_value_double(argv[i]);
+        } else {
+            sqlite3_result_null(context);
+            return;
+        }
+    }
+    
+    // let's give those values meaningful variable names
+    
+    double lat  = radians(values[0]);
+    double lng  = radians(values[1]);
+    double lat2 = radians(values[2]);
+    double lng2 = radians(values[3]);
+    
+    // calculate the distance
+    
+    double result = 6371.0 * acos(cos(lat2) * cos(lat) * cos(lng - lng2) + sin(lat2) * sin(lat));
+    
+    sqlite3_result_double(context, result);
+}
+
+
+- (BOOL)createFunctions
+{
+    int rc;
+    sqlite3 *db = [SQLManager getDBContext];
+    
+    if ((rc = sqlite3_create_function(db, "acos", 1, SQLITE_ANY, NULL, sqlite_acos, NULL, NULL)) != SQLITE_OK) {
+        NSLog(@"%s: sqlite3_create_function acos error: %s (%d)", __FUNCTION__, sqlite3_errmsg(db), rc);
+    }
+    
+    
+     if ((rc = sqlite3_create_function(db, "distance", 4, SQLITE_ANY, NULL, sqlite_distance, NULL, NULL)) != SQLITE_OK) {
+        NSLog(@"%s: sqlite3_create_function distance error: %s (%d)", __FUNCTION__, sqlite3_errmsg(db), rc);
+    }
+
+    
+    // repeat this for all of the other functions you define
+    
+    return rc;
+}
+
+#pragma mark SQLite public Methods
+
+- (void)getRegionBasketsDistance:(double)distance latitude:(double)latitude longitude:(double)longitude
+{
+    //"37.564085184212","126.987046419672"
+    NSString *query = [NSString stringWithFormat:@"SELECT *, distance(latitude, longitude, %f, %f) AS distance FROM Docbasket WHERE distance < %f ORDER BY distance ASC", latitude, longitude, distance];
+//    const char *sql = "SELECT "
+//    "id, distance(lat, lng, 65.3234, 78.3232) AS distance "
+//    "FROM markers "
+//    "WHERE distance < 30 "
+//    "ORDER BY distance";
+    
+    
+    NSArray *baskets = [SQLManager getDocBasketsForQuery:query];
+    if(!IsEmpty(baskets)){
+        NSLog(@"baskets = %@", baskets);
+        //[GVALUE setBaskets:baskets];
+    }
+
+}
+
+
+// distance 단위 1km
+- (void)getRegionBasketsDistance:(double)distance completionHandler:(void (^)(BOOL success))block
+{
+    NSString *query = [NSString stringWithFormat:@"SELECT *, distance(latitude, longitude, %f, %f) AS distance FROM Docbasket WHERE distance < %f ORDER BY distance ASC", GVALUE.latitude, GVALUE.longitude, distance];
+ 
+    NSArray *baskets = [SQLManager getDocBasketsForQuery:query];
+    if(!IsEmpty(baskets)){
+        //NSLog(@"GeoFence baskets = %@", baskets);
+        [GVALUE setGeoFenceBaskets:baskets];
+        block(YES);
+    } else {
+        block(NO);
+    }
+
+}
+
 
 
 - (void)syncDocBaskets2DB:(NSDictionary*)docbaskets completionHandler:(void (^)(BOOL success))block;
@@ -140,6 +251,71 @@
 //        {
 //            NSLog(@"%@ = %@",query, result);
 //        }
+    } else {
+        block(NO);
+    }
+}
+
+- (void)syncDocBasket2DB:(Docbasket*)basket completionHandler:(void (^)(BOOL success))block;
+{
+    if(!IsEmpty(basket)){
+        sqlite3_stmt *statement;
+        sqlite3 *sqlDB = [SQLManager getDBContext];
+        
+        const char* insertSQL = "INSERT INTO Docbasket (id, title, description, latitude, longitude, permission, is_public, range, user_id, updated_at, begin_at, created_at, end_at, poi_id, poi_title, telephone, address ) VALUES (?, ?, ?, ? , ? , ?, ? , ? , ?, ? , ? , ? , ? , ? , ? , ? , ?)";
+        
+        NSString *basketID =  (IsEmpty(basket.basketID)?@"":basket.basketID);
+        NSString *title =  (IsEmpty(basket.title)?@"":basket.title);
+        NSString *description =  (IsEmpty(basket.description)?@"":basket.description);
+        double latitude = basket.latitude;
+        double longitude = basket.longitude;
+        NSString *permission = @"";
+        int is_public = (int)basket.is_public;
+        double range = basket.radius;
+        NSString *user_id = (IsEmpty(basket.ownerID)?@"":basket.ownerID);
+        NSString *updated_at = (IsEmpty(basket.updated_at)?@"":basket.updated_at);
+        NSString *begin_at = (IsEmpty(basket.begin_at)?@"":basket.begin_at);
+        NSString *created_at = (IsEmpty(basket.created_at)?@"":basket.created_at);
+        NSString *end_at = (IsEmpty(basket.end_at)?@"":basket.end_at);
+        NSString *poi_id = (IsEmpty(basket.poi_id)?@"":basket.poi_id);
+        NSString *poi_title = (IsEmpty(basket.poi_title)?@"":basket.poi_title);
+        NSString *telephone = (IsEmpty(basket.telephone)?@"":basket.telephone);
+        NSString *address = (IsEmpty(basket.address)?@"":basket.address);
+        
+        if (sqlite3_prepare_v2(sqlDB, insertSQL, -1, &statement, nil) == SQLITE_OK)
+        {
+            sqlite3_bind_text(statement, 1, [basketID UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 2, [title UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 3, [description UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_double(statement, 4, latitude);
+            sqlite3_bind_double(statement, 5, longitude);
+            sqlite3_bind_text(statement, 6, [permission UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int(statement, 7, is_public);
+            sqlite3_bind_double(statement, 8, range );
+            sqlite3_bind_text(statement, 9, [user_id UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 10, [updated_at UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 11, [begin_at UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 12, [created_at UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 13, [end_at UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 14, [poi_id UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 15, [poi_title UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 16, [telephone UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 17, [address UTF8String], -1, SQLITE_TRANSIENT);
+            
+            sqlite3_step(statement);
+            sqlite3_finalize(statement);
+        }
+        
+
+        
+        block(YES);
+        
+        //        NSString *query = @"SELECT * FROM Docbasket;";
+        //        NSArray *result = [SQLManager getRowsForQuery:query];
+        //        if(!IsEmpty(result))
+        //        {
+        //            NSLog(@"%@ = %@",query, result);
+        //        }
     } else {
         block(NO);
     }

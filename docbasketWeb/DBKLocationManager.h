@@ -39,13 +39,15 @@
 - (CLLocationCoordinate2D)getCurrentCoordinate;
 
 - (void)makeNewRegionMonitoring:( CLLocationCoordinate2D) coord withID:(NSString*)identifier withMap:(MKMapView*)mapView;
+- (CLCircularRegion *)makeNewCircularRegion:(CLLocationCoordinate2D) coord withID:(NSString*)identifier;
 
 - (void)startMonitoringRegion:(CLCircularRegion *)region;
 - (void)stopMonitoringRegion:(CLRegion *)region;
-- (void)cleanAllMonitoringRegions;
+- (void)cleanAllGeoFence;
 
 + (void)reverseGeocodeLocation:(CLLocation *)location completionHandler:(void (^)(NSString *address))block;
 
+- (void)checkGeoFence;
 @end
 
 

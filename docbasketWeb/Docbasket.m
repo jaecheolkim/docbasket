@@ -65,7 +65,7 @@
 {
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(self.latitude, self.longitude);
     CLCircularRegion *newRegion = [[CLCircularRegion alloc] initWithCenter:coord
-                                                                    radius:50
+                                                                    radius:20
                                                                 identifier:self.basketID];
     return newRegion;
 }

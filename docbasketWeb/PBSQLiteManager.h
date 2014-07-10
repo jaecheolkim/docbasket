@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Docbasket.h"
 #import "sqlite3.h"
 
 #define SQLManager [PBSQLiteManager sharedInstance]
@@ -35,8 +36,11 @@ enum errorCodes {
 #pragma mark Users Table
 
 - (void)syncDocBaskets2DB:(NSDictionary*)docbaskets completionHandler:(void (^)(BOOL success))block;
+- (void)syncDocBasket2DB:(Docbasket*)basket completionHandler:(void (^)(BOOL success))block;
+
 - (NSArray*)getDocBasketsForQuery:(NSString *)sql;
 
-
+- (void)getRegionBasketsDistance:(double)distance latitude:(double)latitude longitude:(double)longitude;
+- (void)getRegionBasketsDistance:(double)distance completionHandler:(void (^)(BOOL success))block;
 
 @end

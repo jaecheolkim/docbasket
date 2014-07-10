@@ -69,6 +69,7 @@
 		self.coordinate = newRegion.center;
 		self.radius = newRegion.radius;
         
+        
 //		self.title = @"Monitored Region";
 	}
 

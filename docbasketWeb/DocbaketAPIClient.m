@@ -76,11 +76,12 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
     if(!IsEmpty(currentLocation)){
         double longitude = currentLocation.coordinate.longitude;
         double latitude = currentLocation.coordinate.latitude;
-        param = @{@"longitude":@(longitude), @"latitude":@(latitude), @"radius":@(10000)};
+        double radius = GVALUE.findBasketsRange; // 단위 = 미터 : 디폴트 10000 (10km)
+        param = @{@"longitude":@(longitude), @"latitude":@(latitude), @"radius":@(radius)};
     }
     
     [[DocbaketAPIClient sharedClient] GET:@"baskets.json" parameters:param success:^(NSURLSessionDataTask * __unused task, id JSON) {
-        NSUInteger count = 0;
+        //NSUInteger count = 0;
         if(!IsEmpty(JSON)) {
             //NSLog(@"JSON : %@", JSON);
             
@@ -93,7 +94,7 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 
                 }
                 
-                count++;
+                //count++;
             }
             
             if (block) {
@@ -226,7 +227,8 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 //- /baskets/:id/checkin    POST    trans_id, user_id, checkin_at, checkout_at (ISO8601)
 //[_faceAssets addObject:@{@"Asset": photoAsset, @"UserID" : @(UserID), @"PhotoID" : @(PhotoID)}];
 
-+ (void)postRegionCheck:(NSDictionary *)parameters withBasketID:(NSString*)basketID {
++ (void)postRegionCheck:(NSDictionary *)parameters withBasketID:(NSString*)basketID
+{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *URL = [NSString stringWithFormat:@"%@%@%@", @"http://docbasket.com/baskets/", basketID, @"/checkin.json"];
     

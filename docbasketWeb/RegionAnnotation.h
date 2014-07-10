@@ -58,5 +58,5 @@
 @property (nonatomic, retain) NSString *subtitle;
 
 - (id)initWithCLRegion:(CLCircularRegion *)newRegion;
-- (void)hide;
+//- (void)hide;
 @end

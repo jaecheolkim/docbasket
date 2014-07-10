@@ -110,86 +110,299 @@
 - (void)locationManager:(CLLocationManager *)manager
       didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
 {
-    NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
-    NSString *title = [findBasket valueForKey:@"title"];
-    
-    NSString *regionState = @"";
-    
-    switch (state) {
-        case CLRegionStateUnknown: regionState = @"Unknown"; break;
-        case CLRegionStateInside: regionState = @"Enter"; break;
-        case CLRegionStateOutside: regionState = @"Exit"; break;
+    if([region containsCoordinate:GVALUE.currentLocation.coordinate]){
+        Docbasket *findBasket = [GVALUE findGeoFenceBasketWithID:region.identifier];
+        NSString *title = (IsEmpty(findBasket.title))?@"":findBasket.title;
+        
+        //NSString *title = findBasket.title;// [findBasket valueForKey:@"title"];
+        if(state == CLRegionStateInside) {
             
-        default: break;
-    }
+            NSString *msg = [NSString stringWithFormat:@"DetermineState: %@ / %@", title, @"Enter"];
+            [GVALUE addLog:msg];
 
-    NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, regionState];
+            [DBKSERVICE pushLocalNotification:msg];
+        }
+    }
     
-    [DBKSERVICE pushLocalNotification:msg];
+
+    //CLLocationDistance distance = [GVALUE.currentLocation distanceFromLocation:region.];
+    
+//    NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
+//    NSString *title = [findBasket valueForKey:@"title"];
+//    
+//    NSString *regionState = @"";
+//    
+//    switch (state) {
+//        case CLRegionStateUnknown: regionState = @"Unknown"; break;
+//        case CLRegionStateInside: regionState = @"Enter"; break;
+//        case CLRegionStateOutside: regionState = @"Exit"; break;
+//            
+//        default: break;
+//    }
+//
+//    NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, regionState];
+//    
+//    [DBKSERVICE pushLocalNotification:msg];
 
 }
+
+//- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+//    // test the age of the location measurement to determine if the measurement is cached
+//    // in most cases you will not want to rely on cached measurements
+//    NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
+//    
+//    if (locationAge > 5.0) return;
+//    
+//    // test that the horizontal accuracy does not indicate an invalid measurement
+//    if (newLocation.horizontalAccuracy < 0) return;
+//    
+//    // test the measurement to see if it is more accurate than the previous measurement
+//    if (bestEffortAtLocation == nil || bestEffortAtLocation.horizontalAccuracy > newLocation.horizontalAccuracy) {
+//        // store the location as the "best effort"
+//        self.bestEffortAtLocation = newLocation;
+//        
+//        // test the measurement to see if it meets the desired accuracy
+//        //
+//        // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
+//        // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
+//        // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on the timeout.
+//        //
+//        if (newLocation.horizontalAccuracy <= locationManager.desiredAccuracy) {
+//            // we have a measurement that meets our requirements, so we can stop updating the location
+//            //
+//            // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
+//            //
+//            [self stopUpdatingLocation:NSLocalizedString(@"Acquired Location", @"Acquired Location")];
+//            
+//            // we can also cancel our previous performSelector:withObject:afterDelay: - it's no longer necessary
+//            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
+//        }
+//    }
+//}
+
+- (void)checkGeoFence 
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        int index = 0;
+        for(Docbasket *basket in GVALUE.geoFenceBaskets){
+            if([basket.region containsCoordinate:GVALUE.currentLocation.coordinate]){
+                if(!basket.checked){
+                    NSString *title = (IsEmpty(basket.title))?@"":basket.title;
+                    NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, @"Enter !"];
+                    
+                    [DBKSERVICE pushLocalNotification:msg];
+                    
+                    //한번 체크인 한 바스켓은 두번 안되게 막음.
+                    basket.checked = YES;
+                    //[GVALUE.geoFenceBaskets replaceObjectAtIndex:index withObject:basket];
+                }
+            }
+            index++;
+        }
+
+    });
+}
+
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
+    // If it's a relatively recent event, turn off updates to save power.
+    CLLocation* location = [locations lastObject];
+    
+    if(!_isLocationServiceStarted){
+        
+        GVALUE.currentLocation = location;
+        GVALUE.longitude = GVALUE.currentLocation.coordinate.longitude;
+        GVALUE.latitude = GVALUE.currentLocation.coordinate.latitude;
+        GVALUE.lastRegionDistanceLocation = [[CLLocation alloc] initWithLatitude:0 longitude:0];
+        GVALUE.lastAPICallLocation = [[CLLocation alloc] initWithLatitude:0 longitude:0];
+        
+        _isLocationServiceStarted = YES;
 
-    _currentLocation = [locations objectAtIndex:0];
+        NSString *event = [NSString stringWithFormat:@"checkGeoFence==F====== latitude %+.6f, longitude %+.6f\n", location.coordinate.latitude, location.coordinate.longitude];
+        [GVALUE addLog:event];
+        
+        [self checkGeoFence];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ServiceEventHandler"
+                                                            object:self
+                                                          userInfo:@{@"Msg":@"locationServiceStarted", @"currentLocation":GVALUE.currentLocation}];
+        
+        
+    }
+    
+    // test the age of the location measurement to determine if the measurement is cached
+    // in most cases you will not want to rely on cached measurements
+    CLLocation* newLocation = [locations firstObject];
+    NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
+    if (locationAge > 5.0) return;
+    
+    // test that the horizontal accuracy does not indicate an invalid measurement
+    if (newLocation.horizontalAccuracy < 0) return;
+    
+    // test the measurement to see if it is more accurate than the previous measurement
+    //if (GVALUE.currentLocation == nil || GVALUE.currentLocation.horizontalAccuracy > newLocation.horizontalAccuracy) {
+        // store the location as the "best effort"
+        
+        NSDate* eventDate = newLocation.timestamp;
+        NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+        if (abs(howRecent) < 15.0) {
+            CLLocation *oldLocation = GVALUE.currentLocation;
+            CLLocationDistance distance = [newLocation distanceFromLocation:oldLocation];
+ 
+            NSString *event = [NSString stringWithFormat:@"================== distance = %f", distance];
+            [GVALUE addLog:event];
+            
+            
+            //일반적인 이동일때는 거리차가 이전보다 1m 이상일 때 다시 geofence 측정
+            if(fabs(distance) > 1.0) {
+                GVALUE.lastLocation = GVALUE.currentLocation;
+                GVALUE.currentLocation = newLocation;
+                GVALUE.longitude = GVALUE.currentLocation.coordinate.longitude;
+                GVALUE.latitude = GVALUE.currentLocation.coordinate.latitude;
+                // If the event is recent, do something with it.
+
+                NSString *event = [NSString stringWithFormat:@"checkGeoFence==L====== latitude %+.6f, longitude %+.6f\n", newLocation.coordinate.latitude, newLocation.coordinate.longitude];
+                [GVALUE addLog:event];
+                
+                [self checkGeoFence];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"ServiceEventHandler"
+                                                                    object:self
+                                                                  userInfo:@{@"Msg":@"locationChanged", @"currentLocation":GVALUE.currentLocation}];
+                
+
+            }
+            
+            // 마지막으로 baskets.json 호출 할 때 거리의 1/2이 지났을 때 baskets.json 다시 호출 해서 바스켓 새로 고침.
+            distance = [newLocation distanceFromLocation:GVALUE.lastAPICallLocation];
+            if(fabs(distance) > GVALUE.findBasketsRange/2){
+                GVALUE.lastLocation = GVALUE.currentLocation;
+                GVALUE.currentLocation = newLocation;
+                GVALUE.longitude = GVALUE.currentLocation.coordinate.longitude;
+                GVALUE.latitude = GVALUE.currentLocation.coordinate.latitude;
+                
+                NSString *event = [NSString stringWithFormat:@"NEW API CALL ==F== latitude %+.6f, longitude %+.6f\n", newLocation.coordinate.latitude, newLocation.coordinate.longitude];
+                [GVALUE addLog:event];
+                
+                [self checkGeoFence];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"ServiceEventHandler"
+                                                                    object:self
+                                                                  userInfo:@{@"Msg":@"locationServiceStarted", @"currentLocation":GVALUE.currentLocation}];
+            }
+            
+            
+            
+            
+       // }
+        
+        
+        
+        // test the measurement to see if it meets the desired accuracy
+        //
+        // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
+        // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
+        // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on the timeout.
+        //
+        if (newLocation.horizontalAccuracy <= _locationManager.desiredAccuracy) {
+            // we have a measurement that meets our requirements, so we can stop updating the location
+            //
+            // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
+            //
+            //[self stopUpdatingLocation:NSLocalizedString(@"Acquired Location", @"Acquired Location")];
+            
+            // we can also cancel our previous performSelector:withObject:afterDelay: - it's no longer necessary
+            //[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
+        }
+    }
+
+    
+    
+    
+//    NSDate* eventDate = location.timestamp;
+//    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+//    if (abs(howRecent) < 15.0) {
+//        
+//        CLLocationDistance distance = [location distanceFromLocation:_currentLocation];
+//        NSLog(@"================== distance = %f", distance);
+//        if(abs(distance) > 1) {
+//            _currentLocation = location;
+//            GVALUE.longitude = _currentLocation.coordinate.longitude;
+//            GVALUE.latitude = _currentLocation.coordinate.latitude;
+//            // If the event is recent, do something with it.
+//            NSLog(@"latitude %+.6f, longitude %+.6f\n",
+//                  location.coordinate.latitude,
+//                  location.coordinate.longitude);
+//        }
+//
+//    }
+   // _currentLocation = [locations objectAtIndex:0];
     
 }
 
 
-- (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region  {
+- (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
+{
     
-    NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
-    NSString *title = [findBasket valueForKey:@"title"];
+    Docbasket *findBasket = [GVALUE findBasketWithID:region.identifier];
+    NSString *title = (IsEmpty(findBasket.title))?@"": findBasket.title;
     
-    NSString *event = [NSString stringWithFormat:@"Enter :  %@ at %f / %f", title, [[findBasket valueForKey:@"latitude"] doubleValue], [[findBasket valueForKey:@"longitude"] doubleValue]]; //[NSDate date]
+    NSString *event = [NSString stringWithFormat:@"didEnterRegion :  %@ at %f / %f", title, findBasket.latitude, findBasket.longitude]; //[NSDate date]
     [self updateWithEvent:event];
     
     
     NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":[NSDate date], @"checkout_at":@""};
     [DocbaketAPIClient postRegionCheck:parameters withBasketID:[findBasket valueForKey:@"basketID"]];
     
-    NSLog(@"%@",event);
+    [GVALUE addLog:event];
+
 }
 
 // 37.56202672  126.98963106
-- (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region {
+- (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
+{
     
-    NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
-    NSString *title = [findBasket valueForKey:@"title"];
+    Docbasket *findBasket = [GVALUE findBasketWithID:region.identifier];
+    NSString *title = (IsEmpty(findBasket.title))?@"": findBasket.title;
 
     
-    NSString *event = [NSString stringWithFormat:@"Exit :  %@ at %f / %f", title, [[findBasket valueForKey:@"latitude"] doubleValue], [[findBasket valueForKey:@"longitude"] doubleValue]]; //[NSDate date]
+    NSString *event = [NSString stringWithFormat:@"didExitRegion :  %@ at %f / %f", title, findBasket.latitude, findBasket.longitude]; //[NSDate date]
     [self updateWithEvent:event];
     
     NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":@"", @"checkout_at":[NSDate date]};
     [DocbaketAPIClient postRegionCheck:parameters withBasketID:[findBasket valueForKey:@"basketID"]];
     
-    NSLog(@"%@",event);
-}
+ 
+    [GVALUE addLog:event];
+ }
 
 -(void)locationManager:(CLLocationManager *)manager didStartMonitoringForRegion:(CLRegion *)region {
-    NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
-    NSString *title = [findBasket valueForKey:@"title"];
-    NSLog(@"Now monitoring for %@", title);
+    Docbasket *findBasket = [GVALUE findBasketWithID:region.identifier];
+    if(!IsEmpty(findBasket)){
+        NSString *title = (IsEmpty(findBasket.title))?@"":findBasket.title;
+ 
+        
+        NSString *msg = [NSString stringWithFormat:@"Now monitoring for %@", title];
+        [GVALUE addLog:msg];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
+                                                            object:self
+                                                          userInfo:@{@"Msg":@"refreshGeoFencePins", @"basket":findBasket}];
+
+    }
 }
 
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
     
-    NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
-                                                        object:self
-                                                      userInfo:@{@"Msg":@"monitoringDidFailForRegion", @"region":region}];
-    
-    
-    NSString *title = [findBasket valueForKey:@"title"];
+    Docbasket *findBasket = [GVALUE findBasketWithID:region.identifier];
+    NSString *title = (IsEmpty(findBasket.title))?@"":findBasket.title;
+ 
+    NSString *msg = [NSString stringWithFormat:@"monitoringDidFailForRegion %@: %@", title, error];
+    [GVALUE addLog:msg];
 
-    
-    NSString *event = [NSString stringWithFormat:@"monitoringDidFailForRegion %@: %@", title, error];
-    NSLog(@"%@",event);
-    //[self updateWithEvent:event];
 }
 
 
@@ -243,7 +456,7 @@
  
     [self.locationManager startUpdatingLocation];
     
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(count) userInfo:nil repeats:YES];
+    //self.timer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(count) userInfo:nil repeats:YES];
 
     self.isLocationServiceStarted = NO;
 }
@@ -253,37 +466,41 @@
 {
     [self.timer invalidate];
     self.timer = nil;
+    _isLocationServiceStarted = NO;
 }
 
 - (void)count
 {
-    GVALUE.longitude = _currentLocation.coordinate.longitude;
-    GVALUE.latitude = _currentLocation.coordinate.latitude;
+    GVALUE.longitude = GVALUE.currentLocation.coordinate.longitude;
+    GVALUE.latitude = GVALUE.currentLocation.coordinate.latitude;
 
-    CLLocationDistance distance = [_currentLocation distanceFromLocation:_lastLocation];
+    CLLocationDistance distance = [GVALUE.currentLocation distanceFromLocation:_lastLocation];
     NSLog(@"================== distance = %f", distance);
     
     
-    [DBKLocationManager reverseGeocodeLocation:_currentLocation completionHandler:^(NSString *address) {
+    [DBKLocationManager reverseGeocodeLocation:GVALUE.currentLocation completionHandler:^(NSString *address) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
                                                             object:self
                                                           userInfo:@{@"Msg":@"currentAddress", @"address":address}];
     }];
 
-    
-    
-    if(fabs(distance) > 3 ){
-
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ServiceEventHandler"
-                                                            object:self
-                                                          userInfo:@{@"Msg":@"locationChanged", @"currentLocation":_currentLocation}];
-        
-        
-
-    }
+//    [SQLManager getRegionBasketsDistance:0.5 latitude:GVALUE.latitude longitude:GVALUE.longitude];
+//
+//    
+//    if(fabs(distance) > 3.0 ){
+//
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"ServiceEventHandler"
+//                                                            object:self
+//                                                          userInfo:@{@"Msg":@"locationChanged", @"currentLocation":_currentLocation}];
+//        
+//        
+//
+//    }
     //_lastLocation
     
+    
+    NSLog(@"geoFenceBaskets count = %d", (int)[GVALUE.geoFenceBaskets count]);
 
 }
 
@@ -304,14 +521,13 @@
 
 - (void)startMonitoringSignificantLocationChanges
 {
-    // Reset the icon badge number to zero.
-	[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-
-
     if ([CLLocationManager significantLocationChangeMonitoringAvailable]) {
         // Stop normal location updates and start significant location change updates for battery efficiency.
         [_locationManager stopUpdatingLocation];
         [_locationManager startMonitoringSignificantLocationChanges];
+        
+
+        [GVALUE addLog:@"startMonitoringSignificantLocationChanges"];
     }
     else {
         NSLog(@"Significant location change monitoring is not available.");
@@ -324,6 +540,9 @@
         // Stop significant location updates and start normal location updates again since the app is in the forefront.
         [_locationManager stopMonitoringSignificantLocationChanges];
         [_locationManager startUpdatingLocation];
+        
+        [GVALUE addLog:@"stopMonitoringSignificantLocationChanges"];
+
     }
     else {
         NSLog(@"Significant location change monitoring is not available.");
@@ -337,7 +556,7 @@
     if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) {
 
         CLCircularRegion *newRegion = [[CLCircularRegion alloc] initWithCenter:coord
-                                                                      radius:50
+                                                                      radius:20
                                                                   identifier:identifier];
         
         newRegion.notifyOnEntry = YES;
@@ -357,9 +576,22 @@
 
 }
 
-- (void)cleanAllMonitoringRegions
+- (CLCircularRegion *)makeNewCircularRegion:(CLLocationCoordinate2D) coord withID:(NSString*)identifier
 {
-    NSArray *regions = [[[DBKLocationManager sharedInstance].locationManager monitoredRegions] allObjects];
+    CLCircularRegion *newRegion = nil;
+    if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) {
+        
+        newRegion = [[CLCircularRegion alloc] initWithCenter:coord radius:20 identifier:identifier];
+        
+        newRegion.notifyOnEntry = YES;
+        newRegion.notifyOnExit = NO;
+    }
+    return newRegion;
+}
+
+- (void)cleanAllGeoFence
+{
+    NSArray *regions = [[_locationManager monitoredRegions] allObjects];
     for(CLRegion *region in regions){
         [self stopMonitoringRegion:region];
     }
@@ -367,14 +599,20 @@
 
 - (void)startMonitoringRegion:(CLCircularRegion *)region
 {
-    NSLog(@"startMonitoringRegion: %@", region);
+    NSString *msg = [NSString stringWithFormat:@"startMonitoringRegion: %@", region];
+    [GVALUE addLog:msg];
+    
     [_locationManager startMonitoringForRegion:region];
 }
 
 - (void)stopMonitoringRegion:(CLRegion *)region
 {
-    NSLog(@"stopMonitoringRegion: %@", region);
+
+    NSString *msg = [NSString stringWithFormat:@"stopMonitoringRegion: %@", region];
+    [GVALUE addLog:msg];
+    
     [_locationManager stopMonitoringForRegion:region];
+    
 }
 
 

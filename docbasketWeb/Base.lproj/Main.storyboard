@@ -148,7 +148,45 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mwK-TV-3kI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1361" y="368"/>
+            <point key="canvasLocation" x="1223" y="350"/>
+        </scene>
+        <!--Setting View Controller-->
+        <scene sceneID="sAi-ET-7wY">
+            <objects>
+                <viewController storyboardIdentifier="DBSettingViewController" id="35p-xH-YcG" customClass="DBSettingViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="keO-DL-h98"/>
+                        <viewControllerLayoutGuide type="bottom" id="KM9-Aa-iyd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="48O-Hf-evx">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <tableView appearanceType="aqua" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="MLs-Pg-vaw">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="35p-xH-YcG" id="SSU-Yp-Ws1"/>
+                                    <outlet property="delegate" destination="35p-xH-YcG" id="1kX-Mr-4ep"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="MLs-Pg-vaw" firstAttribute="leading" secondItem="48O-Hf-evx" secondAttribute="leading" id="Jg7-fd-6nf"/>
+                            <constraint firstAttribute="bottom" secondItem="MLs-Pg-vaw" secondAttribute="bottom" id="K5q-ff-W7h"/>
+                            <constraint firstAttribute="trailing" secondItem="MLs-Pg-vaw" secondAttribute="trailing" id="PJU-56-QUg"/>
+                            <constraint firstItem="MLs-Pg-vaw" firstAttribute="top" secondItem="48O-Hf-evx" secondAttribute="top" id="gQQ-Cr-kfT"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="MLs-Pg-vaw" id="Hey-vT-GCx"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fhp-Vc-iDW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1597" y="350"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="FHR-Es-Ced">

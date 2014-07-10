@@ -76,9 +76,9 @@
 
     NSLog(@"Navi frame = %@", NSStringFromCGRect(self.navigationController.navigationBar.frame));
     
+
     
-    //[self refreshMap];
-    [self goCurrent];
+    
     
     isChangingScreen = NO;
     
@@ -275,8 +275,10 @@
     GVALUE.screenCenterLocation = [[CLLocation alloc] initWithLatitude:GVALUE.screenCenterCoordinate2D.latitude longitude:GVALUE.screenCenterCoordinate2D.longitude];
     
     [DBKLocationManager reverseGeocodeLocation:GVALUE.screenCenterLocation completionHandler:^(NSString *address) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_addressInfo setTitle:address forState:UIControlStateNormal];
+        });
         
-        [_addressInfo setTitle:address forState:UIControlStateNormal];
         
         block(YES);
         
@@ -292,23 +294,6 @@
     [self.mapView setRegion:MKCoordinateRegionMake(GVALUE.currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
 }
 
-- (void)hideAllAnnotations
-{
-    for(id anno in _mapView.annotations){
-        if ([anno isKindOfClass:[RegionAnnotation class]])
-            
-            [self.mapView deselectAnnotation:anno animated:YES];
-    }
-}
-
-- (void)showAllAnnotations
-{
-    for(id anno in _mapView.annotations){
-        if ([anno isKindOfClass:[RegionAnnotation class]])
-            
-            [self.mapView selectAnnotation:anno animated:YES];
-    }
-}
 
 - (void)removeAllAnnotations
 {
@@ -324,23 +309,32 @@
 
 - (void)refreshMap
 {
-    [self removeAllAnnotations];
-    
-    
-    for(Docbasket *basket in GVALUE.baskets){
-        if(!IsEmpty(basket)){
-            //CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
-            CLCircularRegion * newRegion = [basket region];
-            
-            RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
-            myRegionAnnotation.coordinate = newRegion.center;
-            myRegionAnnotation.radius = newRegion.radius;
-            [_mapView addAnnotation:myRegionAnnotation];
-         }
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self goCurrent];
+        
+        [self removeAllAnnotations];
+        
+        
+        for(Docbasket *basket in GVALUE.baskets){
+            if(!IsEmpty(basket)){
+
+                CLCircularRegion * newRegion = [basket region];
+                [self addPin:newRegion];
+
+            }
+        }
+    });
+
 }
 
+- (void)addPin:(CLCircularRegion *)newRegion
+{
+    RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
+    myRegionAnnotation.coordinate = newRegion.center;
+    myRegionAnnotation.radius = newRegion.radius;
+    [_mapView addAnnotation:myRegionAnnotation];
 
+}
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
@@ -382,15 +376,7 @@
 - (void)MapViewEventHandler:(NSNotification *)notification
 {
     
-    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"monitoringDidFailForRegion"]) {
-        
-        id region = [[notification userInfo] objectForKey:@"region"];
-        if(!IsEmpty(region) && [NSStringFromClass([region class]) isEqualToString:@"CLCircularRegion"]){
-            NSLog(@"Msg : %@", [[notification userInfo] objectForKey:@"Msg"]);
-            NSLog(@"region : %@", [[notification userInfo] objectForKey:@"region"]);
-            
-        }
-    }
+
     
     if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"currentAddress"]) {
         
@@ -414,6 +400,20 @@
         [self refreshMap];
         
     }
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"refreshGeoFencePins"]) {
+
+        Docbasket *basket = [[notification userInfo] objectForKey:@"basket"];
+        if(!IsEmpty(basket))
+        {
+            CLCircularRegion * newRegion = [basket region];
+            [self addPin:newRegion];
+
+        }
+
+    }
+    
+    
     
     
     
@@ -460,10 +460,11 @@
         RegionAnnotation *currentAnnotation = (RegionAnnotation *)annotation;
         CLCircularRegion *region = currentAnnotation.region;
         
-        NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
-        NSString *title = [findBasket valueForKey:@"title"];
+        Docbasket *findBasket = [GVALUE findBasketWithID:region.identifier];
+
+        NSString *title = (IsEmpty(findBasket.title))?@"":findBasket.title;
         
-        NSString *image = [findBasket valueForKey:@"image"];
+        NSString *image = findBasket.image;
         NSString *ext = nil;
         UIImage *icon = [UIImage imageNamed:@"RemoveRegion"];
         NSString *MyURL = nil;
@@ -474,13 +475,10 @@
             if([ext isEqualToString:@"png"] || [ext isEqualToString:@"PNG"] ||
                [ext isEqualToString:@"jpg"] || [ext isEqualToString:@"JPG"] ){
                 
-                MyURL = image;//[NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
-                //                icon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:MyURL]]];
-                
+                MyURL = image;
             }
         }
-        NSLog(@"%@ / %@ / ext = %@", title, image, ext);
-        
+
         currentAnnotation.title = title;
         
         NSString *annotationIdentifier = region.identifier; //[currentAnnotation title];
@@ -507,8 +505,7 @@
             regionView.annotation = annotation;
             regionView.theAnnotation = annotation;
         }
-        
-        // Update or add the overlay displaying the radius of the region around the annotation.
+
         [regionView updateRadiusOverlay];
         
         return regionView;
@@ -533,25 +530,25 @@
 
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)annotationView didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
-    if([annotationView isKindOfClass:[RegionAnnotationView class]]) {
-        RegionAnnotationView *regionView = (RegionAnnotationView *)annotationView;
-        RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
-        
-        // If the annotation view is starting to be dragged, remove the overlay and stop monitoring the region.
-        if (newState == MKAnnotationViewDragStateStarting) {
-            [regionView removeRadiusOverlay];
-            
-            [DBKLOCATION stopMonitoringRegion:regionAnnotation.region];
-        }
-        
-        // Once the annotation view has been dragged and placed in a new location, update and add the overlay and begin monitoring the new region.
-        if (oldState == MKAnnotationViewDragStateDragging && newState == MKAnnotationViewDragStateEnding) {
-            [regionView updateRadiusOverlay];
-            
-            
-            [DBKLOCATION makeNewRegionMonitoring:regionAnnotation.coordinate withID:regionAnnotation.region.identifier withMap:self.mapView];
-        }
-    }
+//    if([annotationView isKindOfClass:[RegionAnnotationView class]]) {
+//        RegionAnnotationView *regionView = (RegionAnnotationView *)annotationView;
+//        RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
+//        
+//        // If the annotation view is starting to be dragged, remove the overlay and stop monitoring the region.
+//        if (newState == MKAnnotationViewDragStateStarting) {
+//            [regionView removeRadiusOverlay];
+//            
+//            [DBKLOCATION stopMonitoringRegion:regionAnnotation.region];
+//        }
+//        
+//        // Once the annotation view has been dragged and placed in a new location, update and add the overlay and begin monitoring the new region.
+//        if (oldState == MKAnnotationViewDragStateDragging && newState == MKAnnotationViewDragStateEnding) {
+//            [regionView updateRadiusOverlay];
+//            
+//            
+//            [DBKLOCATION makeNewRegionMonitoring:regionAnnotation.coordinate withID:regionAnnotation.region.identifier withMap:self.mapView];
+//        }
+//    }
 }
 
 

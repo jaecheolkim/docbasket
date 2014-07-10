@@ -11,7 +11,7 @@
 #import "DBLoginViewController.h"
 #import "DBListViewController.h"
 #import "ScannerViewController.h"
-//#import "DEMOSecondViewController.h"
+#import "DBSettingViewController.h"
 #import "UIViewController+RESideMenu.h"
 
 @interface DEMOLeftMenuViewController ()
@@ -22,6 +22,7 @@
 @property (nonatomic, strong) DBListViewController *myBasketListViewController;
 @property (nonatomic, strong) ScannerViewController *QRScannerViewController;
 @property (nonatomic, strong) DBLoginViewController *loginViewController;
+@property (nonatomic, strong) DBSettingViewController *settingViewController;
 @end
 
 @implementation DEMOLeftMenuViewController
@@ -51,6 +52,8 @@
     self.myBasketListViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBListViewController"];
     self.QRScannerViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ScannerViewController"];
     self.loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBLoginViewController"];
+    
+    self.settingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBSettingViewController"];
 }
 
 #pragma mark -
@@ -75,7 +78,11 @@
                                                          animated:YES];
             [self.sideMenuViewController hideMenuViewController];
             break;
-            
+        case 3:
+            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.settingViewController]
+                                                         animated:YES];
+            [self.sideMenuViewController hideMenuViewController];
+            break;
             
         case 4:
             [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.loginViewController]

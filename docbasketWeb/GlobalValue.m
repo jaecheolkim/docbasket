@@ -25,6 +25,11 @@
     self = [super init];
     if (self){
         self.baskets = [NSArray array];
+        self.geoFenceBaskets = [NSMutableArray array];
+        self.LogList = [NSMutableArray array];
+        self.regionMonitoringDistance = 0.1;  // 100m
+        self.findBasketsRange = 10000.0; // 10000m (10km)
+
     }
     return self;
 }
@@ -66,14 +71,14 @@
     return [[NSUserDefaults standardUserDefaults] objectForKey:strKey];
 }
 
-- (NSDictionary *)findBasketWithID:(NSString *)str {
+- (Docbasket *)findBasketWithID:(NSString *)str {
     // ivar: NSArray *myArray;
     __block BOOL found = NO;
-    __block NSDictionary *dict = nil;
+    __block Docbasket *dict = nil;
     
     [self.baskets enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        dict = (NSDictionary *)obj;
-        NSString *basketID = [dict valueForKey:@"basketID"];
+        dict = (Docbasket *)obj;
+        NSString *basketID = dict.basketID;// [dict valueForKey:@"basketID"];
         if ([basketID isEqualToString:str]) {
             found = YES;
             *stop = YES;
@@ -89,5 +94,37 @@
     
 }
 
+- (Docbasket *)findGeoFenceBasketWithID:(NSString *)str {
+    // ivar: NSArray *myArray;
+    __block BOOL found = NO;
+    __block Docbasket *dict = nil;
+    
+    [self.geoFenceBaskets enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        dict = (Docbasket *)obj;
+        NSString *basketID = dict.basketID;// [dict valueForKey:@"basketID"];
+        if ([basketID isEqualToString:str]) {
+            found = YES;
+            *stop = YES;
+        }
+    }];
+    
+    
+    if (found) {
+        return dict;
+    } else {
+        return nil;
+    }
+    
+}
+
+- (void)addLog:(NSString*)log
+{
+    [self.LogList addObject:log];
+    NSLog(@"%@", log);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DebugLogEventHandler"
+                                                        object:self
+                                                      userInfo:@{@"Msg":@"logAdded"}];
+}
 
 @end

@@ -37,6 +37,8 @@
 		805A323D194F0C8B00F213C1 /* DBKLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A323C194F0C8B00F213C1 /* DBKLocationManager.m */; };
 		805A323F194F0EA500F213C1 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 805A323E194F0EA500F213C1 /* CoreLocation.framework */; };
 		805A3241194F9AA700F213C1 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 805A3240194F9AA700F213C1 /* MapKit.framework */; };
+		805B8D0C196E5DB900F2A694 /* RK_gpx _2014-07-10_1432.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 805B8D0B196E5DB800F2A694 /* RK_gpx _2014-07-10_1432.gpx */; };
+		805B8D0F196E7B4500F2A694 /* DBSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 805B8D0E196E7B4500F2A694 /* DBSettingViewController.m */; };
 		8061AFF01950163800685336 /* GlobalValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 8061AFEF1950163800685336 /* GlobalValue.m */; };
 		8061B01919503BE100685336 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8061AFF519503BE100685336 /* AFHTTPRequestOperation.m */; };
 		8061B01A19503BE100685336 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8061AFF719503BE100685336 /* AFHTTPRequestOperationManager.m */; };
@@ -164,6 +166,10 @@
 		805A323E194F0EA500F213C1 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		805A3240194F9AA700F213C1 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		805A3244194F9AD700F213C1 /* docbasketWeb.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = docbasketWeb.entitlements; sourceTree = "<group>"; };
+		805B8D0B196E5DB800F2A694 /* RK_gpx _2014-07-10_1432.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "RK_gpx _2014-07-10_1432.gpx"; sourceTree = "<group>"; };
+		805B8D0D196E7B4500F2A694 /* DBSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBSettingViewController.h; sourceTree = "<group>"; };
+		805B8D0E196E7B4500F2A694 /* DBSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBSettingViewController.m; sourceTree = "<group>"; };
+		805B8D78196EC5CC00F2A694 /* docbasketWeb copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "docbasketWeb copy-Info.plist"; path = "/Users/jaecheolkim/Desktop/docbasketWeb/docbasketWeb copy-Info.plist"; sourceTree = "<absolute>"; };
 		8061AFEE1950163800685336 /* GlobalValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GlobalValue.h; path = ../docbasketWeb/GlobalValue.h; sourceTree = "<group>"; };
 		8061AFEF1950163800685336 /* GlobalValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GlobalValue.m; path = ../docbasketWeb/GlobalValue.m; sourceTree = "<group>"; };
 		8061AFF419503BE100685336 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -391,6 +397,7 @@
 		805A3209194EE13500F213C1 = {
 			isa = PBXGroup;
 			children = (
+				805B8D0B196E5DB800F2A694 /* RK_gpx _2014-07-10_1432.gpx */,
 				808CC951196AD7940048C99E /* libsqlite3.dylib */,
 				800A4D711963A92800E60B8A /* Parse.framework */,
 				800A4D6F1963A80200E60B8A /* SystemConfiguration.framework */,
@@ -410,6 +417,7 @@
 				805A3214194EE13500F213C1 /* docbasketWeb */,
 				805A322E194EE13500F213C1 /* docbasketWebTests */,
 				805A3213194EE13500F213C1 /* Products */,
+				805B8D78196EC5CC00F2A694 /* docbasketWeb copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -589,6 +597,8 @@
 				800A4D5719629ACE00E60B8A /* SCQRGeneratorViewController.m */,
 				8016E87319654ED2001C029E /* DBBasketViewController.h */,
 				8016E87419654ED2001C029E /* DBBasketViewController.m */,
+				805B8D0D196E7B4500F2A694 /* DBSettingViewController.h */,
+				805B8D0E196E7B4500F2A694 /* DBSettingViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -761,7 +771,7 @@
 				TargetAttributes = {
 					805A3211194EE13500F213C1 = {
 						CreatedOnToolsVersion = 6.0;
-						DevelopmentTeam = F3J73KR3TT;
+						DevelopmentTeam = 8XLV45K77G;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -807,6 +817,7 @@
 				805A3224194EE13500F213C1 /* Main.storyboard in Resources */,
 				808CC943196A8B580048C99E /* README.md in Resources */,
 				807555B919518EA700F68F63 /* ToDO in Resources */,
+				805B8D0C196E5DB900F2A694 /* RK_gpx _2014-07-10_1432.gpx in Resources */,
 				805A3226194EE13500F213C1 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -888,6 +899,7 @@
 				8061B02919503BE100685336 /* UIWebView+AFNetworking.m in Sources */,
 				8075565F1951980D00F68F63 /* UIImage+MultiFormat.m in Sources */,
 				807556601951980D00F68F63 /* UIImage+WebP.m in Sources */,
+				805B8D0F196E7B4500F2A694 /* DBSettingViewController.m in Sources */,
 				808CC942196A8B580048C99E /* AFDownloadRequestOperation.m in Sources */,
 				807115E6195B30DB00E953B1 /* DEMOLeftMenuViewController.m in Sources */,
 				8075565D1951980D00F68F63 /* UIButton+WebCache.m in Sources */,
@@ -1026,7 +1038,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "298D2547-7D91-4E6E-AA5B-59E014F023FC";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -1045,7 +1057,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "298D2547-7D91-4E6E-AA5B-59E014F023FC";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

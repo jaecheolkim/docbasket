@@ -26,22 +26,26 @@
 @class User;
 
 @interface Docbasket : NSObject
-
+@property (nonatomic, assign) BOOL checked;
 @property (nonatomic, strong) NSString *basketID;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *description;
 @property (nonatomic, strong) NSString *ownerID;
 @property (nonatomic, strong) NSString *begin_at;
 @property (nonatomic, strong) NSString *end_at;
+@property (nonatomic, strong) NSString *created_at;
+@property (nonatomic, strong) NSString *updated_at;
 @property (nonatomic, assign) double latitude;
 @property (nonatomic, assign) double longitude;
 @property (nonatomic, assign) double radius;
 @property (nonatomic, strong) NSString *address;
+@property (nonatomic, strong) NSString *telephone;
 @property (nonatomic, strong) NSString *poi_id;
 @property (nonatomic, strong) NSString *poi_title;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *image;
 @property (nonatomic, assign) NSUInteger permission;
+@property (nonatomic, assign) NSUInteger is_public;  // 0: 프라이빗 / 1:퍼블릭 / 
 
 @property (nonatomic, strong) User *user;
 

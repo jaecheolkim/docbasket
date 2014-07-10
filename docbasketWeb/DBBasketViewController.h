@@ -9,7 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "Docbasket.h"
 
+#import "EBPhotoPagesDataSource.h"
+#import "EBPhotoPagesDelegate.h"
+
 @interface DBBasketViewController : UIViewController
+<EBPhotoPagesDataSource, EBPhotoPagesDelegate>
 
 @property (strong, nonatomic) Docbasket *basket;
 

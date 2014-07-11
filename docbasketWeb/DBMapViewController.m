@@ -51,9 +51,9 @@
 
  
     self.mapView.showsUserLocation=YES;
-    self.mapView.camera.altitude = 200;
-    self.mapView.camera.pitch = 70;
-    self.mapView.showsBuildings = YES;
+//    self.mapView.camera.altitude = 200;
+//    self.mapView.camera.pitch = 70;
+//    self.mapView.showsBuildings = YES;
   
     self.basketPin.hidden = YES;
     

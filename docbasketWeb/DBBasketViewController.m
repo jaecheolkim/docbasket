@@ -251,7 +251,7 @@
         NSArray *photo1Comments = @[
                                     [DEMOComment commentWithProperties:@{@"commentText": @"This is a comment!",
                                                                          @"commentDate": [NSDate dateWithTimeInterval:-252750 sinceDate:[NSDate date]],
-                                                                         @"authorImage": [UIImage imageNamed:@"aaronalfred.jpg"],
+                                                                         @"authorImage": [UIImage imageNamed:@"login"],
                                                                          @"authorName" : @"Aaron Alfred"}]
                                     ];
         
@@ -428,145 +428,26 @@
         NSString *baseURL = docbasket[@"url"];
         
         NSMutableArray *photos = [NSMutableArray array];
-        for(int i = 1 ; i <= totalPages; i++){
+        
+        for(int i = 1 ; i <= totalPages; i++)
+        {
             
-            [photos addObject:[DEMOPhoto photoWithProperties:
-                               @{@"imageURL" : [NSString stringWithFormat:@"%@/page%d.png",baseURL,i],
-                                 @"imageFile": @"photo1.jpg",
-                                 @"attributedCaption" : [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"The author of Documents page %d .",i]],
-                                 @"tags": photo1Tags,
-                                 @"comments" : photo1Comments,
-                                 }]];
+            DEMOPhoto *photo = [DEMOPhoto photoWithProperties:
+                                @{@"imageURL" : [NSString stringWithFormat:@"%@/page%d.png",baseURL,i],
+                                  @"imageFile": @"photo1.jpg",
+                                  @"attributedCaption" : [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Documents page %d .",i]],
+                                  @"tags": photo1Tags,
+                                  @"comments" : photo1Comments,
+                                  }];
+            
+            [photo setDisabledDelete:YES];
+            
+            [photos addObject:photo];
             
         }
         
         [self setPhotos:photos];
-            
-//            [self setPhotos:@[
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo1.jpg",
-//                                 @"attributedCaption" : [[NSAttributedString alloc] initWithString:@"The author of EBPhotoPages."],
-//                                 @"tags": photo1Tags,
-//                                 @"comments" : photo1Comments,
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo2.jpg",
-//                                 @"caption": @"A Dungeon crawler!",
-//                                 @"tags" : photo2Tags,
-//                                 @"comments" : photo2Comments
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo6.png",
-//                                 @"caption": @"This photo demonstrates how the EBPhotoPagesController can prevent an image from being stretched if it's smaller than the bounds of the scrollview. The content mode switches from AspectFit to Center.",
-//                                 @"tags" : photo6Tags,
-//                                 @"comments" : photo6Comments,
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo3.jpg",
-//                                 @"caption": @"Ghost Peppers",
-//                                 @"tags" : photo3Tags,
-//                                 @"comments" : photo3Comments,
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo4.jpg",
-//                                 @"caption": @"San Francisco, a land where code is king.",
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo5.jpg",
-//                                 @"caption" : @"A new Instagram comic series drawn by Eddy with only markers and crackers.",
-//                                 @"comments" : photo5Comments,
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo7.jpg"
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo8.jpg",
-//                                 @"caption": @"This is a 3D printed zombie!",
-//                                 @"tags" : photo8Tags,
-//                                 @"comments" : photo8Comments,
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo9.jpg"
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo10.jpg"
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo11.jpg",
-//                                 @"caption": @"Startup Weekend Trophy - 1st place",
-//                                 @"tags" : photo11Tags,
-//                                 @"comments" : photo11Comments,
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo12.jpg"
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo17.jpg"
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo13.jpg",
-//                                 @"caption": @"IBM China",
-//                                 @"tags" : photo13Tags,
-//                                 @"comments" : photo13Comments,
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo14.jpg"
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo15.jpg"
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo16.jpg"
-//                                 }],
-//                              
-//                              [DEMOPhoto photoWithProperties:
-//                               @{@"imageFile": @"photo0.jpg",
-//                                 @"comments" : photo0Comments,
-//                                 @"caption"  : @"#selfie",
-//                                 @"tags" : photo0Tags,
-//                                 }],
-//                              
-//                              ]];
-        
-        DEMOPhoto *photo;
-        
-        photo = self.photos[0];
-        //[photo setDisabledDelete:YES];
-        
-        photo = self.photos[12];
-        [photo setDisabledActivities:YES];
-        [photo setDisabledCommenting:YES];
-        [photo setDisabledMiscActions:YES];
-        
-        
-        photo = self.photos[3];
-        [photo setDisabledCommenting:YES];
-        
-        photo = self.photos[4];
-        [photo setDisabledActivities:YES];
-        
-        photo = self.photos[5];
-        [photo setDisabledTagging:YES];
-        [photo setDisabledDeleteForTags:YES];
-        [photo setDisabledActivities:YES];
 
-        
     }
     
 
@@ -592,66 +473,41 @@
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         DEMOPhoto *photo = self.photos[index];
-//        if(self.simulateLatency){
-//            sleep(arc4random_uniform(2)+arc4random_uniform(2));
-//        }
-        
+
         NSLog(@"URL = %@", photo.imageURL);
         
-        NSURL *imgURL = photo.imageURL;//[NSURL URLWithString:@"https://www.apple.com/kr/home/images/og.jpg"]; //photo.imageURL;
-    
-    NSData *imageData = [NSData dataWithContentsOfURL:imgURL];
-    UIImage* image = [[UIImage alloc] initWithData:imageData];
-    if (image) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            handler(image);
-            
-        });
-    }
-    
-//        SDWebImageManager *manager = [SDWebImageManager sharedManager];
-//        [manager downloadWithURL:imgURL
-//                         options:0
-//                        progress:^(NSInteger receivedSize, NSInteger expectedSize)
-//         {
-//             // progression tracking code
-//             
-//             NSLog(@"expectedSize=%d / receivedSize=%d", expectedSize, receivedSize);
-//         }
-//                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished)
-//         {
-//             if (image)
-//             {
-//                 // do something with image
-//                 
-////                 handler(photo.image);
-//                 handler(image);
-//             }
-//             
-//         }];
-//
-//        sleep(arc4random_uniform(2)+arc4random_uniform(2));
-////        handler(photo.image);
-//    
-//        
-////    });
-    
-    
-    
-//    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-//    dispatch_async(queue, ^(void) {
-//        
+        NSURL *imgURL = photo.imageURL; //[NSURL URLWithString:@"https://www.apple.com/kr/home/images/og.jpg"]; //photo.imageURL;
+        
 //        NSData *imageData = [NSData dataWithContentsOfURL:imgURL];
 //        UIImage* image = [[UIImage alloc] initWithData:imageData];
 //        if (image) {
 //            dispatch_async(dispatch_get_main_queue(), ^{
 //                handler(image);
-//
 //            });
 //        }
-    });
-    sleep(arc4random_uniform(2)+arc4random_uniform(2));
     
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        [manager downloadWithURL:imgURL
+                         options:0
+                        progress:^(NSInteger receivedSize, NSInteger expectedSize)
+         {
+             // progression tracking code
+         }
+                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished)
+         {
+             if (image)
+             {
+                 // do something with image
+                 
+//                 handler(photo.image);
+                 handler(image);
+             }
+             
+         }];
+
+//        sleep(arc4random_uniform(2)+arc4random_uniform(2));
+//        handler(photo.image);
+     });
 }
 
 

@@ -27,21 +27,35 @@
 @interface DocbaketAPIClient : AFHTTPSessionManager
 
 + (instancetype)sharedClient;
-+ (void)loadDocBaskets:(void (^)(BOOL success))block;
-+ (void)postRegionCheck:(NSDictionary *)parameters withBasketID:(NSString*)basketID;
-+ (void)postUserTracking:(NSDictionary *)parameters;
-
-//+ (void)createBasket:(NSDictionary*)parameters;
-+ (void)createBasket:(NSDictionary*)parameters completionHandler:(void (^)(NSDictionary *result))block;
-
-+ (void)Login;
-
-+ (void)getBaskets;
-+ (void)getZipBasket:(void (^)(id result))block;
 
 + (void)checkNewDocBaskets:(CLLocation *)currentLocation completionHandler:(void (^)(BOOL success))block;
+
++ (void)postRegionCheck:(NSDictionary *)parameters withBasketID:(NSString*)basketID;
+
++ (void)postTag:(NSDictionary*)params completionHandler:(void (^)(NSDictionary *result))block;
+
++ (void)postComment:(NSDictionary*)params completionHandler:(void (^)(NSDictionary *result))block;
+
++ (void)postUserTracking:(NSDictionary *)parameters;
+
++ (void)createBasket:(NSDictionary*)parameters completionHandler:(void (^)(NSDictionary *result))block;
+
++ (void)Login:(void (^)(BOOL success))block;
+
++ (void)getZipBasket:(void (^)(id result))block;
+
 + (void)getBasketInfo:(NSString*)basketID completionHandler:(void (^)(NSDictionary *result))block;
 
++ (void)saveDocBasket:(NSString*)basketID completionHandler:(void (^)(BOOL success))block;
+
 + (void)performDownload:(NSString *)url completionHandler:(void (^)(id result))block;
+
+
+
+//+ (void)loadDocBaskets:(void (^)(BOOL success))block;
+
+//+ (void)createBasket:(NSDictionary*)parameters;
+
+//+ (void)getBaskets;
 
 @end

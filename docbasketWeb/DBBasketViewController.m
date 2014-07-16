@@ -15,25 +15,28 @@
 #import "Docbasket.h"
 
 
-#import "DEMOComment.h"
-#import "DEMOPhoto.h"
-#import "DEMOTag.h"
+#import "DBComment.h"
+#import "DBPhoto.h"
+#import "DBTag.h"
 #import <QuartzCore/QuartzCore.h>
 #import "EBPhotoPagesController.h"
 #import "EBPhotoPagesFactory.h"
 #import "EBTagPopover.h"
 #import "SDWebImageManager.h"
 
+#import "UIAlertView+Blocks.h"
 
 @interface DBBasketViewController () <UITableViewDataSource, UITableViewDelegate>
 {
-    NSString *basketID;
-    NSDictionary *basketInfo;
-
-    UIImage *qrCodeImage;
+     UIImage *qrCodeImage;
     
 }
+@property (nonatomic,strong) NSDictionary *basketInfo;
+@property (nonatomic,strong) NSString *basketID;
+@property (nonatomic,strong) NSString *documentID;
 @property (nonatomic,strong) NSArray *documents;
+@property (nonatomic,strong) NSArray *tags;
+@property (nonatomic,strong) NSArray *comments;
 
 @property(nonatomic, strong) IBOutlet UITableView *tableView;
 @property(nonatomic, strong) MEExpandableHeaderView *headerView;
@@ -58,65 +61,126 @@
     // Do any additional setup after loading the view.
     
     self.title = self.basket.title;
-    basketID = self.basket.basketID;
+    self.basketID = self.basket.basketID;
     
     [self setupHeaderView];
     
     //qrCodeImage = [UIImage drawQRCode:basketID];
     
-    [DocbaketAPIClient getBasketInfo:basketID completionHandler:^(NSDictionary *result)
-    {
-        basketInfo = result;
-        
-        self.documents = result[@"documents"];
-        
-        NSString *imageURL = result[@"image_thumb"];
-        
-        if(!IsEmpty(imageURL)) {
-            [_headerView.backgroundImageView setImageWithURL:[NSURL URLWithString:imageURL] ];
-        }
-        
-        //[headerView.backgroundImageView setImageWithURL:[NSURL URLWithString:result[@"image_thumb"]] ];
-
-//        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
-//        [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-//        
-//        //[headerView.backgroundImageView setImageWithURLRequest:request placeholderImage:nil success:nil failure:nil];
-//
-//        
-//        [headerView.backgroundImageView setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-//            headerView.backgroundImageView.image = image;
-//            headerView.originalImage = image;
-//        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-//            
-//        }];
-        
-        
-        [self.tableView reloadData];
-        
-        if(!IsEmpty(self.documents)){
-            int counter = 0;
-            for(NSDictionary *doc in self.documents) {
-                NSLog(@"result[%d] = %@", counter, doc);
-                counter++;
-            }
-        }
-        
-    }];
+    [self refreshView];
     
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
 
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0,0, 40, 20);
+    [button addTarget:self action:@selector(saveBasket:) forControlEvents:UIControlEventTouchDown];
+    [button setTitle:@"Save" forState:UIControlStateNormal];
     
+    // Make BarButton Item
+    UIBarButtonItem *navButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.navigationItem.rightBarButtonItem = navButton;
+
 }
+
+- (void)saveBasket:(id)sender
+{
+    [DocbaketAPIClient saveDocBasket:self.basketID completionHandler:^(BOOL success) {
+        NSString *msg = @"Success";
+        if(!success)
+            msg = @"Fail";
+        
+        [[[UIAlertView alloc] initWithTitle:@"Success"
+                                    message:@"save to my basket"
+                           cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
+        {
+            
+
+        }]
+                           otherButtonItems:nil, nil] show];
+    }];
+}
+
+
+//2014-07-15 18:35:23.136 docbasketWeb[16788:60b] JSON: {
+//    "begin_at" = "<null>";
+//    comments =     (
+//    );
+//    "created_at" = "2014-07-10T14:11:44.778Z";
+//    description = "\Ubb38\Uc11c \Ud14c\Uc2a4\Ud2b8\Uc6a9";
+//    documents =     (
+//                     {
+//                         id = "64ae39ca-48f2-40b3-885e-6d895d183895";
+//                         image = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b/HandoffProgrammingGuide.pdf";
+//                         title = "<null>";
+//                         "total_pages" = 21;
+//                         "trans_done" = 1;
+//                         url = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b/HandoffProgrammingGuide.pdf";
+//                     }
+//                     );
+//    "end_at" = "<null>";
+//    id = "b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b";
+//    image = "http://0c86568b33ba49994159-f6bbd63f18dffb4beb7359283894d4fe.r82.cf6.rackcdn.com/Adobe-PDF-Document-icon.png";
+//    "is_public" = 1;
+//    latitude = "37.5618353639392";
+//    longitude = "126.989598870277";
+//    permission =     (
+//    );
+//    "poi_id" = "<null>";
+//    "poi_title" = "<null>";
+//    range = "<null>";
+//    tags =     (
+//    );
+//    title = "\Ubb38\Uc11c \Uc0d8\Ud50c";
+//    "updated_at" = "2014-07-10T14:11:44.778Z";
+//    "user_id" = "bb5774c9-2c4e-41d0-b792-530e295e1ca6";
+//}
 
 - (void)refreshView
 {
-    
-    
-    [self.tableView reloadData];
+    [DocbaketAPIClient getBasketInfo:self.basketID completionHandler:^(NSDictionary *result)
+     {
+         if(!IsEmpty(result)){
+             
+             self.basketInfo = result;
+             
+             self.tags = self.basketInfo[@"tags"];
+             self.comments = self.basketInfo[@"comments"];
+             self.documents = self.basketInfo[@"documents"];
+             
+             NSString *imagePath = self.basketInfo[@"image"];
+
+             NSString *fileName = [imagePath lastPathComponent];
+             NSString *path = [imagePath stringByDeletingLastPathComponent];
+             NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"thumb", fileName ];
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if(!IsEmpty(thumbPath)) {
+                     [_headerView.backgroundImageView setImageWithURL:[NSURL URLWithString:thumbPath] ];
+                 }
+                 
+                 [self.tableView reloadData];
+                 
+             });
+             
+         } else {
+             
+             [[[UIAlertView alloc] initWithTitle:@"Need refresh."
+                                         message:@"refresh again"
+                                cancelButtonItem:[RIButtonItem itemWithLabel:@"Yes"
+                                                                      action:^{
+                                                                          
+                                                                          [self.navigationController popToRootViewControllerAnimated:YES];
+                                                                          
+                                                                      }]
+                                otherButtonItems:nil, nil] show];
+             
+         }
+         
+         
+     }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -125,16 +189,48 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    NSLog(@"didRotateFromInterfaceOrientation");
+    
+    [self setupHeaderView];
+}
+
+
+//- (void)fixScreenFrame
+//{
+//    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
+//    CGRect screenFrame = [[UIScreen mainScreen] bounds];
+//    
+//    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
+//        screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
+//    }
+//    
+// }
+
+
 #pragma mark - Setup
 
 - (void)setupHeaderView
 {
-    CGSize headerViewSize = CGSizeMake(320, 200);
+    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
+    CGRect screenFrame = [[UIScreen mainScreen] bounds];
+    
+    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
+        screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
+    }
+    
+    CGSize headerViewSize = CGSizeMake(screenFrame.size.width, 200);
     UIImage *backgroundImage = [UIImage imageNamed:@"beach"];
     NSArray *pages = @[[self createPageViewWithText:@"First page"],
                        [self createPageViewWithText:@"Second page"],
                        [self createPageViewWithText:@"Third page"],
                        [self createPageViewWithText:@"Fourth page"]];
+    
+    
+    if(self.headerView){
+        [self setHeaderView:nil];
+    }
     
     self.headerView = [[MEExpandableHeaderView alloc] initWithSize:headerViewSize
                                                                       backgroundImage:backgroundImage
@@ -184,8 +280,15 @@
     }
     
     NSDictionary *docbasket = [self.documents objectAtIndex:indexPath.row];
-    [cell.imageView setImageWithURL:[NSURL URLWithString:docbasket[@"image_small_thumb"]]];
-    cell.textLabel.text = docbasket[@"image_small_thumb"];
+    
+    NSString *imagePath = docbasket[@"image"];
+    NSString *fileName = [imagePath lastPathComponent];//[[image lastPathComponent] stringByDeletingPathExtension];
+    NSString *path = [imagePath stringByDeletingLastPathComponent];
+    NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"small_thumb", fileName ];
+
+    
+    [cell.imageView setImageWithURL:[NSURL URLWithString:thumbPath]];
+    cell.textLabel.text = fileName;
 
     return cell;
 }
@@ -199,10 +302,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *docbasket = [self.documents objectAtIndex:indexPath.row];
-    [self initPhotos:docbasket];
-    EBPhotoPagesController *photoPagesController = [[EBPhotoPagesController alloc] initWithDataSource:self delegate:self];
-    [self presentViewController:photoPagesController animated:YES completion:nil];
+    [self selectDocument:indexPath.row];
+    
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -228,219 +329,136 @@
 
 
 #pragma mark - EPPhotoPagesController
-
-- (void)initPhotos:(NSDictionary *)docbasket
+- (NSArray*)getComments:(NSArray*)arrays
 {
-//    2014-07-11 00:06:59.756 docbasketWeb[12135:60b] result[0] = {
-//        id = "64ae39ca-48f2-40b3-885e-6d895d183895";
-//        image = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b/HandoffProgrammingGuide.pdf";
-//        "image_small_thumb" = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b/small_thumb_HandoffProgrammingGuide.pdf";
-//        "image_thumb" = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b/thumb_HandoffProgrammingGuide.pdf";
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+    
+    NSMutableArray *commentArray = [NSMutableArray array];
+    for(NSDictionary *data in arrays){
+        
+
+        NSDate *date = [dateFormatter dateFromString:data[@"created_at"]];
+        
+        NSDictionary *commentData = @{
+                                  @"commentText"    : data[@"description"],
+                                  @"commentDate"    : [NSDate dateWithTimeInterval:-252750 sinceDate:date],
+                                  @"authorImage"    : [UIImage imageNamed:@"login"],
+                                  @"authorName"     : @"test user",
+                                  @"basket_id"      : data[@"basket_id"],
+                                  @"document_id"    : data[@"document_id"],
+                                  @"comment_id"     : data[@"id"],
+                                  @"user_id"        : data[@"user_id"]
+                                  };
+
+        [commentArray addObject:[DBComment commentWithProperties:commentData]];
+    }
+    
+    return commentArray;
+}
+
+- (NSArray*)getTags:(NSArray*)arrays
+{
+//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+    
+    NSMutableArray *tagArray = [NSMutableArray array];
+    for(NSDictionary *data in arrays){
+        
+        //NSDate *date = [dateFormatter dateFromString:data[@"created_at"]];
+        double position_x = [data[@"cord_x"] doubleValue];
+        double position_y = [data[@"cord_y"] doubleValue];
+        
+        CGPoint position = CGPointMake(position_x, position_y);
+        NSDictionary *tagData = @{
+                                      @"tagText"        : data[@"description"],
+                                      @"tagPosition"    : [NSValue valueWithCGPoint:position],
+                                      @"basket_id"      : data[@"basket_id"],
+                                      @"document_id"    : data[@"document_id"],
+                                      @"tag_id"     : data[@"id"],
+                                      @"user_id"        : data[@"user_id"]
+                                      };
+
+        [tagArray addObject:[DBTag tagWithProperties:tagData]];
+    }
+    
+    return tagArray;
+}
+
+- (void)selectDocument:(NSUInteger)index
+{
+    NSDictionary *document = [self.documents objectAtIndex:index];
+    [self initDocument:document];
+    EBPhotoPagesController *photoPagesController = [[EBPhotoPagesController alloc] initWithDataSource:self delegate:self];
+    [self presentViewController:photoPagesController animated:YES completion:nil];
+
+}
+
+- (void)initDocument:(NSDictionary *)document
+{
+//    2014-07-15 14:17:11.435 docbasketWeb[16430:60b] basket = {
+//        id = "410d1e2c-f6f4-4ba8-971e-2f58689bce70";
+//        image = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/f54669cc-40d4-4092-b2ad-f2d8e44eebcf/hogwarts_maknaes.jpg";
 //        title = "<null>";
-//        "total_pages" = 21;
-//        "trans_done" = 1;
-//        url = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b/HandoffProgrammingGuide.pdf";
+//        "total_pages" = "<null>";
+//        "trans_done" = "<null>";
+//        url = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/f54669cc-40d4-4092-b2ad-f2d8e44eebcf/hogwarts_maknaes.jpg";
 //    }
 
-    NSLog(@"basket = %@", docbasket);
+    NSLog(@"document = %@", document);
    
-    int trans_done = (int)(IsEmpty(docbasket[@"trans_done"])? 0 : [docbasket[@"trans_done"] integerValue]);
+    int trans_done = (int)(IsEmpty(document[@"trans_done"])? 0 : [document[@"trans_done"] integerValue]);
 
-    if(trans_done) {
+    if(TRUE) {
+        
+        self.documentID = document[@"id"];
+        
+        int totalPages = (int)(IsEmpty(document[@"total_pages"])? 0 : [document[@"total_pages"] integerValue]);
+        
+
+
         
         NSArray *photo1Comments = @[
-                                    [DEMOComment commentWithProperties:@{@"commentText": @"This is a comment!",
+                                    [DBComment commentWithProperties:@{@"commentText": @"This is a comment!",
                                                                          @"commentDate": [NSDate dateWithTimeInterval:-252750 sinceDate:[NSDate date]],
                                                                          @"authorImage": [UIImage imageNamed:@"login"],
-                                                                         @"authorName" : @"Aaron Alfred"}]
+                                                                         @"authorName" : @"user1"}]
                                     ];
         
-//        NSArray *photo5Comments = @[
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"Looks fun, and greasy!",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-232500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"vladarbatov.jpg"],
-//                                                                         @"authorName" : @"VLADARBATOV"}]
-//                                    ];
-//        
         NSArray *photo1Tags = @[
-                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.565, 0.74)],
-                                                             @"tagText" : @"Eddy Borja"}],
+                                [DBTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.565, 0.74)],
+                                                             @"tagText" : @"tag test"}],
                                 ];
-//
-//        NSArray *photo13Tags = @[
-//                                 [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.6874, 0.74)],
-//                                                              @"tagText" : @"Eddy Borja (爱迪)"}],
-//                                 ];
-//        
-//        NSArray *photo0Tags = @[
-//                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.6874, 0.53)],
-//                                                             @"tagText" : @"Karla"}],
-//                                ];
-//        
-//        
-//        
-//        NSArray *photo2Comments = @[
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"What is this?",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-2341500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"iqonicd.jpg"],
-//                                                                         @"authorName" : @"IqonICD"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"It's a Lego minifig.",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-2262500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"billskenney.jpg"],
-//                                                                         @"authorName" : @"Bill S. Kenney"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"Pretty cool.",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-212500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"liang.jpg"],
-//                                                                         @"authorName" : @"liang"}],
-//                                    ];
-//        
-//        NSArray *photo2Tags = @[
-//                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.11, 0.6)],
-//                                                             @"tagText" : @"Sword"}],
-//                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.60, 0.37)],
-//                                                             @"tagText" : @"minifig"}],
-//                                ];
-//        
-//        NSArray *photo8Tags = @[
-//                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.5, 0.65)],
-//                                                             @"tagText" : @"guts!"}],
-//                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.6, 0.3)],
-//                                                             @"tagText" : @"ZOmBiE!!"}],
-//                                ];
-//        
-//        NSArray *photo8Comments = @[
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"GDC?",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-2741500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"kaelifa.jpg"],
-//                                                                         @"authorName" : @"Kaelifa"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"Yup.",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-2499500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"eddyborja.jpg"],
-//                                                                         @"authorName" : @"Eddy Borja"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"I want a 3D Printer...",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-2299500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"tjrus.jpg"],
-//                                                                         @"authorName" : @"TJRus"}],
-//                                    ];
-//        
-//        NSArray *photo3Comments = @[
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"Super hot peppers.",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-2991500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"g3d.jpg"],
-//                                                                         @"authorName" : @"g3d"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"Wow, that's a lot of peppers.",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-2881500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"amandabuzard.jpg"],
-//                                                                         @"authorName" : @"AmandaBuzard"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"I don't know what this means....",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-27700 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"ateneupopular.jpg"],
-//                                                                         @"authorName" : @"ateneupopular"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"How much did these cost?",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-26000 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"theaccordance.jpg"],
-//                                                                         @"authorName" : @"The Accordance"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"Pretty cheap, got the seeds from Australia.",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-21500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"eddyborja.jpg"],
-//                                                                         @"authorName" : @"Eddy Borja"}],
-//                                    ];
-//        
-//        NSArray *photo3Tags = @[
-//                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.42, 0.12)],
-//                                                             @"tagText" : @"Damn"}],
-//                                ];
-//        
-//        NSArray *photo11Tags = @[
-//                                 [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.5, 0.55)],
-//                                                              @"tagText" : @"Team GoThriftGo"}],
-//                                 ];
-//        
-//        NSArray *photo11Comments = @[
-//                                     
-//                                     [DEMOComment commentWithProperties:@{@"commentText": @"Congrats!",
-//                                                                          @"commentDate": [NSDate dateWithTimeInterval:-2446500 sinceDate:[NSDate date]],
-//                                                                          @"authorImage": [UIImage imageNamed:@"adellecharles.jpg"],
-//                                                                          @"authorName" : @"Adelle Charles"}],
-//                                     [DEMOComment commentWithProperties:@{@"commentText": @"follow up Series A round $2.2 million USD!",
-//                                                                          @"commentDate": [NSDate dateWithTimeInterval:-2346500 sinceDate:[NSDate date]],
-//                                                                          @"authorImage": [UIImage imageNamed:@"billskenney.jpg"],
-//                                                                          @"authorName" : @"Bill S. Kenney"}],
-//                                     
-//                                     ];
-//        
-//        NSArray *photo13Comments = @[
-//                                     
-//                                     [DEMOComment commentWithProperties:@{@"commentText": @"走在街上",
-//                                                                          @"commentDate": [NSDate dateWithTimeInterval:-4446500 sinceDate:[NSDate date]],
-//                                                                          @"authorImage": [UIImage imageNamed:@"eddyborja.jpg"],
-//                                                                          @"authorName" : @"Eddy Borja"}],
-//                                     
-//                                     ];
-//        
-//        NSArray *photo0Comments = @[
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"Great photo!",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-241500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"megdraws.jpg"],
-//                                                                         @"authorName" : @"Meg Draws"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"Pretty.",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-21800 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"iqonicd.jpg"],
-//                                                                         @"authorName" : @"IqonICD"}],
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"Wow!",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-2600 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"karsh.jpg"],
-//                                                                         @"authorName" : @"karsh"}],
-//                                    ];
-//        
-//        NSArray *photo6Tags = @[
-//                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0, 0)],
-//                                                             @"tagText" : @"0,0"}],
-//                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.5, 0.5)],
-//                                                             @"tagText" : @"Center"}],
-//                                [DEMOTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(1, 1)],
-//                                                             @"tagText" : @"1,1"}],
-//                                ];
-//        
-//        NSArray *photo6Comments = @[
-//                                    
-//                                    [DEMOComment commentWithProperties:@{@"commentText": @"That's a cool feature, it's always annoying when small images get blown up and pixelated.",
-//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-2221500 sinceDate:[NSDate date]],
-//                                                                         @"authorImage": [UIImage imageNamed:@"kerem.jpg"],
-//                                                                         @"authorName" : @"Kerem"}],
-//                                    ];
+        
 
         
-        
-        int totalPages = (int)(IsEmpty(docbasket[@"total_pages"])? 0 : [docbasket[@"total_pages"] integerValue]);
-        
-        NSString *baseURL = docbasket[@"url"];
+        NSString *baseURL = document[@"url"];
         
         NSMutableArray *photos = [NSMutableArray array];
         
+        
         for(int i = 1 ; i <= totalPages; i++)
         {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K == %d", @"page", i-1];
+            NSArray *filteredCommentArray = [document[@"commets"] filteredArrayUsingPredicate:predicate];
+            NSArray *filteredTagArray = [document[@"tags"] filteredArrayUsingPredicate:predicate];
+            NSLog(@"filteredCommentArray = %@", filteredCommentArray);
             
-            DEMOPhoto *photo = [DEMOPhoto photoWithProperties:
+            NSArray *commentArray = [self getComments:filteredCommentArray];
+            NSArray *tagArray = [self getTags:filteredTagArray];
+            NSLog(@"comment array = %@", commentArray);
+
+            
+            
+            DBPhoto *photo = [DBPhoto photoWithProperties:
                                 @{@"imageURL" : [NSString stringWithFormat:@"%@/page%d.png",baseURL,i],
                                   @"imageFile": @"photo1.jpg",
                                   @"attributedCaption" : [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Documents page %d .",i]],
-                                  @"tags": photo1Tags,
-                                  @"comments" : photo1Comments,
+                                  @"tags": tagArray,
+                                  @"comments" : commentArray,
                                   }];
             
-            [photo setDisabledDelete:YES];
+            //[photo setDisabledDelete:YES];
             
             [photos addObject:photo];
             
@@ -472,20 +490,12 @@
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        DEMOPhoto *photo = self.photos[index];
+        DBPhoto *photo = self.photos[index];
 
         NSLog(@"URL = %@", photo.imageURL);
         
-        NSURL *imgURL = photo.imageURL; //[NSURL URLWithString:@"https://www.apple.com/kr/home/images/og.jpg"]; //photo.imageURL;
+        NSURL *imgURL = photo.imageURL;
         
-//        NSData *imageData = [NSData dataWithContentsOfURL:imgURL];
-//        UIImage* image = [[UIImage alloc] initWithData:imageData];
-//        if (image) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                handler(image);
-//            });
-//        }
-    
         SDWebImageManager *manager = [SDWebImageManager sharedManager];
         [manager downloadWithURL:imgURL
                          options:0
@@ -517,7 +527,7 @@ attributedCaptionForPhotoAtIndex:(NSInteger)index
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        DEMOPhoto *photo = self.photos[index];
+        DBPhoto *photo = self.photos[index];
 //        if(self.simulateLatency){
 //            sleep(arc4random_uniform(2)+arc4random_uniform(2));
 //        }
@@ -532,7 +542,7 @@ attributedCaptionForPhotoAtIndex:(NSInteger)index
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        DEMOPhoto *photo = self.photos[index];
+        DBPhoto *photo = self.photos[index];
 //        if(self.simulateLatency){
 //            sleep(arc4random_uniform(2)+arc4random_uniform(2));
 //        }
@@ -548,7 +558,7 @@ attributedCaptionForPhotoAtIndex:(NSInteger)index
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        DEMOPhoto *photo = self.photos[index];
+        DBPhoto *photo = self.photos[index];
 //        if(self.simulateLatency){
 //            sleep(arc4random_uniform(2)+arc4random_uniform(2));
 //        }
@@ -563,7 +573,7 @@ attributedCaptionForPhotoAtIndex:(NSInteger)index
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        DEMOPhoto *photo = self.photos[index];
+        DBPhoto *photo = self.photos[index];
 //        if(self.simulateLatency){
 //            sleep(arc4random_uniform(2)+arc4random_uniform(2));
 //        }
@@ -579,7 +589,7 @@ attributedCaptionForPhotoAtIndex:(NSInteger)index
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        DEMOPhoto *photo = self.photos[index];
+        DBPhoto *photo = self.photos[index];
 //        if(self.simulateLatency){
 //            sleep(arc4random_uniform(2)+arc4random_uniform(2));
 //        }
@@ -593,7 +603,7 @@ attributedCaptionForPhotoAtIndex:(NSInteger)index
 numberOfcommentsForPhotoAtIndex:(NSInteger)index
            completionHandler:(void (^)(NSInteger))handler
 {
-    DEMOPhoto *photo = self.photos[index];
+    DBPhoto *photo = self.photos[index];
 //    if(self.simulateLatency){
 //        sleep(arc4random_uniform(2)+arc4random_uniform(2));
 //    }
@@ -615,7 +625,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
             didDeleteComment:(id<EBPhotoCommentProtocol>)deletedComment
              forPhotoAtIndex:(NSInteger)index
 {
-    DEMOPhoto *photo = self.photos[index];
+    DBPhoto *photo = self.photos[index];
     NSMutableArray *remainingComments = [NSMutableArray arrayWithArray:photo.comments];
     [remainingComments removeObject:deletedComment];
     [photo setComments:[NSArray arrayWithArray:remainingComments]];
@@ -626,7 +636,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
          didDeleteTagPopover:(EBTagPopover *)tagPopover
               inPhotoAtIndex:(NSInteger)index
 {
-    DEMOPhoto *photo = self.photos[index];
+    DBPhoto *photo = self.photos[index];
     NSMutableArray *remainingTags = [NSMutableArray arrayWithArray:photo.tags];
     id<EBPhotoTagProtocol> tagData = [tagPopover dataSource];
     [remainingTags removeObject:tagData];
@@ -637,7 +647,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
        didDeletePhotoAtIndex:(NSInteger)index
 {
     NSLog(@"Delete photo at index %li", (long)index);
-    DEMOPhoto *deletedPhoto = self.photos[index];
+    DBPhoto *deletedPhoto = self.photos[index];
     NSMutableArray *remainingPhotos = [NSMutableArray arrayWithArray:self.photos];
     [remainingPhotos removeObject:deletedPhoto];
     [self setPhotos:remainingPhotos];
@@ -651,9 +661,9 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
 {
     NSLog(@"add new tag %@", tagText);
     
-    DEMOPhoto *photo = self.photos[index];
+    DBPhoto *photo = self.photos[index];
     
-    DEMOTag *newTag = [DEMOTag tagWithProperties:@{
+    DBTag *newTag = [DBTag tagWithProperties:@{
                                                    @"tagPosition" : [NSValue valueWithCGPoint:tagLocation],
                                                    @"tagText" : tagText}];
     
@@ -662,6 +672,11 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
     
     [photo setTags:[NSArray arrayWithArray:mutableTags]];
     
+    ///api/tags      POST  (header: token), basket_id, document_id, page, description, cord_x, cord_y
+    NSDictionary *param = @{@"basket_id":self.basketID,@"document_id":self.documentID, @"page":@(index), @"description":tagText, @"cord_x":@(tagLocation.x), @"cord_y":@(tagLocation.y) };
+    [DocbaketAPIClient postTag:param completionHandler:^(NSDictionary *result) {
+        
+    }];
 }
 
 
@@ -669,18 +684,27 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
               didPostComment:(NSString *)comment
              forPhotoAtIndex:(NSInteger)index
 {
-    DEMOComment *newComment = [DEMOComment
-                               commentWithProperties:@{@"commentText": comment,
-                                                       @"commentDate": [NSDate date],
-                                                       @"authorImage": [UIImage imageNamed:@"guestAv.png"],
-                                                       @"authorName" : @"Guest User"}];
+    NSString *userName = (!IsEmpty(GVALUE.userName))?GVALUE.userName:@"Guest user";
+    
+    DBComment *newComment = [DBComment commentWithProperties:@{@"commentText": comment,
+                                                                   @"commentDate": [NSDate date],
+                                                                   @"authorImage": [UIImage imageNamed:@"login.png"],
+                                                                   @"authorName" : userName } ];
     [newComment setUserCreated:YES];
     
-    DEMOPhoto *photo = self.photos[index];
+    DBPhoto *photo = self.photos[index];
     [photo addComment:newComment];
     
     [controller setComments:photo.comments forPhotoAtIndex:index];
-}
+    
+//    /api/comments      POST  (header: token), basket_id, document_id, page, description
+    
+    NSDictionary *param = @{@"basket_id":self.basketID,@"document_id":self.documentID, @"page":@(index), @"description":comment};
+    [DocbaketAPIClient postComment:param completionHandler:^(NSDictionary *result)
+    {
+        
+    }];
+ }
 
 
 
@@ -692,7 +716,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
         return NO;
     }
     
-    DEMOPhoto *photo = (DEMOPhoto *)self.photos[index];
+    DBPhoto *photo = (DBPhoto *)self.photos[index];
     if(photo.disabledTagging){
         return NO;
     }
@@ -705,7 +729,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
              forPhotoAtIndex:(NSInteger)index
 {
     //We assume all comment objects used in the demo are of type DEMOComment
-    DEMOComment *demoComment = (DEMOComment *)comment;
+    DBComment *demoComment = (DBComment *)comment;
     
     if(demoComment.isUserCreated){
         //Demo user can only delete his or her own comments.
@@ -722,7 +746,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
         return NO;
     }
     
-    DEMOPhoto *photo = (DEMOPhoto *)self.photos[index];
+    DBPhoto *photo = (DBPhoto *)self.photos[index];
     if(photo.disabledCommenting){
         return NO;
     } else {
@@ -737,7 +761,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
         return NO;
     }
     
-    DEMOPhoto *photo = (DEMOPhoto *)self.photos[index];
+    DBPhoto *photo = (DBPhoto *)self.photos[index];
     if(photo.disabledActivities){
         return NO;
     } else {
@@ -751,7 +775,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
         return NO;
     }
     
-    DEMOPhoto *photo = (DEMOPhoto *)self.photos[index];
+    DBPhoto *photo = (DBPhoto *)self.photos[index];
     if(photo.disabledMiscActions){
         return NO;
     } else {
@@ -765,7 +789,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
         return NO;
     }
     
-    DEMOPhoto *photo = (DEMOPhoto *)self.photos[index];
+    DBPhoto *photo = (DBPhoto *)self.photos[index];
     if(photo.disabledDelete){
         return NO;
     } else {
@@ -785,7 +809,7 @@ numberOfcommentsForPhotoAtIndex:(NSInteger)index
         return NO;
     }
     
-    DEMOPhoto *photo = (DEMOPhoto *)self.photos[index];
+    DBPhoto *photo = (DBPhoto *)self.photos[index];
     if(photo.disabledDeleteForTags){
         return NO;
     }

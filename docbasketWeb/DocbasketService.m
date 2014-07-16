@@ -261,18 +261,41 @@
 
 
 
+
 - (void)pushLocalNotification:(NSString *)event
 {
-    UIApplication *app = [UIApplication sharedApplication];
-    UILocalNotification *noti = [[UILocalNotification alloc] init];
-    if (noti) {
-        noti.fireDate =  [NSDate dateWithTimeIntervalSinceNow:0.1];
-        noti.timeZone = [NSTimeZone defaultTimeZone];
-        noti.alertBody = event;
-        noti.alertAction = @"GOGO";
-        noti.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
-        [app presentLocalNotificationNow:noti];
-    }
+//    GVALUE.badgeValue = (int)([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
+//
+//    if(([[UIApplication sharedApplication ]applicationState]==UIApplicationStateBackground ||
+//        [[UIApplication sharedApplication ]applicationState]==UIApplicationStateInactive) )
+//    {
+//        // Background mode
+    
+        UIApplication *app = [UIApplication sharedApplication];
+        UILocalNotification *noti = [[UILocalNotification alloc] init];
+        if (noti) {
+            noti.fireDate =  [NSDate dateWithTimeIntervalSinceNow:0.1];
+            noti.timeZone = [NSTimeZone defaultTimeZone];
+            noti.alertBody = event;
+            noti.alertAction = @"GOGO";
+            //noti.applicationIconBadgeNumber = GVALUE.badgeValue;
+            [app presentLocalNotificationNow:noti];
+        }
+
+        
+//    } else {
+//        //foreground mode
+//
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"DBCommonViewControllerEventHandler"
+//                                                            object:self
+//                                                          userInfo:@{@"Msg":@"updateBadge", @"badgeValue":@(GVALUE.badgeValue)}];
+//        
+//
+//
+//        
+//    }
+    
+    
     
     NSLog(@"Done.");
 }

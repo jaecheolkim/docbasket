@@ -26,6 +26,7 @@
 @class User;
 
 @interface Docbasket : NSObject
+
 @property (nonatomic, assign) BOOL checked;
 @property (nonatomic, strong) NSString *basketID;
 @property (nonatomic, strong) NSString *title;
@@ -44,8 +45,12 @@
 @property (nonatomic, strong) NSString *poi_title;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *image;
-@property (nonatomic, assign) NSUInteger permission;
 @property (nonatomic, assign) NSUInteger is_public;  // 0: 프라이빗 / 1:퍼블릭 / 
+@property (nonatomic, assign) NSArray *permission;
+@property (nonatomic, assign) NSArray *documents;
+@property (nonatomic, assign) NSArray *tags;
+@property (nonatomic, assign) NSArray *comments;
+
 
 @property (nonatomic, strong) User *user;
 
@@ -53,7 +58,6 @@
 
 - (CLCircularRegion *)region;
 
-
-+ (NSURLSessionDataTask *)getBasktesWithBlock:(void (^)(NSArray *basktes, NSError *error))block;
+//+ (NSURLSessionDataTask *)getBasktesWithBlock:(void (^)(NSArray *basktes, NSError *error))block;
 
 @end

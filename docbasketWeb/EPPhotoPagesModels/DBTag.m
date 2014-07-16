@@ -13,14 +13,14 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "DEMOTag.h"
+#import "DBTag.h"
 
 
-@implementation DEMOTag
+@implementation DBTag
 
 + (instancetype)tagWithProperties:(NSDictionary*)tagInfo
 {
-    return [[DEMOTag alloc] initWithProperties:tagInfo];
+    return [[DBTag alloc] initWithProperties:tagInfo];
 }
 
 - (id)initWithProperties:(NSDictionary *)tagInfo
@@ -32,6 +32,12 @@
         [self setText:tagInfo[@"tagText"]];
         [self setAttributedText:tagInfo[@"attributedTagText"]];
         [self setMetaData:tagInfo[@"metaData"]];
+        
+        [self setTagID:tagInfo[@"tag_id"]];
+        [self setBasketID:tagInfo[@"basket_id"]];
+        [self setDocumentID:tagInfo[@"document_id"]];
+        [self setUserID:tagInfo[@"user_id"]];
+
     }
     return self;
 }

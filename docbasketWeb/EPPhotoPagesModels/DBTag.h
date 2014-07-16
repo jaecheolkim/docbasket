@@ -1,5 +1,5 @@
 //
-//  DEMOComment.h
+//  DEMOTag.h
 //  EBPhotoPagesControllerDemo
 //
 //  Created by Eddy Borja.
@@ -14,20 +14,24 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "EBPhotoCommentProtocol.h"
+#import <QuartzCore/QuartzCore.h>
+#import <UIKit/UIKit.h>
+#import "EBPhotoTagProtocol.h"
 
-@interface DEMOComment : NSObject <EBPhotoCommentProtocol>
+@interface DBTag : NSObject <EBPhotoTagProtocol>
 
++ (instancetype)tagWithProperties:(NSDictionary*)tagInfo;
+- (id)initWithProperties:(NSDictionary *)tagInfo;
 
-+ (instancetype)commentWithProperties:(NSDictionary*)commentInfo;
-- (id)initWithProperties:(NSDictionary *)commentInfo;
-
-@property (assign, getter=isUserCreated) BOOL userCreated;
+@property (assign) CGPoint tagPosition;
 @property (strong) NSAttributedString *attributedText;
 @property (strong) NSString *text;
-@property (strong) NSDate *date;
-@property (strong) NSString *name;
-@property (strong) UIImage *image;
 @property (strong) NSDictionary *metaData;
+
+@property (strong) NSString *tagID;
+@property (strong) NSString *basketID;
+@property (strong) NSString *documentID;
+@property (strong) NSString *userID;
+@property (assign) int page;
 
 @end

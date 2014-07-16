@@ -1,5 +1,5 @@
 //
-//  DEMOPhoto.h
+//  DEMOComment.h
 //  EBPhotoPagesControllerDemo
 //
 //  Created by Eddy Borja.
@@ -14,33 +14,26 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import "EBPhotoCommentProtocol.h"
 
-@class DEMOComment;
-@interface DEMOPhoto : NSObject
+@interface DBComment : NSObject <EBPhotoCommentProtocol>
 
-//if set true, DEMOPhotos will sleep for a random duration before returning data
-@property (assign) BOOL simulateLatency;
-@property (strong) NSURL *imageURL;
+
++ (instancetype)commentWithProperties:(NSDictionary*)commentInfo;
+- (id)initWithProperties:(NSDictionary *)commentInfo;
+
+@property (assign, getter=isUserCreated) BOOL userCreated;
+@property (strong) NSAttributedString *attributedText;
+@property (strong) NSString *text;
+@property (strong) NSDate *date;
+@property (strong) NSString *name;
 @property (strong) UIImage *image;
-@property (strong) NSString *caption;
-@property (strong) NSAttributedString *attributedCaption;
-@property (strong) NSArray *tags;
-@property (strong) NSArray *comments;
 @property (strong) NSDictionary *metaData;
 
-@property (assign) BOOL disabledTagging;
-@property (assign) BOOL disabledCommenting;
-@property (assign) BOOL disabledActivities;
-@property (assign) BOOL disabledDelete;
-@property (assign) BOOL disabledDeleteForTags;
-@property (assign) BOOL disabledDeleteForComments;
-@property (assign) BOOL disabledMiscActions;
-
-
-+ (instancetype)photoWithProperties:(NSDictionary *)photoInfo;
-- (id)initWithProperties:(NSDictionary *)photoInfo;
-
-- (void)addComment:(DEMOComment *)comment;
+@property (strong) NSString *commentID;
+@property (strong) NSString *basketID;
+@property (strong) NSString *documentID;
+@property (strong) NSString *userID;
+@property (assign) int page;
 
 @end

@@ -11,5 +11,10 @@
 
 @interface DBLoginViewController : DBCommonViewController <UIWebViewDelegate>
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (nonatomic, weak) IBOutlet UILabel *hiLabel;
+@property (nonatomic, weak) IBOutlet UILabel *nameLabel;
+@property (nonatomic, weak) IBOutlet UIButton *logoutButton;
+
+- (IBAction)logoutButtonHandler:(id)sender;
 
 @end

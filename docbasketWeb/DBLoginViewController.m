@@ -28,16 +28,61 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.title = @"Log in";
     
-    [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:MAINURL]]];
+}
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self checkLogin];
+    
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)checkLogin
+{
+    NSString *userID = GVALUE.userID;
+    NSString *token = GVALUE.token;
+    
+    if(!IsEmpty(userID) && !IsEmpty(token) ) {
+        self.title = @"Log out";
+        _webView.hidden = YES;
+        
+        _hiLabel.hidden = NO;
+        _nameLabel.hidden = NO;
+        _logoutButton.hidden = NO;
+        
+        _nameLabel.text = GVALUE.userID;
+        
+        
+    } else {
+        self.title = @"Log in";
+        _hiLabel.hidden = YES;
+        _nameLabel.hidden = YES;
+        _logoutButton.hidden = YES;
+        
+        _webView.hidden = NO;
+        [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:MAINURL]]];
+        
+    }
+
+}
+
+- (void)logOut
+{
+    
+    [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:LOGOUTURL]]];
+    
+    [GVALUE setUserID:@""];
+    [GVALUE setUserName:@""];
+    [GVALUE setToken:@""];
+    [self checkLogin];
 }
 
 /*
@@ -51,17 +96,31 @@
 }
 */
 
+- (IBAction)logoutButtonHandler:(id)sender
+{
+    [self logOut];
+}
+
 - (void)saveUserID
 {
     id userID =  [self javaScriptFromString:@" $('*[data-user-id]').data('user-id')"];
-    if ([userID isKindOfClass:[NSString class]]) {
+    id userName = [self javaScriptFromString:@" $('*[data-user-name]').data('user-name')"];
+    
+    if ([userID isKindOfClass:[NSString class]] && [userName isKindOfClass:[NSString class]])
+    {
         
-        [[GlobalValue sharedInstance] setUserID:userID];
+        [GVALUE setUserID:userID];
+        [GVALUE setUserName:userName];
+        
         
         NSLog(@"Saved UserID = %@",[[GlobalValue sharedInstance] userID]);
         
         
-        [DocbaketAPIClient Login];
+        [DocbaketAPIClient Login:^(BOOL success) {
+            if(success){
+                [self checkLogin];
+            }
+        }];
     }
 }
 

@@ -7,4 +7,5 @@
 //
 
 #define MAINURL          @"http://doc:basket@docbasket.com/login"
+#define LOGOUTURL          @"http://doc:basket@docbasket.com/logout"
 #define BASKETS          @"http://docbasket.com/baskets"  // ?filer = inbox / outbox / public

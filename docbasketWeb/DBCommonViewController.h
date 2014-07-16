@@ -19,5 +19,6 @@
 
 - (void)handleTakePhotoButtonPressed:(id)sender;
 - (UIImage*)rescaleImage:(UIImage*)image toSize:(CGSize)newSize;
+//- (void)badgeNumber:(int)badgeValue;
 
 @end

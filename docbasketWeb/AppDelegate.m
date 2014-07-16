@@ -54,9 +54,68 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 // Parse remote push notification
-- (void)application:(UIApplication *)application
-didReceiveRemoteNotification:(NSDictionary *)userInfo {
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"Noti = %@", userInfo);
+    
+    UIApplicationState state = [application applicationState];
+    
+    if(!IsEmpty(userInfo))
+    {
+        GVALUE.badgeValue = (int)([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
+        if (GVALUE.badgeValue >= 0) {
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:GVALUE.badgeValue];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DBCommonViewControllerEventHandler"
+                                                                object:self
+                                                              userInfo:@{@"Msg":@"updateBadge", @"badgeValue":@(GVALUE.badgeValue)}];
+        }
+        
+        
+        
+        
+        if ( state == UIApplicationStateActive ) { // 포그라운드
+            NSLog(@"UIApplicationStateActive");
+            
+        } else { // 백그라운드, 잠금상태
+            NSLog(@"UIApplicationStateBackground");
+
+            // 여기서 해당 페이지로 분기해야 함.
+            
+
+        }
+    }
+    
     [PFPush handlePush:userInfo];
+}
+
+// Local push notification
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    
+    GVALUE.badgeValue = (int)([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
+
+    if (GVALUE.badgeValue >= 0) {
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:GVALUE.badgeValue];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DBCommonViewControllerEventHandler"
+                                                            object:self
+                                                          userInfo:@{@"Msg":@"updateBadge", @"badgeValue":@(GVALUE.badgeValue)}];
+    }
+    
+    UIApplicationState state = [application applicationState]; //[[UIApplication sharedApplication ]applicationState]
+    if ( state == UIApplicationStateActive ) { // 포그라운드
+        NSLog(@"UIApplicationStateActive");
+        
+
+        
+    } else { // 백그라운드, 잠금상태
+        NSLog(@"UIApplicationStateBackground");
+        
+        // 여기서 해당 페이지로 분기 해야 함.
+
+    
+    }
+
 }
 
 
@@ -98,23 +157,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
-    UIApplicationState state = [application applicationState];
-    if (state == UIApplicationStateActive) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"DocBasket"
-                                                        message:notification.alertBody
-                                                       delegate:self cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-    }
-    
-//    // Request to reload table view data
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadData" object:self];
-    
-    // Set icon badge number to zero
-    application.applicationIconBadgeNumber = 0;
-}
 
 - (void)saveContext {
     NSError *error = nil;

@@ -350,8 +350,9 @@
     NSString *title = (IsEmpty(findBasket.title))?@"": findBasket.title;
     
     NSString *event = [NSString stringWithFormat:@"didEnterRegion :  %@ at %f / %f", title, findBasket.latitude, findBasket.longitude]; //[NSDate date]
-    [self updateWithEvent:event];
+    //[self updateWithEvent:event];
     
+    [DBKSERVICE pushLocalNotification:event];
     
     NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":[NSDate date], @"checkout_at":@""};
     [DocbaketAPIClient postRegionCheck:parameters withBasketID:[findBasket valueForKey:@"basketID"]];
@@ -369,7 +370,8 @@
 
     
     NSString *event = [NSString stringWithFormat:@"didExitRegion :  %@ at %f / %f", title, findBasket.latitude, findBasket.longitude]; //[NSDate date]
-    [self updateWithEvent:event];
+    //[self updateWithEvent:event];
+    [DBKSERVICE pushLocalNotification:event];
     
     NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":@"", @"checkout_at":[NSDate date]};
     [DocbaketAPIClient postRegionCheck:parameters withBasketID:[findBasket valueForKey:@"basketID"]];
@@ -407,35 +409,35 @@
 
 
 
-- (void)updateWithEvent:(NSString *)event {
-
-    // Update the icon badge number.
-    //[UIApplication sharedApplication].applicationIconBadgeNumber++;
-
-    UIApplication *app = [UIApplication sharedApplication];
-//    NSArray *oldNotifications = [app scheduledLocalNotifications];
-//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    // Clear out the old notification before scheduling a new one.
-//    if ([oldNotifications count] > 0)
-//        [app cancelAllLocalNotifications];
-    
-    // Create a new notification
-    UILocalNotification *noti = [[UILocalNotification alloc] init];
-    if (noti) {
-        noti.fireDate =  [NSDate dateWithTimeIntervalSinceNow:0.1];
-        noti.timeZone = [NSTimeZone defaultTimeZone];
-        //noti.repeatInterval = 0;
-        noti.alertBody = event;
-        noti.alertAction = @"GOGO";
-        noti.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
-        
-        [app presentLocalNotificationNow:noti];
-    }
-    
-    NSLog(@"Done.");
-    
-}
+//- (void)updateWithEvent:(NSString *)event {
+//
+//    // Update the icon badge number.
+//    //[UIApplication sharedApplication].applicationIconBadgeNumber++;
+//
+//    UIApplication *app = [UIApplication sharedApplication];
+////    NSArray *oldNotifications = [app scheduledLocalNotifications];
+////    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    
+//    // Clear out the old notification before scheduling a new one.
+////    if ([oldNotifications count] > 0)
+////        [app cancelAllLocalNotifications];
+//    
+//    // Create a new notification
+//    UILocalNotification *noti = [[UILocalNotification alloc] init];
+//    if (noti) {
+//        noti.fireDate =  [NSDate dateWithTimeIntervalSinceNow:0.1];
+//        noti.timeZone = [NSTimeZone defaultTimeZone];
+//        //noti.repeatInterval = 0;
+//        noti.alertBody = event;
+//        noti.alertAction = @"GOGO";
+//        noti.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+//        
+//        [app presentLocalNotificationNow:noti];
+//    }
+//    
+//    NSLog(@"Done.");
+//    
+//}
 
 
 
@@ -451,7 +453,7 @@
     }
     
     self.locationManager.delegate = self;
-    self.locationManager.distanceFilter = kCLDistanceFilterNone;
+    self.locationManager.distanceFilter = 10;//kCLDistanceFilterNone;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
  
     [self.locationManager startUpdatingLocation];

@@ -13,13 +13,13 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "DEMOComment.h"
+#import "DBComment.h"
 
-@implementation DEMOComment
+@implementation DBComment
 
 + (instancetype)commentWithProperties:(NSDictionary*)commentInfo
 {
-    return [[DEMOComment alloc] initWithProperties:commentInfo];
+    return [[DBComment alloc] initWithProperties:commentInfo];
 }
 
 - (id)initWithProperties:(NSDictionary *)commentInfo
@@ -32,6 +32,11 @@
         [self setName:commentInfo[@"authorName"]];
         [self setImage:commentInfo[@"authorImage"]];
         [self setMetaData:commentInfo[@"metaData"]];
+        
+        [self setCommentID:commentInfo[@"comment_id"]];
+        [self setBasketID:commentInfo[@"basket_id"]];
+        [self setDocumentID:commentInfo[@"document_id"]];
+        [self setUserID:commentInfo[@"user_id"]];
     }
     return self;
 }

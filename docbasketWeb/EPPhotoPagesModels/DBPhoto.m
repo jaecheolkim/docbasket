@@ -1,5 +1,5 @@
 //
-//  DEMOTag.h
+//  DEMOPhoto.m
 //  EBPhotoPagesControllerDemo
 //
 //  Created by Eddy Borja.
@@ -13,19 +13,46 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import <QuartzCore/QuartzCore.h>
-#import <UIKit/UIKit.h>
-#import "EBPhotoTagProtocol.h"
+#import "DBPhoto.h"
+#import "DBComment.h"
 
-@interface DEMOTag : NSObject <EBPhotoTagProtocol>
 
-+ (instancetype)tagWithProperties:(NSDictionary*)tagInfo;
-- (id)initWithProperties:(NSDictionary *)tagInfo;
+@implementation DBPhoto
 
-@property (assign) CGPoint tagPosition;
-@property (strong) NSAttributedString *attributedText;
-@property (strong) NSString *text;
-@property (strong) NSDictionary *metaData;
+
++ (instancetype)photoWithProperties:(NSDictionary *)photoInfo
+{
+    return [[DBPhoto alloc] initWithProperties:photoInfo];
+}
+
+- (id)initWithProperties:(NSDictionary *)photoInfo;
+{
+    self = [super init];
+    if (self) {
+        
+        
+        [self setImageURL:[NSURL URLWithString:photoInfo[@"imageURL"]]];
+        [self setImage:[UIImage imageNamed:photoInfo[@"imageFile"]]];
+        [self setCaption:photoInfo[@"caption"]];
+        [self setAttributedCaption:photoInfo[@"attributedCaption"]];
+        [self setTags:photoInfo[@"tags"]];
+        [self setComments:photoInfo[@"comments"]];
+        [self setMetaData:photoInfo[@"metaData"]];
+        
+    }
+    return self;
+}
+
+
+- (void)addComment:(DBComment *)comment
+{
+    NSMutableArray *mutableComments = [NSMutableArray arrayWithArray:self.comments];
+    if(!mutableComments){
+        mutableComments = [NSMutableArray array];
+    }
+    [mutableComments addObject:comment];
+    
+    [self setComments:[NSArray arrayWithArray:mutableComments]];
+}
 
 @end

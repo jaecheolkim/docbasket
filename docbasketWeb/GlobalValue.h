@@ -13,7 +13,9 @@
 #define GVALUE              [GlobalValue sharedInstance]
 
 #define KEY_USER_ID         @"default_user_id"
+#define KEY_USER_NAME       @"default_user_name"
 #define KEY_USER_TOKEN      @"default_user_token"
+#define KEY_BADGE_VALUE     @"badge_value"
 
 static inline BOOL IsEmpty(id thing) {
     return thing == nil
@@ -30,11 +32,14 @@ static inline id ObjectOrNull(id object)
 }
 
 @interface GlobalValue : NSObject
-@property (nonatomic, strong) NSString* userID;
+@property (nonatomic, strong) NSString *userID;
+@property (nonatomic, strong) NSString *userName;
 @property (nonatomic, strong) NSString *token;
 
 @property (nonatomic) BOOL START_LOGIN;
 @property (nonatomic) BOOL FIND_USERID;
+
+@property (nonatomic, assign) int badgeValue;
 
 @property (nonatomic, assign) double longitude;
 @property (nonatomic, assign) double latitude;

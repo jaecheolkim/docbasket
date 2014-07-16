@@ -1,5 +1,5 @@
 //
-//  DEMOPhoto.m
+//  DEMOPhoto.h
 //  EBPhotoPagesControllerDemo
 //
 //  Created by Eddy Borja.
@@ -13,46 +13,34 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "DEMOPhoto.h"
-#import "DEMOComment.h"
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+@class DBComment;
+@interface DBPhoto : NSObject
+
+//if set true, DEMOPhotos will sleep for a random duration before returning data
+@property (assign) BOOL simulateLatency;
+@property (strong) NSURL *imageURL;
+@property (strong) UIImage *image;
+@property (strong) NSString *caption;
+@property (strong) NSAttributedString *attributedCaption;
+@property (strong) NSArray *tags;
+@property (strong) NSArray *comments;
+@property (strong) NSDictionary *metaData;
+
+@property (assign) BOOL disabledTagging;
+@property (assign) BOOL disabledCommenting;
+@property (assign) BOOL disabledActivities;
+@property (assign) BOOL disabledDelete;
+@property (assign) BOOL disabledDeleteForTags;
+@property (assign) BOOL disabledDeleteForComments;
+@property (assign) BOOL disabledMiscActions;
 
 
-@implementation DEMOPhoto
-
-
-+ (instancetype)photoWithProperties:(NSDictionary *)photoInfo
-{
-    return [[DEMOPhoto alloc] initWithProperties:photoInfo];
-}
-
++ (instancetype)photoWithProperties:(NSDictionary *)photoInfo;
 - (id)initWithProperties:(NSDictionary *)photoInfo;
-{
-    self = [super init];
-    if (self) {
-        
-        
-        [self setImageURL:[NSURL URLWithString:photoInfo[@"imageURL"]]];
-        [self setImage:[UIImage imageNamed:photoInfo[@"imageFile"]]];
-        [self setCaption:photoInfo[@"caption"]];
-        [self setAttributedCaption:photoInfo[@"attributedCaption"]];
-        [self setTags:photoInfo[@"tags"]];
-        [self setComments:photoInfo[@"comments"]];
-        [self setMetaData:photoInfo[@"metaData"]];
-        
-    }
-    return self;
-}
 
-
-- (void)addComment:(DEMOComment *)comment
-{
-    NSMutableArray *mutableComments = [NSMutableArray arrayWithArray:self.comments];
-    if(!mutableComments){
-        mutableComments = [NSMutableArray array];
-    }
-    [mutableComments addObject:comment];
-    
-    [self setComments:[NSArray arrayWithArray:mutableComments]];
-}
+- (void)addComment:(DBComment *)comment;
 
 @end

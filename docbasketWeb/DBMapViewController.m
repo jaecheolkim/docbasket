@@ -323,8 +323,42 @@
 
             }
         }
+        
+        [self refreshTableView];
     });
 
+}
+
+- (NSArray *)sortedBaskets
+{
+    NSArray *sortedBasket;
+    sortedBasket = [GVALUE.baskets sortedArrayUsingComparator:^(Docbasket *firstBasket, Docbasket *secondBasket) {
+        
+        CLLocation *firstLocation = [[CLLocation alloc] initWithLatitude:firstBasket.latitude longitude:firstBasket.longitude];
+        CLLocation *secondLocation = [[CLLocation alloc] initWithLatitude:secondBasket.latitude longitude:secondBasket.longitude];
+        CLLocationDistance firstDistance = [GVALUE.currentLocation distanceFromLocation:firstLocation];
+        CLLocationDistance secondDistance = [GVALUE.currentLocation distanceFromLocation:secondLocation];
+
+        if (firstDistance < secondDistance)
+            return (NSComparisonResult)NSOrderedAscending;
+        else if (firstDistance > secondDistance)
+            return (NSComparisonResult)NSOrderedDescending;
+        else
+            return (NSComparisonResult)NSOrderedSame;
+    }];
+    
+    return sortedBasket;
+
+}
+
+- (void)refreshTableView
+{
+    NSArray *sortedArray = [self sortedBaskets];
+    [GVALUE setBaskets:sortedArray];
+    
+    [self.tableView reloadData];
+
+    
 }
 
 - (void)addPin:(CLCircularRegion *)newRegion
@@ -594,20 +628,32 @@
     
     Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
     if(!IsEmpty(basket)){
-        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
-        cell.textLabel.text = basket.title;
+        
+        CLLocation *cLocation = [[CLLocation alloc] initWithLatitude:basket.latitude longitude:basket.longitude];
+        CLLocationDistance distance = [GVALUE.currentLocation distanceFromLocation:cLocation];
+        
         
         NSString *image = basket.image;
+        
+ 
+        //NSString *dataPath = [NSString stringWithFormat:@"%@/%@.json",cacheDir, fileName];
+        NSString *fileName = @"no file";
+        
         if(!IsEmpty(image)){
-            NSString *MyURL = [NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
-            if(!IsEmpty(MyURL)){
-                
-                UIImageView *imgView = [[UIImageView alloc] init];
-                [imgView setImageWithURL:[NSURL URLWithString:MyURL] placeholderImage:nil];
-                //cell.imageView = imgView ;
-            }
             
+            fileName = [image lastPathComponent];//[[image lastPathComponent] stringByDeletingPathExtension];
+            NSString *path = [image stringByDeletingLastPathComponent];
+            NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"small_thumb", fileName ];
+
+            
+            [cell.imageView setImageWithURL:[NSURL URLWithString:thumbPath]];
+        } else {
+            [cell.imageView setImage:[UIImage imageNamed:@"map.png"]];
         }
+        
+        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@\n%dm", basket.title, fileName, (int)distance ];
+
         
         
         cell.textLabel.numberOfLines = 4;

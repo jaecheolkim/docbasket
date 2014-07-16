@@ -47,6 +47,16 @@
     return [self readObjectFromDefault:KEY_USER_ID];
 }
 
+- (void)setUserName:(NSString *)userName
+{
+    [self writeObjectToDefault:userName withKey:KEY_USER_NAME];
+}
+
+- (NSString*)userName
+{
+    return [self readObjectFromDefault:KEY_USER_NAME];
+}
+
 
 - (void)setToken:(NSString *)token
 {
@@ -59,6 +69,18 @@
 }
 
 
+- (void)setBadgeValue:(int)badgeValue
+{
+    if(badgeValue){
+        NSString *bv = [NSString stringWithFormat:@"%d", badgeValue];
+        [self writeObjectToDefault:bv withKey:KEY_BADGE_VALUE];
+    }
+}
+
+- (int)badgeValue
+{
+    return (int)[[self readObjectFromDefault:KEY_BADGE_VALUE] integerValue];
+}
 
 - (void)writeObjectToDefault:(id)idValue withKey:(NSString *)strKey
 {

@@ -28,7 +28,7 @@
 
 + (instancetype)sharedClient;
 
-+ (void)checkNewDocBaskets:(CLLocation *)currentLocation completionHandler:(void (^)(BOOL success))block;
++ (void)checkNewDocBaskets:(CLLocation *)currentLocation filter:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block;
 
 + (void)postRegionCheck:(NSDictionary *)parameters withBasketID:(NSString*)basketID;
 

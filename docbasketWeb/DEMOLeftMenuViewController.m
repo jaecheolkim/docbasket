@@ -49,7 +49,7 @@
     
     
     self.mapViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMapViewController"];
-    self.myBasketListViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBListViewController"];
+    self.myBasketListViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMyDocBasketViewController"]; //
     self.QRScannerViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ScannerViewController"];
     self.loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBLoginViewController"];
     

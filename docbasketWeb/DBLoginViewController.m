@@ -7,6 +7,7 @@
 //
 
 #import "DBLoginViewController.h"
+#import <Parse/Parse.h>
 
 @interface DBLoginViewController ()
 
@@ -58,7 +59,7 @@
         _nameLabel.hidden = NO;
         _logoutButton.hidden = NO;
         
-        _nameLabel.text = GVALUE.userID;
+        _nameLabel.text = GVALUE.userName;
         
         
     } else {
@@ -119,6 +120,7 @@
         [DocbaketAPIClient Login:^(BOOL success) {
             if(success){
                 [self checkLogin];
+                
             }
         }];
     }

@@ -85,103 +85,6 @@
 
 }
 
-- (void)saveBasket:(id)sender
-{
-    [DocbaketAPIClient saveDocBasket:self.basketID completionHandler:^(BOOL success) {
-        NSString *msg = @"Success";
-        if(!success)
-            msg = @"Fail";
-        
-        [[[UIAlertView alloc] initWithTitle:@"Success"
-                                    message:@"save to my basket"
-                           cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
-        {
-            
-
-        }]
-                           otherButtonItems:nil, nil] show];
-    }];
-}
-
-
-//2014-07-15 18:35:23.136 docbasketWeb[16788:60b] JSON: {
-//    "begin_at" = "<null>";
-//    comments =     (
-//    );
-//    "created_at" = "2014-07-10T14:11:44.778Z";
-//    description = "\Ubb38\Uc11c \Ud14c\Uc2a4\Ud2b8\Uc6a9";
-//    documents =     (
-//                     {
-//                         id = "64ae39ca-48f2-40b3-885e-6d895d183895";
-//                         image = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b/HandoffProgrammingGuide.pdf";
-//                         title = "<null>";
-//                         "total_pages" = 21;
-//                         "trans_done" = 1;
-//                         url = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b/HandoffProgrammingGuide.pdf";
-//                     }
-//                     );
-//    "end_at" = "<null>";
-//    id = "b5cc97fe-e568-4fd9-b3d4-bcf5b31c513b";
-//    image = "http://0c86568b33ba49994159-f6bbd63f18dffb4beb7359283894d4fe.r82.cf6.rackcdn.com/Adobe-PDF-Document-icon.png";
-//    "is_public" = 1;
-//    latitude = "37.5618353639392";
-//    longitude = "126.989598870277";
-//    permission =     (
-//    );
-//    "poi_id" = "<null>";
-//    "poi_title" = "<null>";
-//    range = "<null>";
-//    tags =     (
-//    );
-//    title = "\Ubb38\Uc11c \Uc0d8\Ud50c";
-//    "updated_at" = "2014-07-10T14:11:44.778Z";
-//    "user_id" = "bb5774c9-2c4e-41d0-b792-530e295e1ca6";
-//}
-
-- (void)refreshView
-{
-    [DocbaketAPIClient getBasketInfo:self.basketID completionHandler:^(NSDictionary *result)
-     {
-         if(!IsEmpty(result)){
-             
-             self.basketInfo = result;
-             
-             self.tags = self.basketInfo[@"tags"];
-             self.comments = self.basketInfo[@"comments"];
-             self.documents = self.basketInfo[@"documents"];
-             
-             NSString *imagePath = self.basketInfo[@"image"];
-
-             NSString *fileName = [imagePath lastPathComponent];
-             NSString *path = [imagePath stringByDeletingLastPathComponent];
-             NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"thumb", fileName ];
-             
-             dispatch_async(dispatch_get_main_queue(), ^{
-                 if(!IsEmpty(thumbPath)) {
-                     [_headerView.backgroundImageView setImageWithURL:[NSURL URLWithString:thumbPath] ];
-                 }
-                 
-                 [self.tableView reloadData];
-                 
-             });
-             
-         } else {
-             
-             [[[UIAlertView alloc] initWithTitle:@"Need refresh."
-                                         message:@"refresh again"
-                                cancelButtonItem:[RIButtonItem itemWithLabel:@"Yes"
-                                                                      action:^{
-                                                                          
-                                                                          [self.navigationController popToRootViewControllerAnimated:YES];
-                                                                          
-                                                                      }]
-                                otherButtonItems:nil, nil] show];
-             
-         }
-         
-         
-     }];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -237,6 +140,74 @@
                                                                          contentPages:pages];
     self.tableView.tableHeaderView = self.headerView;
 }
+
+- (void)saveBasket:(id)sender
+{
+    [DocbaketAPIClient saveDocBasket:self.basketID completionHandler:^(BOOL success) {
+        NSString *msg = @"Success";
+        if(!success)
+            msg = @"Fail";
+        
+        [[[UIAlertView alloc] initWithTitle:@"Success"
+                                    message:@"save to my basket"
+                           cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
+                                             {
+                                                 
+                                                 
+                                             }]
+                           otherButtonItems:nil, nil] show];
+    }];
+}
+
+
+- (void)refreshView
+{
+    [DocbaketAPIClient getBasketInfo:self.basketID completionHandler:^(NSDictionary *result)
+     {
+         if(!IsEmpty(result)){
+             
+             self.basketInfo = result;
+             
+             self.tags = self.basketInfo[@"tags"];
+             self.comments = self.basketInfo[@"comments"];
+             self.documents = self.basketInfo[@"documents"];
+             
+             NSString *imagePath = self.basketInfo[@"image"];
+             NSString *thumbPath = nil;
+             
+             if(!IsEmpty(imagePath)) {
+                 NSString *fileName = [imagePath lastPathComponent];
+                 NSString *path = [imagePath stringByDeletingLastPathComponent];
+                 thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"thumb", fileName ];
+             }
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if(!IsEmpty(thumbPath)) {
+                     [_headerView.backgroundImageView setImageWithURL:[NSURL URLWithString:thumbPath] ];
+                 }
+                 
+                 [self.tableView reloadData];
+                 
+             });
+             
+         } else {
+             
+             [[[UIAlertView alloc] initWithTitle:@"Need refresh."
+                                         message:@"refresh again"
+                                cancelButtonItem:[RIButtonItem itemWithLabel:@"Yes"
+                                                                      action:^{
+                                                                          
+                                                                          [self.navigationController popToRootViewControllerAnimated:YES];
+                                                                          
+                                                                      }]
+                                otherButtonItems:nil, nil] show];
+             
+         }
+         
+         
+     }];
+}
+
 
 #pragma mark - Content
 
@@ -396,39 +367,31 @@
 
 - (void)initDocument:(NSDictionary *)document
 {
-//    2014-07-15 14:17:11.435 docbasketWeb[16430:60b] basket = {
-//        id = "410d1e2c-f6f4-4ba8-971e-2f58689bce70";
-//        image = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/f54669cc-40d4-4092-b2ad-f2d8e44eebcf/hogwarts_maknaes.jpg";
-//        title = "<null>";
-//        "total_pages" = "<null>";
-//        "trans_done" = "<null>";
-//        url = "http://784ef83b7b46bb15457a-04b6f40c42df035229c196abf487bf09.r25.cf6.rackcdn.com/f54669cc-40d4-4092-b2ad-f2d8e44eebcf/hogwarts_maknaes.jpg";
-//    }
-
     NSLog(@"document = %@", document);
    
+    NSString *imagePath = document[@"image"];
+    NSString *ext = [imagePath pathExtension];//[[image lastPathComponent] stringByDeletingPathExtension];
+    NSString *content_type = document[@"content_type"];
+    
     int trans_done = (int)(IsEmpty(document[@"trans_done"])? 0 : [document[@"trans_done"] integerValue]);
 
-    if(TRUE) {
+    if(trans_done) {
         
         self.documentID = document[@"id"];
         
         int totalPages = (int)(IsEmpty(document[@"total_pages"])? 0 : [document[@"total_pages"] integerValue]);
-        
 
-
+//        NSArray *photo1Comments = @[
+//                                    [DBComment commentWithProperties:@{@"commentText": @"This is a comment!",
+//                                                                         @"commentDate": [NSDate dateWithTimeInterval:-252750 sinceDate:[NSDate date]],
+//                                                                         @"authorImage": [UIImage imageNamed:@"login"],
+//                                                                         @"authorName" : @"user1"}]
+//                                    ];
         
-        NSArray *photo1Comments = @[
-                                    [DBComment commentWithProperties:@{@"commentText": @"This is a comment!",
-                                                                         @"commentDate": [NSDate dateWithTimeInterval:-252750 sinceDate:[NSDate date]],
-                                                                         @"authorImage": [UIImage imageNamed:@"login"],
-                                                                         @"authorName" : @"user1"}]
-                                    ];
-        
-        NSArray *photo1Tags = @[
-                                [DBTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.565, 0.74)],
-                                                             @"tagText" : @"tag test"}],
-                                ];
+//        NSArray *photo1Tags = @[
+//                                [DBTag tagWithProperties:@{@"tagPosition" : [NSValue valueWithCGPoint:CGPointMake(0.565, 0.74)],
+//                                                             @"tagText" : @"tag test"}],
+//                                ];
         
 
         
@@ -448,10 +411,12 @@
             NSArray *tagArray = [self getTags:filteredTagArray];
             NSLog(@"comment array = %@", commentArray);
 
-            
+            NSString *imageURL = [NSString stringWithFormat:@"%@/page%d.png",baseURL,i];
+            if([content_type  isEqualToString:@"image/png"] || [content_type  isEqualToString:@"image/jpeg"])
+                imageURL = imagePath;
             
             DBPhoto *photo = [DBPhoto photoWithProperties:
-                                @{@"imageURL" : [NSString stringWithFormat:@"%@/page%d.png",baseURL,i],
+                                @{@"imageURL" : imageURL,//[NSString stringWithFormat:@"%@/page%d.png",baseURL,i],
                                   @"imageFile": @"photo1.jpg",
                                   @"attributedCaption" : [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Documents page %d .",i]],
                                   @"tags": tagArray,

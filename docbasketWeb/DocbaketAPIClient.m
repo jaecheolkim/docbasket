@@ -434,8 +434,8 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 
 }
 
-
-+ (void)checkNewDocBaskets:(CLLocation *)currentLocation completionHandler:(void (^)(BOOL success))block
+//filter= created | invited | saved | public(default)
++ (void)checkNewDocBaskets:(CLLocation *)currentLocation filter:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block
 {
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -448,14 +448,19 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
     }
 
     
-    NSDictionary *param = nil;
+    NSMutableDictionary *param = [[NSMutableDictionary alloc] init];
     
     // 위치값이 없을 때는 전체 닥바스켓 리스트 가져온다.
     if(!IsEmpty(currentLocation)){
         double longitude = currentLocation.coordinate.longitude;
         double latitude = currentLocation.coordinate.latitude;
         double radius = GVALUE.findBasketsRange; // 단위 = 미터 : 디폴트 10000 (10km)
-        param = @{@"longitude":@(longitude), @"latitude":@(latitude), @"radius":@(radius), @"limit":@(100), @"offset":@(0)};  //offset = (pagecount-1) * limit
+        param = [NSMutableDictionary dictionaryWithDictionary:@{@"longitude":@(longitude), @"latitude":@(latitude), @"radius":@(radius), @"limit":@(100), @"offset":@(0)}];  //offset = (pagecount-1) * limit
+
+    }
+    
+    if(!IsEmpty(filter)){
+        [param setObject:filter forKey:@"filter"];
     }
     
     [manager GET:@"http://docbasket.com/api/baskets" parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -482,11 +487,11 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
                 }
                 
                 if (block) {
-                    [GVALUE setBaskets:mutableBaskets];
-                    block(YES);
+                    //[GVALUE setBaskets:mutableBaskets];
+                    block(mutableBaskets);
                 }
             } else {
-                block(NO);
+                block([NSArray array]);
             }
             
         }
@@ -497,7 +502,7 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
             NSLog(@"Token expired");
             
             [DocbaketAPIClient  Login:^(BOOL success) {
-                block(NO);
+                block([NSArray array]);
             }];
         }
     }];

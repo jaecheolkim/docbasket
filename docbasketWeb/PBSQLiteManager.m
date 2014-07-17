@@ -61,7 +61,10 @@
 
     NSString *createUsersTable = @"CREATE TABLE IF NOT EXISTS 'Users' ('UserID' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 'UserName' TEXT, 'GUID' TEXT, 'UserNick' TEXT, 'UserProfile' TEXT, 'fbID' TEXT, 'fbName' TEXT, 'fbProfile' TEXT, 'seq' INTEGER DEFAULT 0, 'color' INTEGER DEFAULT 0,  'timestamp' DATETIME DEFAULT CURRENT_TIMESTAMP);";
  
-    NSArray *createTable =@[createDocbasketTable, createUsersTable];
+    NSString *createInvitedTable = @"CREATE TABLE IF NOT EXISTS 'Invited' ('basketID' VARCHAR PRIMARY KEY  NOT NULL  UNIQUE , 'type' INTEGER, 'title' VARCHAR, 'longitude' DOUBLE, 'latitude' DOUBLE, 'accept' INTEGER  DEFAULT 0, 'timestamp' DATETIME DEFAULT CURRENT_TIMESTAMP);";
+    
+    
+    NSArray *createTable =@[createDocbasketTable, createUsersTable, createInvitedTable];
     
     for(NSString *sqlQuery in createTable){
         NSError *error = [[PBSQLiteManager sharedInstance] doQuery:sqlQuery];
@@ -182,8 +185,7 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
 }
 
 
-
-- (void)syncDocBaskets2DB:(NSDictionary*)docbaskets completionHandler:(void (^)(BOOL success))block;
+- (void)syncDocBaskets2DB:(NSDictionary*)docbaskets completionHandler:(void (^)(BOOL success))block
 {
     if(!IsEmpty(docbaskets)){
         sqlite3_stmt *statement;
@@ -256,7 +258,8 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
     }
 }
 
-- (void)syncDocBasket2DB:(Docbasket*)basket completionHandler:(void (^)(BOOL success))block;
+
+- (void)syncDocBasket2DB:(Docbasket*)basket completionHandler:(void (^)(BOOL success))block
 {
     if(!IsEmpty(basket)){
         sqlite3_stmt *statement;
@@ -412,6 +415,71 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
     NSArray *result = [SQLManager getRowsForQuery:query];
     return result;
 }
+
+
+// type = 0:remote / 1:local
+- (void)syncBasket2InvitedDB:(Docbasket*)basket type:(int)type completionHandler:(void (^)(BOOL success))block
+{
+    if(!IsEmpty(basket)){
+        sqlite3_stmt *statement;
+        sqlite3 *sqlDB = [SQLManager getDBContext];
+        
+        const char* insertSQL = "INSERT INTO Invited (basketID, title, type, latitude, longitude) VALUES (?, ?, ?, ? , ? )";
+        
+        NSString *basketID =  (IsEmpty(basket.basketID)?@"":basket.basketID);
+        NSString *title =  (IsEmpty(basket.title)?@"":basket.title);
+        double latitude = basket.latitude;
+        double longitude = basket.longitude;
+        
+        if (sqlite3_prepare_v2(sqlDB, insertSQL, -1, &statement, nil) == SQLITE_OK)
+        {
+            sqlite3_bind_text(statement, 1, [basketID UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(statement, 2, [title UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int(statement, 3, type);
+            sqlite3_bind_double(statement, 4, latitude);
+            sqlite3_bind_double(statement, 5, longitude);
+            
+            sqlite3_step(statement);
+            sqlite3_finalize(statement);
+            
+            block(YES);
+        } else {
+            block(NO);
+        }
+    } else {
+        block(NO);
+    }
+}
+
+- (NSArray*)getAllInvites
+{
+    NSString *query = @"SELECT * FROM Invited WHERE accept == 0 ;";
+    NSArray *result = [SQLManager getRowsForQuery:query];
+    return result;
+}
+
+- (NSArray *)AcceptInvite:(NSString*)basketID
+{
+    NSString *query = [NSString stringWithFormat:@"UPDATE Invited SET accept = 1 WHERE basketID == '%@' ;", basketID];
+
+    NSError *error = [SQLManager doQuery:query];
+    if (error != nil) {
+        NSLog(@"Error: %@",[error localizedDescription]);
+    }
+	
+    query = [NSString stringWithFormat:@"SELECT * FROM Invited WHERE basketID == '%@' ;", basketID];
+    NSArray *result = [[PBSQLiteManager sharedInstance] getRowsForQuery:query];
+    
+    NSLog(@"result : %@", result);
+    
+    return result;
+    
+}
+
+
+
+
+
 
 
 

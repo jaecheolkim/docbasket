@@ -63,7 +63,7 @@
             
             // [1] 처음에 네트웍에서 현재 위치 기준으로 바스킷 정보 가져오고 DB에 저장한다.
             // 앱이 구동되고 Location service가 스타트 되면 체크 함.
-            [self checkNewBasket:currentLocation completionHandler:^(BOOL success) {
+            [self checkNewBasket:currentLocation filter:@"public" completionHandler:^(BOOL success) {
                 if(success){
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
@@ -119,12 +119,28 @@
     [DBKLOCATION stopLocationManager];
 }
 
-// [1] 처음에 네트웍에서 현재 위치 기준으로 바스킷 정보 가져오고 바스킷 DB에 저장한다. 기본 1000m반경
-- (void)checkNewBasket:(CLLocation *)currentLocation completionHandler:(void (^)(BOOL success))block
+- (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block
 {
-    [DocbaketAPIClient checkNewDocBaskets:(CLLocation *)currentLocation completionHandler:^(BOOL success)
+    [DocbaketAPIClient checkNewDocBaskets:nil filter:filter completionHandler:^(NSArray *baskets)
      {
-         if(success){
+         if(!IsEmpty(baskets)){
+             block(baskets);
+         } else {
+             block([NSArray array]);
+         }
+     }];
+    
+}
+
+// [1] 처음에 네트웍에서 현재 위치 기준으로 바스킷 정보 가져오고 바스킷 DB에 저장한다. 기본 1000m반경
+- (void)checkNewBasket:(CLLocation *)currentLocation filter:(NSString*)filter completionHandler:(void (^)(BOOL success))block
+{
+    [DocbaketAPIClient checkNewDocBaskets:(CLLocation *)currentLocation filter:filter completionHandler:^(NSArray *baskets)
+     {
+         if(!IsEmpty(baskets)){
+             
+             [GVALUE setBaskets:baskets];
+             
              if(!IsEmpty(GVALUE.baskets)){
                  __block int count = (int)[GVALUE.baskets count];
                  for(Docbasket *basket in GVALUE.baskets) {
@@ -208,6 +224,8 @@
 
 
 
+
+
 //CLLocation *loc1 = [[CLLocation alloc] initWithLatitude:lat1 longitude:lon1];
 //double distance = [loc1 getDistanceFrom:position2];
 //if(distance <= 10)
@@ -260,45 +278,28 @@
 }
 
 
-
-
-- (void)pushLocalNotification:(NSString *)event
+- (void)pushLocalNotification:(NSString *)event basket:(Docbasket*)basket
 {
-//    GVALUE.badgeValue = (int)([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
-//
-//    if(([[UIApplication sharedApplication ]applicationState]==UIApplicationStateBackground ||
-//        [[UIApplication sharedApplication ]applicationState]==UIApplicationStateInactive) )
-//    {
-//        // Background mode
     
-        UIApplication *app = [UIApplication sharedApplication];
-        UILocalNotification *noti = [[UILocalNotification alloc] init];
-        if (noti) {
-            noti.fireDate =  [NSDate dateWithTimeIntervalSinceNow:0.1];
-            noti.timeZone = [NSTimeZone defaultTimeZone];
-            noti.alertBody = event;
-            noti.alertAction = @"GOGO";
-            //noti.applicationIconBadgeNumber = GVALUE.badgeValue;
-            [app presentLocalNotificationNow:noti];
-        }
+    UIApplication *app = [UIApplication sharedApplication];
+    UILocalNotification *noti = [[UILocalNotification alloc] init];
+    if (noti) {
+        noti.fireDate =  [NSDate dateWithTimeIntervalSinceNow:0.1];
+        noti.timeZone = [NSTimeZone defaultTimeZone];
+        noti.alertBody = event;
+        noti.alertAction = @"GOGO";
+        //noti.applicationIconBadgeNumber = GVALUE.badgeValue;
+        [app presentLocalNotificationNow:noti];
+    }
+    
+    // type = 0:remote / 1:local
+    [SQLManager syncBasket2InvitedDB:basket type:0 completionHandler:^(BOOL success) {
+        NSLog(@"Invited list = %@",[SQLManager getAllInvites]);
+    }];
 
-        
-//    } else {
-//        //foreground mode
-//
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"DBCommonViewControllerEventHandler"
-//                                                            object:self
-//                                                          userInfo:@{@"Msg":@"updateBadge", @"badgeValue":@(GVALUE.badgeValue)}];
-//        
-//
-//
-//        
-//    }
-    
-    
-    
-    NSLog(@"Done.");
 }
+
+
 
 
 

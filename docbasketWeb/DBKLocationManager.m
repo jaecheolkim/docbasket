@@ -95,17 +95,6 @@
     NSLog(@"didFailWithError: %@", error);
 }
 
-//- (void)locationManager:(CLLocationManager *)manager
-//      didDetermineState:(CLRegionState)state
-//              forRegion:(CLRegion *)region
-//{
-//    if ([region isEqualToString:@”Departure”]) {
-//        if (CLRegionStateOutside == state) {
-//            // TODO: notify user of departure
-//        }
-//    }
-//}
-
 
 - (void)locationManager:(CLLocationManager *)manager
       didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
@@ -120,67 +109,13 @@
             NSString *msg = [NSString stringWithFormat:@"DetermineState: %@ / %@", title, @"Enter"];
             [GVALUE addLog:msg];
 
-            [DBKSERVICE pushLocalNotification:msg];
+            [DBKSERVICE pushLocalNotification:msg basket:findBasket];
         }
     }
-    
-
-    //CLLocationDistance distance = [GVALUE.currentLocation distanceFromLocation:region.];
-    
-//    NSDictionary *findBasket = [GVALUE findBasketWithID:region.identifier];
-//    NSString *title = [findBasket valueForKey:@"title"];
-//    
-//    NSString *regionState = @"";
-//    
-//    switch (state) {
-//        case CLRegionStateUnknown: regionState = @"Unknown"; break;
-//        case CLRegionStateInside: regionState = @"Enter"; break;
-//        case CLRegionStateOutside: regionState = @"Exit"; break;
-//            
-//        default: break;
-//    }
-//
-//    NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, regionState];
-//    
-//    [DBKSERVICE pushLocalNotification:msg];
 
 }
 
-//- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-//    // test the age of the location measurement to determine if the measurement is cached
-//    // in most cases you will not want to rely on cached measurements
-//    NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
-//    
-//    if (locationAge > 5.0) return;
-//    
-//    // test that the horizontal accuracy does not indicate an invalid measurement
-//    if (newLocation.horizontalAccuracy < 0) return;
-//    
-//    // test the measurement to see if it is more accurate than the previous measurement
-//    if (bestEffortAtLocation == nil || bestEffortAtLocation.horizontalAccuracy > newLocation.horizontalAccuracy) {
-//        // store the location as the "best effort"
-//        self.bestEffortAtLocation = newLocation;
-//        
-//        // test the measurement to see if it meets the desired accuracy
-//        //
-//        // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
-//        // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
-//        // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on the timeout.
-//        //
-//        if (newLocation.horizontalAccuracy <= locationManager.desiredAccuracy) {
-//            // we have a measurement that meets our requirements, so we can stop updating the location
-//            //
-//            // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
-//            //
-//            [self stopUpdatingLocation:NSLocalizedString(@"Acquired Location", @"Acquired Location")];
-//            
-//            // we can also cancel our previous performSelector:withObject:afterDelay: - it's no longer necessary
-//            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
-//        }
-//    }
-//}
-
-- (void)checkGeoFence 
+- (void)checkGeoFence
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         
@@ -191,7 +126,7 @@
                     NSString *title = (IsEmpty(basket.title))?@"":basket.title;
                     NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, @"Enter !"];
                     
-                    [DBKSERVICE pushLocalNotification:msg];
+                    [DBKSERVICE pushLocalNotification:msg basket:basket];
                     
                     //한번 체크인 한 바스켓은 두번 안되게 막음.
                     basket.checked = YES;
@@ -318,28 +253,6 @@
         }
     }
 
-    
-    
-    
-//    NSDate* eventDate = location.timestamp;
-//    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
-//    if (abs(howRecent) < 15.0) {
-//        
-//        CLLocationDistance distance = [location distanceFromLocation:_currentLocation];
-//        NSLog(@"================== distance = %f", distance);
-//        if(abs(distance) > 1) {
-//            _currentLocation = location;
-//            GVALUE.longitude = _currentLocation.coordinate.longitude;
-//            GVALUE.latitude = _currentLocation.coordinate.latitude;
-//            // If the event is recent, do something with it.
-//            NSLog(@"latitude %+.6f, longitude %+.6f\n",
-//                  location.coordinate.latitude,
-//                  location.coordinate.longitude);
-//        }
-//
-//    }
-   // _currentLocation = [locations objectAtIndex:0];
-    
 }
 
 
@@ -352,7 +265,7 @@
     NSString *event = [NSString stringWithFormat:@"didEnterRegion :  %@ at %f / %f", title, findBasket.latitude, findBasket.longitude]; //[NSDate date]
     //[self updateWithEvent:event];
     
-    [DBKSERVICE pushLocalNotification:event];
+    [DBKSERVICE pushLocalNotification:event basket:findBasket];
     
     NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":[NSDate date], @"checkout_at":@""};
     [DocbaketAPIClient postRegionCheck:parameters withBasketID:[findBasket valueForKey:@"basketID"]];
@@ -371,7 +284,7 @@
     
     NSString *event = [NSString stringWithFormat:@"didExitRegion :  %@ at %f / %f", title, findBasket.latitude, findBasket.longitude]; //[NSDate date]
     //[self updateWithEvent:event];
-    [DBKSERVICE pushLocalNotification:event];
+    [DBKSERVICE pushLocalNotification:event basket:findBasket];
     
     NSDictionary *parameters = @{@"trans_id": @"", @"user_id": @"bb5774c9-2c4e-41d0-b792-530e295e1ca6", @"checkin_at":@"", @"checkout_at":[NSDate date]};
     [DocbaketAPIClient postRegionCheck:parameters withBasketID:[findBasket valueForKey:@"basketID"]];
@@ -409,42 +322,7 @@
 
 
 
-//- (void)updateWithEvent:(NSString *)event {
-//
-//    // Update the icon badge number.
-//    //[UIApplication sharedApplication].applicationIconBadgeNumber++;
-//
-//    UIApplication *app = [UIApplication sharedApplication];
-////    NSArray *oldNotifications = [app scheduledLocalNotifications];
-////    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//    
-//    // Clear out the old notification before scheduling a new one.
-////    if ([oldNotifications count] > 0)
-////        [app cancelAllLocalNotifications];
-//    
-//    // Create a new notification
-//    UILocalNotification *noti = [[UILocalNotification alloc] init];
-//    if (noti) {
-//        noti.fireDate =  [NSDate dateWithTimeIntervalSinceNow:0.1];
-//        noti.timeZone = [NSTimeZone defaultTimeZone];
-//        //noti.repeatInterval = 0;
-//        noti.alertBody = event;
-//        noti.alertAction = @"GOGO";
-//        noti.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
-//        
-//        [app presentLocalNotificationNow:noti];
-//    }
-//    
-//    NSLog(@"Done.");
-//    
-//}
-
-
-
 #pragma mark - Public Methods
-
-
-
 
 - (void)startLocationManager
 {

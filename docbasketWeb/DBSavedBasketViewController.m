@@ -1,23 +1,20 @@
 //
-//  DBListViewController.m
+//  DBSavedBasketViewController.m
 //  docbasketWeb
 //
-//  Created by jaecheol kim on 6/27/14.
+//  Created by jaecheol kim on 7/16/14.
 //  Copyright (c) 2014 jaecheol kim. All rights reserved.
 //
 
-#import "DBListViewController.h"
-//#import "SCQRGeneratorViewController.h"
-#import "DBBasketViewController.h"
-#import "UIImageView+AFNetworking.h"
+#import "DBSavedBasketViewController.h"
 
-@interface DBListViewController ()
+@interface DBSavedBasketViewController ()
 
 @end
 
-@implementation DBListViewController
+@implementation DBSavedBasketViewController
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -38,7 +35,14 @@
 {
     [super viewWillAppear:animated];
     
-    [self.tableView reloadData];
+    //filter= created | invited | saved | public(default)
+    [self checkMyBasket:@"saved" completionHandler:^(BOOL success) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
+    
+    
     
 }
 
@@ -48,6 +52,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 #pragma mark - UITableViewDelegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -56,7 +61,7 @@
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [GVALUE.baskets count];
+    return [self.baskets count];
 }
 
 
@@ -68,7 +73,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     
-    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    Docbasket *basket = [self.baskets objectAtIndex:indexPath.row];
     if(!IsEmpty(basket)){
         cell.textLabel.font = [UIFont systemFontOfSize:12.0];
         cell.textLabel.text = basket.title;
@@ -77,7 +82,7 @@
         if(!IsEmpty(image)){
             NSString *MyURL = [NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
             if(!IsEmpty(MyURL)){
-               
+                
                 UIImageView *imgView = [[UIImageView alloc] init];
                 [imgView setImageWithURL:[NSURL URLWithString:MyURL] placeholderImage:nil];
                 //cell.imageView = imgView ;
@@ -103,25 +108,22 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    Docbasket *basket = [self.baskets objectAtIndex:indexPath.row];
     if(!IsEmpty(basket)){
         
-//        SCQRGeneratorViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"SCQRGeneratorViewController"];
-//        viewcontroller.basketID = basket.basketID;
-//        viewcontroller.basket = basket;
-
+        //        SCQRGeneratorViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"SCQRGeneratorViewController"];
+        //        viewcontroller.basketID = basket.basketID;
+        //        viewcontroller.basket = basket;
+        
         DBBasketViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"DBBasketViewController"];
         viewcontroller.basket = basket;
-
+        
         
         [self.navigationController pushViewController:viewcontroller animated:YES];
-
+        
     }
-
+    
 }
-
-
-
 
 /*
 #pragma mark - Navigation

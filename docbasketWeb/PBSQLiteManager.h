@@ -33,14 +33,22 @@ enum errorCodes {
 - (NSArray*)getRowsForQuery:(NSString *)sql;
 - (NSString*)getDatabaseDump;
 
-#pragma mark Users Table
+#pragma mark Basket Table
 
 - (void)syncDocBaskets2DB:(NSDictionary*)docbaskets completionHandler:(void (^)(BOOL success))block;
 - (void)syncDocBasket2DB:(Docbasket*)basket completionHandler:(void (^)(BOOL success))block;
 
 - (NSArray*)getDocBasketsForQuery:(NSString *)sql;
-
+ 
 - (void)getRegionBasketsDistance:(double)distance latitude:(double)latitude longitude:(double)longitude;
 - (void)getRegionBasketsDistance:(double)distance completionHandler:(void (^)(BOOL success))block;
 
+
+// 초대된 바스켓 추가
+// type = 0:remote / 1:local
+- (void)syncBasket2InvitedDB:(Docbasket*)basket type:(int)type completionHandler:(void (^)(BOOL success))block;
+- (NSArray*)getAllInvites;
+- (NSArray *)AcceptInvite:(NSString*)basketID;
+
 @end
+

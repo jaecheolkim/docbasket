@@ -24,7 +24,11 @@
 - (void)startmanager;
 - (void)stopmanager;
 
-- (void)pushLocalNotification:(NSString *)event;
+- (void)pushLocalNotification:(NSString *)event basket:(Docbasket*)basket;
 
 - (void)loadBasketsOnMap;
+
+- (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block;
+
 @end
+

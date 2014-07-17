@@ -5,7 +5,7 @@
 //  Created by jaecheol kim on 6/16/14.
 //  Copyright (c) 2014 jaecheol kim. All rights reserved.
 //
-#import <Parse/Parse.h>
+//#import <Parse/Parse.h>
 
 #import "AppDelegate.h"
 #import "GlobalValue.h"
@@ -13,6 +13,7 @@
 #import "DocbaketAPIClient.h"
 #import "Docbasket.h"
 #import "DocbasketService.h"
+#import "ParseHelper.h"
 
 @interface AppDelegate ()
 
@@ -32,25 +33,41 @@
      UIRemoteNotificationTypeAlert |
      UIRemoteNotificationTypeSound];
     
-    [Parse setApplicationId:@"4uXSfqyezD0qo8XcooiyipZqwKJzIHkMi54IlIpV"
-                  clientKey:@"34UZWTxKQrmH4L3NxP7EV0nqGbla3t90BulBvIzR"];
+    [ParseHelper sharedInstance];
+    
+    if(!IsEmpty(GVALUE.userID)) [PARSE subscribePushChannel:GVALUE.userID];
+    
+//    [Parse setApplicationId:@"4uXSfqyezD0qo8XcooiyipZqwKJzIHkMi54IlIpV"
+//                  clientKey:@"34UZWTxKQrmH4L3NxP7EV0nqGbla3t90BulBvIzR"];
 
     
+//    if(!IsEmpty(GVALUE.userID)){
+        // When users indicate they are Giants fans, we subscribe them to that channel.
+//        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+//        [currentInstallation addUniqueObject:GVALUE.userID forKey:@"channels"];
+//        [currentInstallation saveInBackground];
+//        
+//        NSLog(@"UserID = %@", GVALUE.userID);
+//    }
     
     [DBKSERVICE startmanager];
- 
+    
+
+
+    
     return YES;
 }
 
 
 // Parse remote push notification
-- (void)application:(UIApplication *)application
-didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    // Store the deviceToken in the current installation and save it to Parse.
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    [currentInstallation setDeviceTokenFromData:deviceToken];
-    [currentInstallation saveInBackground];
+//    // Store the deviceToken in the current installation and save it to Parse.
+//    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+//    [currentInstallation setDeviceTokenFromData:deviceToken];
+//    [currentInstallation saveInBackground];
+    
+    [PARSE saveNotificationDeviceToken:deviceToken];
 }
 
 // Parse remote push notification
@@ -85,7 +102,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         }
     }
     
-    [PFPush handlePush:userInfo];
+    [PARSE handlePush:userInfo];
 }
 
 // Local push notification

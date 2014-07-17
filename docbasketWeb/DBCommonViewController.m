@@ -34,6 +34,9 @@
 {
     [super viewDidLoad];
     
+    UIImage* logoImage = [UIImage imageNamed:@"docbasketLogo.png"];
+    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:logoImage];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(DBCommonViewControllerEventHandler:)
                                                  name:@"DBCommonViewControllerEventHandler" object:nil];
 

@@ -150,24 +150,27 @@
             //if ([metadata.type isEqualToString:AVMetadataObjectTypeQRCode]) {
             // Transform the meta-data coordinates to screen coords
             AVMetadataMachineReadableCodeObject *transformed = (AVMetadataMachineReadableCodeObject *)[_previewLayer transformedMetadataObjectForMetadataObject:metadata];
-            // Update the frame on the _boundingBox view, and show it
-            _boundingBox.frame = transformed.bounds;
-            _boundingBox.hidden = NO;
-            // Now convert the corners array into CGPoints in the coordinate system
-            //  of the bounding box itself
-            NSArray *translatedCorners = [self translatePoints:transformed.corners
-                                                      fromView:self.view
-                                                        toView:_boundingBox];
-            
-            // Set the corners array
-            _boundingBox.corners = translatedCorners;
-            
-            // Update the view with the decoded text
-            _decodedMessage.text = [transformed stringValue];
-            
-            // Start the timer which will hide the overlay
-            [self startOverlayHideTimer];
-            //}
+            if([transformed respondsToSelector:@selector(corners)]) {
+                // Update the frame on the _boundingBox view, and show it
+                _boundingBox.frame = transformed.bounds;
+                _boundingBox.hidden = NO;
+                // Now convert the corners array into CGPoints in the coordinate system
+                //  of the bounding box itself
+                NSArray *translatedCorners = [self translatePoints:transformed.corners
+                                                          fromView:self.view
+                                                            toView:_boundingBox];
+                
+                // Set the corners array
+                _boundingBox.corners = translatedCorners;
+                
+                // Update the view with the decoded text
+                _decodedMessage.text = [transformed stringValue];
+                
+                // Start the timer which will hide the overlay
+                [self startOverlayHideTimer];
+                //}
+            }
+
         }
     }
 

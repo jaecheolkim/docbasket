@@ -359,21 +359,33 @@
 - (void)selectDocument:(NSUInteger)index
 {
     NSDictionary *document = [self.documents objectAtIndex:index];
-    [self initDocument:document];
-    EBPhotoPagesController *photoPagesController = [[EBPhotoPagesController alloc] initWithDataSource:self delegate:self];
-    [self presentViewController:photoPagesController animated:YES completion:nil];
+    if([self initDocument:document]) {
+        
+        EBPhotoPagesController *photoPagesController = [[EBPhotoPagesController alloc] initWithDataSource:self delegate:self];
+        [self presentViewController:photoPagesController animated:YES completion:nil];
+    } else {
+        
+        [[[UIAlertView alloc] initWithTitle:nil
+                                    message:@"아직 변환이 완료되지 않았거나 \n 변환중 에러가 발생함.."
+                           cancelButtonItem:[RIButtonItem itemWithLabel:@"Yes"
+                                                                 action:^{
+                                                                     
+                                                                     
+                                                                 }]
+                           otherButtonItems:nil, nil] show];
+    }
 
 }
 
-- (void)initDocument:(NSDictionary *)document
+- (BOOL)initDocument:(NSDictionary *)document
 {
     NSLog(@"document = %@", document);
    
-    NSString *imagePath = document[@"image"];
+    NSString *imagePath = (!IsEmpty(document[@"image"]))?document[@"image"]:@"";
     NSString *ext = [imagePath pathExtension];//[[image lastPathComponent] stringByDeletingPathExtension];
-    NSString *content_type = document[@"content_type"];
+    NSString *content_type = (!IsEmpty(document[@"content_type"]))?document[@"content_type"]:@""; //document[@"content_type"];
     
-    int trans_done = (int)(IsEmpty(document[@"trans_done"])? 0 : [document[@"trans_done"] integerValue]);
+    int trans_done = (int)(IsEmpty(document[@"trans_done"]))? 0 : [document[@"trans_done"] integerValue];
 
     if(trans_done) {
         
@@ -433,6 +445,7 @@
 
     }
     
+    return trans_done;
 
 }
 

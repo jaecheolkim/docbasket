@@ -11,6 +11,7 @@
 #import "Docbasket.h"
 #import "DBBasketViewController.h"
 #import "UIImageView+AFNetworking.h"
+#import "UIImageView+addOn.h"
 
 @interface DBCommonBasketViewController : UIViewController
 @property (nonatomic, strong) NSArray *baskets;

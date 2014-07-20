@@ -12,6 +12,7 @@
 #import "GlobalValue.h"
 #import "MEExpandableHeaderView.h"
 #import "UIImageView+AFNetworking.h"
+#import "UIImageView+addOn.h"
 #import "Docbasket.h"
 
 
@@ -40,6 +41,7 @@
 
 @property(nonatomic, strong) IBOutlet UITableView *tableView;
 @property(nonatomic, strong) MEExpandableHeaderView *headerView;
+@property(nonatomic, strong) UIImage *backgroundImage;
 
 @property (strong) NSArray *photos;
 @end
@@ -82,6 +84,8 @@
     // Make BarButton Item
     UIBarButtonItem *navButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.rightBarButtonItem = navButton;
+    
+    self.navigationItem.leftBarButtonItem.title = nil;
 
 }
 
@@ -123,12 +127,15 @@
         screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
     }
     
+
     CGSize headerViewSize = CGSizeMake(screenFrame.size.width, 200);
-    UIImage *backgroundImage = [UIImage imageNamed:@"beach"];
-    NSArray *pages = @[[self createPageViewWithText:@"First page"],
-                       [self createPageViewWithText:@"Second page"],
-                       [self createPageViewWithText:@"Third page"],
-                       [self createPageViewWithText:@"Fourth page"]];
+    if(IsEmpty(_backgroundImage))
+        _backgroundImage = [UIImage imageNamed:@"basketView.png"];
+
+    NSArray *pages = @[[self createPageViewWithText:@"First page" size:headerViewSize],
+                       [self createPageViewWithText:@"Second page" size:headerViewSize],
+                       [self createPageViewWithText:@"Third page" size:headerViewSize],
+                       [self createPageViewWithText:@"Fourth page" size:headerViewSize]];
     
     
     if(self.headerView){
@@ -136,28 +143,14 @@
     }
     
     self.headerView = [[MEExpandableHeaderView alloc] initWithSize:headerViewSize
-                                                                      backgroundImage:backgroundImage
+                                                                      backgroundImage:_backgroundImage
                                                                          contentPages:pages];
+    
+    self.headerView.backgroundImageView.backgroundColor = [UIColor lightGrayColor];
+    
     self.tableView.tableHeaderView = self.headerView;
 }
 
-- (void)saveBasket:(id)sender
-{
-    [DocbaketAPIClient saveDocBasket:self.basketID completionHandler:^(BOOL success) {
-        NSString *msg = @"Success";
-        if(!success)
-            msg = @"Fail";
-        
-        [[[UIAlertView alloc] initWithTitle:@"Success"
-                                    message:@"save to my basket"
-                           cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
-                                             {
-                                                 
-                                                 
-                                             }]
-                           otherButtonItems:nil, nil] show];
-    }];
-}
 
 
 - (void)refreshView
@@ -167,9 +160,17 @@
          if(!IsEmpty(result)){
              
              self.basketInfo = result;
+             NSLog(@"basket = %@", self.basketInfo);
              
-             self.tags = self.basketInfo[@"tags"];
-             self.comments = self.basketInfo[@"comments"];
+//             "created_at" = "2014-07-11T04:51:42.627Z";
+//             description = lalala;
+//             image = "http://0c86568b33ba49994159-f6bbd63f18dffb4beb7359283894d4fe.r82.cf6.rackcdn.com/Document-Microsoft-Word-icon.png";
+//             "is_public" = 1;
+//             latitude = "37.5621117663126";
+//             longitude = "126.989893913269";
+//              title = "test 1 -kat";
+//             "user_id" = "0c7849ee-f60e-4e90-9f21-8d7c3025d933";
+             
              self.documents = self.basketInfo[@"documents"];
              
              NSString *imagePath = self.basketInfo[@"image"];
@@ -181,9 +182,24 @@
                  thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"thumb", fileName ];
              }
              
+             __weak MEExpandableHeaderView *header = _headerView;
+            
              dispatch_async(dispatch_get_main_queue(), ^{
                  if(!IsEmpty(thumbPath)) {
-                     [_headerView.backgroundImageView setImageWithURL:[NSURL URLWithString:thumbPath] ];
+                     [header.backgroundImageView setImageWithURL:thumbPath
+                                                placeholderImage:[UIImage imageNamed:@"basketView.png"]
+                                                      completion:^(UIImage *image){
+                                                          
+                                                          if(!IsEmpty(image)){
+                                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                                  _backgroundImage = image;
+                                                                  header.originalImage = image;
+                                                                  header.backgroundImageView.image = image;
+                                                              });
+                                                          }
+                                                          
+                                                      }];
+
                  }
                  
                  [self.tableView reloadData];
@@ -208,23 +224,44 @@
      }];
 }
 
+- (void)saveBasket:(id)sender
+{
+    [DocbaketAPIClient saveDocBasket:self.basketID completionHandler:^(BOOL success) {
+        NSString *msg = @"Success";
+        if(!success)
+            msg = @"Fail";
+        
+        [[[UIAlertView alloc] initWithTitle:@"Success"
+                                    message:@"save to my basket"
+                           cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
+                                             {
+                                                 
+                                                 
+                                             }]
+                           otherButtonItems:nil, nil] show];
+    }];
+}
+
 
 #pragma mark - Content
 
-- (UIView*)createPageViewWithText:(NSString*)text
+- (UILabel*)createPageViewWithText:(NSString*)text size:(CGSize)size
 {
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260, 44)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
+    //UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260, 44)];
     
     label.font = [UIFont boldSystemFontOfSize:27.0];
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
-    label.backgroundColor = [UIColor clearColor];
+    label.backgroundColor = [UIColor lightGrayColor];
     label.shadowColor = [UIColor darkGrayColor];
     label.shadowOffset = CGSizeMake(0, 1);
     label.text = text;
     
     return label;
 }
+
+
 
 #pragma mark - Table view data source
 
@@ -257,8 +294,21 @@
     NSString *path = [imagePath stringByDeletingLastPathComponent];
     NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"small_thumb", fileName ];
 
+    __weak UIImageView *imgView = cell.imageView;
     
-    [cell.imageView setImageWithURL:[NSURL URLWithString:thumbPath]];
+    [cell.imageView setImageWithURL:thumbPath
+                   placeholderImage:[UIImage imageNamed:@"map.png"]
+                         completion:^(UIImage *image){
+                             
+                             if(!IsEmpty(image)){
+                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                    imgView.image = image;
+                                 });
+                             }
+                             
+                         }];
+    
+    //[cell.imageView setImageWithURL:[NSURL URLWithString:thumbPath] placeholderImage:[UIImage imageNamed:@"map.png"]];
     cell.textLabel.text = fileName;
 
     return cell;
@@ -268,7 +318,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 44.0f;
+    return 60.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

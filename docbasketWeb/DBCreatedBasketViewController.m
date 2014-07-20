@@ -7,6 +7,7 @@
 //
 
 #import "DBCreatedBasketViewController.h"
+#import "UIImageView+addOn.h"
 
 @interface DBCreatedBasketViewController ()
 
@@ -79,14 +80,28 @@
         
         NSString *image = basket.image;
         if(!IsEmpty(image)){
-            NSString *MyURL = [NSString stringWithFormat:@"%@%@",@"http://docbasket.com",image];
-            if(!IsEmpty(MyURL)){
-                
-                UIImageView *imgView = [[UIImageView alloc] init];
-                [imgView setImageWithURL:[NSURL URLWithString:MyURL] placeholderImage:nil];
-                //cell.imageView = imgView ;
-            }
             
+            NSString *fileName = [image lastPathComponent];//[[image lastPathComponent] stringByDeletingPathExtension];
+            NSString *path = [image stringByDeletingLastPathComponent];
+            NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"small_thumb", fileName ];
+            
+            __weak UIImageView *imgView = cell.imageView;
+            
+            [cell.imageView setImageWithURL:thumbPath
+                           placeholderImage:[UIImage imageNamed:@"map.png"]
+                                 completion:^(UIImage *image){
+                                     
+                                     if(!IsEmpty(image)){
+                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                             imgView.image = image;
+                                         });
+                                     }
+                                     
+                                 }];
+            
+//            [cell.imageView setImageWithURL:[NSURL URLWithString:thumbPath] placeholderImage:[UIImage imageNamed:@"map.png"]];
+        } else {
+            [cell.imageView setImage:[UIImage imageNamed:@"map.png"]];
         }
         
         

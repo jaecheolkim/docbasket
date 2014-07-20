@@ -14,7 +14,6 @@
 @property(nonatomic, strong, readonly) UIScrollView *pagesScrollView;
 @property(nonatomic, strong, readonly) UIPageControl *pageControl;
 @property(nonatomic, strong) UIImage *originalImage;
-
 /**
  *	@brief		Creates a new instance of MEExpandableHeaderView class.
  *

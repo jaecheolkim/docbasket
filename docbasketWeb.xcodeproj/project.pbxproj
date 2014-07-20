@@ -130,6 +130,8 @@
 		8097679F195C1ABE0048CA13 /* DBCommonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8097679E195C1ABE0048CA13 /* DBCommonViewController.m */; };
 		809767A5195C7D7D0048CA13 /* DBListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 809767A4195C7D7D0048CA13 /* DBListViewController.m */; };
 		809767A8195C84800048CA13 /* DBLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 809767A7195C84800048CA13 /* DBLoginViewController.m */; };
+		80A437A51978D2F7004EF351 /* UIImageView+addOn.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A437A41978D2F7004EF351 /* UIImageView+addOn.m */; };
+		80A437AA1978F826004EF351 /* SWTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A437A91978F826004EF351 /* SWTableViewCell.m */; };
 		80D08B83195939A800C17879 /* makeNewBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D08B82195939A800C17879 /* makeNewBasketViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -387,6 +389,10 @@
 		809767A6195C84800048CA13 /* DBLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBLoginViewController.h; sourceTree = "<group>"; };
 		809767A7195C84800048CA13 /* DBLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBLoginViewController.m; sourceTree = "<group>"; };
 		809B3608194FD0DC0099D3A8 /* docbasketURLInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = docbasketURLInfo.h; sourceTree = "<group>"; };
+		80A437A31978D2F7004EF351 /* UIImageView+addOn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+addOn.h"; sourceTree = "<group>"; };
+		80A437A41978D2F7004EF351 /* UIImageView+addOn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+addOn.m"; sourceTree = "<group>"; };
+		80A437A81978F826004EF351 /* SWTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWTableViewCell.h; sourceTree = "<group>"; };
+		80A437A91978F826004EF351 /* SWTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWTableViewCell.m; sourceTree = "<group>"; };
 		80D08B81195939A800C17879 /* makeNewBasketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeNewBasketViewController.h; sourceTree = "<group>"; };
 		80D08B82195939A800C17879 /* makeNewBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = makeNewBasketViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -639,6 +645,7 @@
 		8061AFF219503BB000685336 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				80A437A71978F826004EF351 /* SWTableViewCell */,
 				80897F921974E13300903BF0 /* UIAlertView_Blocks */,
 				805B8D7C196EDE7B00F2A694 /* EBPhotoPagesController */,
 				808CC929196A6B640048C99E /* ZipArchive */,
@@ -728,6 +735,8 @@
 				8061B0391950B47F00685336 /* RegionAnnotationView.m */,
 				8016E87619666342001C029E /* UIImage+QRCode.h */,
 				8016E87719666342001C029E /* UIImage+QRCode.m */,
+				80A437A31978D2F7004EF351 /* UIImageView+addOn.h */,
+				80A437A41978D2F7004EF351 /* UIImageView+addOn.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -907,12 +916,21 @@
 			path = common;
 			sourceTree = SOURCE_ROOT;
 		};
+		80A437A71978F826004EF351 /* SWTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				80A437A81978F826004EF351 /* SWTableViewCell.h */,
+				80A437A91978F826004EF351 /* SWTableViewCell.m */,
+			);
+			path = SWTableViewCell;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		805A3211194EE13500F213C1 /* docbasketWeb */ = {
+		805A3211194EE13500F213C1 /* DocBasket */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 805A3235194EE13500F213C1 /* Build configuration list for PBXNativeTarget "docbasketWeb" */;
+			buildConfigurationList = 805A3235194EE13500F213C1 /* Build configuration list for PBXNativeTarget "DocBasket" */;
 			buildPhases = (
 				805A320E194EE13500F213C1 /* Sources */,
 				805A320F194EE13500F213C1 /* Frameworks */,
@@ -922,7 +940,7 @@
 			);
 			dependencies = (
 			);
-			name = docbasketWeb;
+			name = DocBasket;
 			productName = docbasketWeb;
 			productReference = 805A3212194EE13500F213C1 /* docbasketWeb.app */;
 			productType = "com.apple.product-type.application";
@@ -988,7 +1006,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				805A3211194EE13500F213C1 /* docbasketWeb */,
+				805A3211194EE13500F213C1 /* DocBasket */,
 				805A322A194EE13500F213C1 /* docbasketWebTests */,
 			);
 		};
@@ -1032,6 +1050,7 @@
 				8061B01C19503BE100685336 /* AFNetworkReachabilityManager.m in Sources */,
 				800A4D5419628D7800E60B8A /* Barcode.m in Sources */,
 				800A4D5519628D7800E60B8A /* ScannerViewController.m in Sources */,
+				80A437AA1978F826004EF351 /* SWTableViewCell.m in Sources */,
 				8061B02219503BE100685336 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				806845C4197398B1005699EB /* UIBarButtonItem+Badge.m in Sources */,
 				8061AFF01950163800685336 /* GlobalValue.m in Sources */,
@@ -1072,6 +1091,7 @@
 				8016E880196676AC001C029E /* MEExpandableHeaderView.m in Sources */,
 				807556581951980D00F68F63 /* SDWebImageDecoder.m in Sources */,
 				808CC94D196A8E470048C99E /* DBUtil.m in Sources */,
+				80A437A51978D2F7004EF351 /* UIImageView+addOn.m in Sources */,
 				8061B02519503BE100685336 /* UIButton+AFNetworking.m in Sources */,
 				808CC950196AD1520048C99E /* PBSQLiteManager.m in Sources */,
 				805B8DA8196EDE7B00F2A694 /* EBPhotoToolbar.m in Sources */,
@@ -1140,7 +1160,7 @@
 /* Begin PBXTargetDependency section */
 		805A322D194EE13500F213C1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 805A3211194EE13500F213C1 /* docbasketWeb */;
+			target = 805A3211194EE13500F213C1 /* DocBasket */;
 			targetProxy = 805A322C194EE13500F213C1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1323,7 +1343,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		805A3235194EE13500F213C1 /* Build configuration list for PBXNativeTarget "docbasketWeb" */ = {
+		805A3235194EE13500F213C1 /* Build configuration list for PBXNativeTarget "DocBasket" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				805A3236194EE13500F213C1 /* Debug */,

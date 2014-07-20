@@ -54,16 +54,18 @@
 
 - (void)subscribePushChannel:(NSString*)channel
 {
+    NSString *chanelName = [NSString stringWithFormat:@"C%@",channel];
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    [currentInstallation addUniqueObject:channel forKey:@"channels"];
+    [currentInstallation addUniqueObject:chanelName forKey:@"channels"];
     [currentInstallation saveInBackground];
 }
 
 - (void)unsubscribePushChannel:(NSString*)channel
 {
     // When users indicate they are no longer channel, we unsubscribe them.
+    NSString *chanelName = [NSString stringWithFormat:@"C%@",channel];
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    [currentInstallation removeObject:channel forKey:@"channels"];
+    [currentInstallation removeObject:chanelName forKey:@"channels"];
     [currentInstallation saveInBackground];
 }
 

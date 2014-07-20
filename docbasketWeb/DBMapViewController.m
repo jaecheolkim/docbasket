@@ -14,13 +14,11 @@
 #import "DocbasketService.h"
 #import "DBBasketViewController.h"
 #import "UIImageView+AFNetworking.h"
+#import "UIImageView+addOn.h"
+#import "SWTableViewCell.h"
 
-@interface DBMapViewController ()
+@interface DBMapViewController () <SWTableViewCellDelegate>
 {
-//    CLLocationCoordinate2D screenCenterCoordinate2D;
-//    CLLocation *screenCenterLocation;
-    
-//    CLLocationCoordinate2D currentCoordinate;
     CGRect screenFrame;
     BOOL isChangingScreen;
     CHPopUpMenu *popUp;
@@ -50,11 +48,6 @@
     isChangingScreen = YES;
 
  
-    self.mapView.showsUserLocation=YES;
-//    self.mapView.camera.altitude = 200;
-//    self.mapView.camera.pitch = 70;
-//    self.mapView.showsBuildings = YES;
-  
     self.basketPin.hidden = YES;
     
     [self fixScreenFrame];
@@ -85,11 +78,14 @@
     self.tableView.hidden = YES;
     
     [self refreshMap];
+    
+    self.mapView.showsUserLocation = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-     [super viewWillAppear:animated];
+    [super viewWillAppear:animated];
+    [self goCurrent];
     
 }
 
@@ -183,12 +179,14 @@
         self.addressInfo.hidden = YES;
         self.currentButton.hidden = YES;
         
-        self.addBasketButton.title = @"Map";
+        //self.addBasketButton.title = @"Map";
+        self.addBasketButton.image = [UIImage imageNamed:@"map_icon.png"];
     } else {
         self.addressInfo.hidden = NO;
         self.currentButton.hidden = NO;
         
-        self.addBasketButton.title = @"List";
+        //self.addBasketButton.title = @"List";
+        self.addBasketButton.image = [UIImage imageNamed:@"List_Icon.png"];
     }
 }
 
@@ -291,7 +289,7 @@
     GVALUE.currentCoordinate = [DBKLOCATION getCurrentCoordinate];
     GVALUE.screenCenterCoordinate2D = GVALUE.currentCoordinate;
 
-    [self.mapView setRegion:MKCoordinateRegionMake(GVALUE.currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:YES];
+    [self.mapView setRegion:MKCoordinateRegionMake(GVALUE.currentCoordinate, MKCoordinateSpanMake(0.01, 0.01)) animated:NO];
 }
 
 
@@ -500,7 +498,7 @@
         
         NSString *image = findBasket.image;
         NSString *ext = nil;
-        UIImage *icon = [UIImage imageNamed:@"RemoveRegion"];
+        UIImage *icon = [UIImage imageNamed:@"map.png"];//[UIImage imageNamed:@"RemoveRegion"];
         NSString *MyURL = nil;
         
         if(!IsEmpty(image)){
@@ -528,7 +526,7 @@
             UIButton *removeRegionButton = [UIButton buttonWithType:UIButtonTypeCustom];
             [removeRegionButton setFrame:CGRectMake(0., 0., 25., 25.)];
             if(!IsEmpty(MyURL)){
-                [removeRegionButton setImageWithURL:[NSURL URLWithString:MyURL] forState:UIControlStateNormal];
+                [removeRegionButton setImageWithURL:[NSURL URLWithString:MyURL] forState:UIControlStateNormal placeholderImage:icon];
             } else {
                 [removeRegionButton setImage:icon forState:UIControlStateNormal];
             }
@@ -618,12 +616,112 @@
 }
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    static NSString *cellIdentifier = @"Cell";
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//    
+//    if (cell == nil) {
+//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+//    }
+//    
+//    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+//    if(!IsEmpty(basket)){
+//        
+//        CLLocation *cLocation = [[CLLocation alloc] initWithLatitude:basket.latitude longitude:basket.longitude];
+//        CLLocationDistance distance = [GVALUE.currentLocation distanceFromLocation:cLocation];
+//        
+//        
+//        NSString *image = basket.image;
+//        
+// 
+//        //NSString *dataPath = [NSString stringWithFormat:@"%@/%@.json",cacheDir, fileName];
+//        NSString *fileName = @"no file";
+//        
+//        if(!IsEmpty(image)){
+//            
+//            fileName = [image lastPathComponent];//[[image lastPathComponent] stringByDeletingPathExtension];
+//            NSString *path = [image stringByDeletingLastPathComponent];
+//            NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"small_thumb", fileName ];
+//
+//            __weak UIImageView *imgView = cell.imageView;
+//            
+//            [cell.imageView setImageWithURL:thumbPath
+//                           placeholderImage:[UIImage imageNamed:@"map.png"]
+//                                 completion:^(UIImage *image){
+//                                     
+//                                     if(!IsEmpty(image)){
+//                                         dispatch_async(dispatch_get_main_queue(), ^{
+//                                             imgView.image = image;
+//                                         });
+//                                     }
+//                                     
+//                                 }];
+//    
+//            
+//            
+////            [cell.imageView setImageWithURL:[NSURL URLWithString:thumbPath] placeholderImage:[UIImage imageNamed:@"map.png"]];
+//        } else {
+//            [cell.imageView setImage:[UIImage imageNamed:@"map.png"]];
+//        }
+//        
+//        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
+//        cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@\n%dm", basket.title, fileName, (int)distance ];
+//
+//        
+//        
+//        cell.textLabel.numberOfLines = 4;
+//    }
+//    
+//    
+//    return cell;
+//}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *cellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    SWTableViewCell *cell = (SWTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+
     
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        NSMutableArray *leftUtilityButtons = [NSMutableArray new];
+        NSMutableArray *rightUtilityButtons = [NSMutableArray new];
+        
+        //        [leftUtilityButtons sw_addUtilityButtonWithColor:
+        //         [UIColor colorWithRed:0.07 green:0.75f blue:0.16f alpha:1.0]
+        //                                                    icon:[UIImage imageNamed:@"check.png"]];
+        //        [leftUtilityButtons sw_addUtilityButtonWithColor:
+        //         [UIColor colorWithRed:1.0f green:1.0f blue:0.35f alpha:1.0]
+        //                                                    icon:[UIImage imageNamed:@"clock.png"]];
+        //        [leftUtilityButtons sw_addUtilityButtonWithColor:
+        //         [UIColor colorWithRed:1.0f green:0.231f blue:0.188f alpha:1.0]
+        //                                                    icon:[UIImage imageNamed:@"cross.png"]];
+        //        [leftUtilityButtons sw_addUtilityButtonWithColor:
+        //         [UIColor colorWithRed:0.55f green:0.27f blue:0.07f alpha:1.0]
+        //                                                    icon:[UIImage imageNamed:@"list.png"]];
+        //
+        [rightUtilityButtons sw_addUtilityButtonWithColor:
+         [UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f]
+                                                    title:@"Delete"];
+        [rightUtilityButtons sw_addUtilityButtonWithColor:
+         [UIColor colorWithRed:0.78f green:0.78f blue:0.8f alpha:1.0]
+                                                    title:@"Save"];
+        
+        
+        cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                      reuseIdentifier:cellIdentifier
+                                  containingTableView:self.tableView // Used for row height and selection
+                                   leftUtilityButtons:leftUtilityButtons
+                                  rightUtilityButtons:rightUtilityButtons];
+        cell.delegate = self;
+        [cell setCellHeight:60];
+
+//        [cell.imageView setFrame:CGRectMake(3, 3, 54, 54)];
+//        [cell.imageView setContentMode:UIViewContentModeScaleAspectFill];
+//        [cell.imageView setClipsToBounds:YES];
+//        [cell.imageView.layer setCornerRadius:cell.imageView.frame.size.width/2.0];
+
+
     }
     
     Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
@@ -632,31 +730,43 @@
         CLLocation *cLocation = [[CLLocation alloc] initWithLatitude:basket.latitude longitude:basket.longitude];
         CLLocationDistance distance = [GVALUE.currentLocation distanceFromLocation:cLocation];
         
-        
         NSString *image = basket.image;
-        
- 
-        //NSString *dataPath = [NSString stringWithFormat:@"%@/%@.json",cacheDir, fileName];
         NSString *fileName = @"no file";
+        
+
         
         if(!IsEmpty(image)){
             
             fileName = [image lastPathComponent];//[[image lastPathComponent] stringByDeletingPathExtension];
             NSString *path = [image stringByDeletingLastPathComponent];
             NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"small_thumb", fileName ];
-
             
-            [cell.imageView setImageWithURL:[NSURL URLWithString:thumbPath]];
+            __weak UIImageView *imgView = cell.imageView;
+            
+            [cell.imageView setImageWithURL:thumbPath
+                           placeholderImage:[UIImage imageNamed:@"map.png"]
+                                 completion:^(UIImage *image){
+                                     
+                                     if(!IsEmpty(image)){
+                                         dispatch_async(dispatch_get_main_queue(), ^{
+
+                                             imgView.image = image;
+                                         });
+                                     }
+                                     
+                                 }];
+
         } else {
             [cell.imageView setImage:[UIImage imageNamed:@"map.png"]];
         }
+ 
         
-        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@\n%dm", basket.title, fileName, (int)distance ];
-
+        //cell.textLabel.font = [UIFont systemFontOfSize:12.0];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", basket.title ];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%dm", (int)distance ];
         
         
-        cell.textLabel.numberOfLines = 4;
+        //cell.textLabel.numberOfLines = 4;
     }
     
     
@@ -689,5 +799,63 @@
     }
     
 }
+
+#pragma mark - SWTableViewDelegate
+
+- (void)swippableTableViewCell:(SWTableViewCell *)cell didTriggerLeftUtilityButtonWithIndex:(NSInteger)index {
+    switch (index) {
+        case 0:
+            NSLog(@"left button 0 was pressed");
+            break;
+        case 1:
+            NSLog(@"left button 1 was pressed");
+            break;
+        case 2:
+            NSLog(@"left button 2 was pressed");
+            break;
+        case 3:
+            NSLog(@"left btton 3 was pressed");
+        default:
+            break;
+    }
+}
+
+- (void)swippableTableViewCell:(SWTableViewCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    switch (index) {
+        case 0:
+        {
+            // Delete button was pressed
+            //            NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
+            //
+            //            [_testArray[cellIndexPath.section] removeObjectAtIndex:cellIndexPath.row];
+            //            [self.tableView deleteRowsAtIndexPaths:@[cellIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+            break;
+            
+            
+        }
+        case 1:
+        {
+            //            NSLog(@"More button was pressed");
+            //            UIAlertView *alertTest = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"More more more" delegate:nil cancelButtonTitle:@"cancel" otherButtonTitles: nil];
+            //            [alertTest show];
+            //
+            //            NSInteger row = [indexPath row];
+            
+            [cell hideUtilityButtonsAnimated:YES];
+            
+//            self.selectedUser = [self.Users objectAtIndex:index];
+//            
+//            [self performSegueWithIdentifier:@"CaptureImages" sender:self];
+            
+            
+            
+            break;
+            
+        }
+        default:
+            break;
+    }
+}
+
 
 @end

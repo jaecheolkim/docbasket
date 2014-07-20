@@ -78,8 +78,8 @@
     {
         assert([page isKindOfClass:[UIView class]]);
         
-        page.center = CGPointMake(posX + self.bounds.size.width/2.0,
-                                  self.bounds.size.height/2.0);
+        page.center = CGPointMake(posX + self.bounds.size.width/2.0, 15);
+                                  //self.bounds.size.height/2.0);
         
         [pagesScrollView addSubview:page];
         

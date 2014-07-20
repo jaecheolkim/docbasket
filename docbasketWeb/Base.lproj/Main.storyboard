@@ -79,7 +79,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="DocBasket" id="b8v-W4-Qy0">
-                        <barButtonItem key="rightBarButtonItem" title="List" id="AQl-FY-bma">
+                        <barButtonItem key="rightBarButtonItem" image="List_Icon" id="AQl-FY-bma">
                             <connections>
                                 <action selector="buttonHandler:" destination="BYZ-38-t0r" id="u76-7O-e1E"/>
                             </connections>
@@ -330,10 +330,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="P8L-3Z-R5c" firstAttribute="top" secondItem="o4F-gL-fKc" secondAttribute="top" id="Bu7-i6-5rr"/>
-                            <constraint firstAttribute="bottom" secondItem="P8L-3Z-R5c" secondAttribute="bottom" id="jhL-zN-wpj"/>
-                            <constraint firstAttribute="trailing" secondItem="P8L-3Z-R5c" secondAttribute="trailing" id="uCb-8h-Bsa"/>
-                            <constraint firstItem="P8L-3Z-R5c" firstAttribute="leading" secondItem="o4F-gL-fKc" secondAttribute="leading" id="yNn-gE-ZWw"/>
+                            <constraint firstItem="P8L-3Z-R5c" firstAttribute="top" secondItem="o4F-gL-fKc" secondAttribute="top" id="Ghw-gb-klt"/>
+                            <constraint firstAttribute="trailing" secondItem="P8L-3Z-R5c" secondAttribute="trailing" id="RAW-Il-SmT"/>
+                            <constraint firstItem="P8L-3Z-R5c" firstAttribute="leading" secondItem="o4F-gL-fKc" secondAttribute="leading" id="rrk-sk-bia"/>
+                            <constraint firstAttribute="bottom" secondItem="P8L-3Z-R5c" secondAttribute="bottom" id="v6B-G3-AEW"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Saved" image="arrow" id="JRQ-5L-ZZL"/>
@@ -349,7 +349,7 @@
         <scene sceneID="InN-We-wff">
             <objects>
                 <tabBarController storyboardIdentifier="DBMyDocBasketViewController" definesPresentationContext="YES" id="Oei-Hp-OCO" customClass="DBMyDocBasketViewController" sceneMemberID="viewController">
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="Cmf-Nq-Hqi">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -389,10 +389,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="y8o-wK-ZwI" firstAttribute="top" secondItem="pBZ-C4-eL0" secondAttribute="top" id="0XQ-cE-nNt"/>
-                            <constraint firstAttribute="bottom" secondItem="y8o-wK-ZwI" secondAttribute="bottom" id="Xof-N6-vV4"/>
-                            <constraint firstAttribute="trailing" secondItem="y8o-wK-ZwI" secondAttribute="trailing" id="hTW-Fe-Lua"/>
-                            <constraint firstItem="y8o-wK-ZwI" firstAttribute="leading" secondItem="pBZ-C4-eL0" secondAttribute="leading" id="m59-OH-ZSx"/>
+                            <constraint firstAttribute="trailing" secondItem="y8o-wK-ZwI" secondAttribute="trailing" id="OoS-M5-upw"/>
+                            <constraint firstItem="y8o-wK-ZwI" firstAttribute="leading" secondItem="pBZ-C4-eL0" secondAttribute="leading" id="ZNq-Aj-ZAX"/>
+                            <constraint firstItem="y8o-wK-ZwI" firstAttribute="top" secondItem="pBZ-C4-eL0" secondAttribute="top" id="cxH-PY-rLG"/>
+                            <constraint firstAttribute="bottom" secondItem="y8o-wK-ZwI" secondAttribute="bottom" id="w6Y-0m-GKZ"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Invited" image="mail9" id="gVf-rm-9QB"/>
@@ -592,10 +592,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="sSl-rc-5Yg" secondAttribute="bottom" id="Qlv-aL-aMG"/>
-                            <constraint firstItem="sSl-rc-5Yg" firstAttribute="top" secondItem="YOP-wq-N7L" secondAttribute="top" id="j4m-MO-LRs"/>
-                            <constraint firstItem="sSl-rc-5Yg" firstAttribute="leading" secondItem="YOP-wq-N7L" secondAttribute="leading" id="pQH-NY-lJj"/>
-                            <constraint firstAttribute="trailing" secondItem="sSl-rc-5Yg" secondAttribute="trailing" id="tqv-2g-oQF"/>
+                            <constraint firstAttribute="trailing" secondItem="sSl-rc-5Yg" secondAttribute="trailing" id="GXt-PE-eQn"/>
+                            <constraint firstItem="sSl-rc-5Yg" firstAttribute="top" secondItem="YOP-wq-N7L" secondAttribute="top" id="WK6-6H-dzJ"/>
+                            <constraint firstItem="sSl-rc-5Yg" firstAttribute="leading" secondItem="YOP-wq-N7L" secondAttribute="leading" id="bFl-n7-AP6"/>
+                            <constraint firstAttribute="bottom" secondItem="sSl-rc-5Yg" secondAttribute="bottom" id="sF9-iX-ly8"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Created" image="book10" id="grl-KU-9fG"/>
@@ -609,6 +609,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="List_Icon" width="25" height="25"/>
         <image name="arrow" width="30" height="30"/>
         <image name="book10" width="30" height="30"/>
         <image name="mail9" width="30" height="30"/>

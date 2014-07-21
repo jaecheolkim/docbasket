@@ -177,7 +177,7 @@
 		8016E87C196676AC001C029E /* MEExpandableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MEExpandableHeaderView.m; sourceTree = "<group>"; };
 		8016E87E196676AC001C029E /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
 		8016E87F196676AC001C029E /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
-		805A3212194EE13500F213C1 /* docbasketWeb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = docbasketWeb.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		805A3212194EE13500F213C1 /* DocBasket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocBasket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		805A3216194EE13500F213C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		805A3217194EE13500F213C1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		805A3219194EE13500F213C1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -522,7 +522,7 @@
 		805A3213194EE13500F213C1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				805A3212194EE13500F213C1 /* docbasketWeb.app */,
+				805A3212194EE13500F213C1 /* DocBasket.app */,
 				805A322B194EE13500F213C1 /* docbasketWebTests.xctest */,
 			);
 			name = Products;
@@ -942,7 +942,7 @@
 			);
 			name = DocBasket;
 			productName = docbasketWeb;
-			productReference = 805A3212194EE13500F213C1 /* docbasketWeb.app */;
+			productReference = 805A3212194EE13500F213C1 /* DocBasket.app */;
 			productType = "com.apple.product-type.application";
 		};
 		805A322A194EE13500F213C1 /* docbasketWebTests */ = {

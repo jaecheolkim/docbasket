@@ -42,6 +42,10 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
     dispatch_once(&onceToken, ^{
         _sharedClient = [[DocbaketAPIClient alloc] initWithBaseURL:[NSURL URLWithString:DocbasketAPIBaseURLString]];
         _sharedClient.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+        
+//        [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * __unused notification) {
+//            [_af_defaultImageCache removeAllObjects];
+//        }];
     });
     
     return _sharedClient;

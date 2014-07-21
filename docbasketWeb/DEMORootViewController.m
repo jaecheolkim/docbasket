@@ -29,11 +29,16 @@
 //    self.rightMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"rightMenuViewController"];
 //    self.backgroundImage = [UIImage imageNamed:@"Stars"];
     self.delegate = self;
+    
+
 
 }
 
 
-
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+}
  
 
 - (void)viewDidAppear:(BOOL)animated

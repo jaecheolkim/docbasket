@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GlobalValue.h"
 #import "DBCommonViewController.h"
 
 @interface DBSettingViewController : DBCommonViewController

@@ -101,6 +101,8 @@
 		807556601951980D00F68F63 /* UIImage+WebP.m in Sources */ = {isa = PBXBuildFile; fileRef = 8075564F1951980D00F68F63 /* UIImage+WebP.m */; };
 		807556611951980D00F68F63 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 807556511951980D00F68F63 /* UIImageView+HighlightedWebCache.m */; };
 		807556621951980D00F68F63 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 807556531951980D00F68F63 /* UIImageView+WebCache.m */; };
+		80771A7F197CD2A400C3D0FF /* UIView+MGBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 80771A7E197CD2A400C3D0FF /* UIView+MGBadgeView.m */; };
+		80771A88197D064F00C3D0FF /* DBLogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80771A87197D064F00C3D0FF /* DBLogViewController.m */; };
 		80778A59195B11B1003EF884 /* CHAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 80778A54195B11B1003EF884 /* CHAnimation.m */; };
 		80778A5A195B11B1003EF884 /* CHAnimationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 80778A56195B11B1003EF884 /* CHAnimationState.m */; };
 		80778A5B195B11B1003EF884 /* CHAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 80778A58195B11B1003EF884 /* CHAnimator.m */; };
@@ -113,9 +115,8 @@
 		80897F9B1974E13300903BF0 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 80897F981974E13300903BF0 /* UIAlertView+Blocks.m */; };
 		80897F9E19764E9900903BF0 /* DBMyDocBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80897F9D19764E9900903BF0 /* DBMyDocBasketViewController.m */; };
 		80897FA11976550F00903BF0 /* DBSavedBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80897FA01976550F00903BF0 /* DBSavedBasketViewController.m */; };
-		80897FA41976553300903BF0 /* DBInvitedBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80897FA31976553300903BF0 /* DBInvitedBasketViewController.m */; };
+		80897FA41976553300903BF0 /* DBMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80897FA31976553300903BF0 /* DBMessageViewController.m */; };
 		80897FA71976555000903BF0 /* DBCreatedBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80897FA61976555000903BF0 /* DBCreatedBasketViewController.m */; };
-		80897FAA1976556800903BF0 /* DBCommonBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80897FA91976556800903BF0 /* DBCommonBasketViewController.m */; };
 		80897FAD19776E8F00903BF0 /* ParseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 80897FAC19776E8F00903BF0 /* ParseHelper.m */; };
 		808CC936196A6B640048C99E /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 808CC92C196A6B640048C99E /* ioapi.c */; };
 		808CC937196A6B640048C99E /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = 808CC92E196A6B640048C99E /* mztools.c */; };
@@ -128,11 +129,9 @@
 		808CC950196AD1520048C99E /* PBSQLiteManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CC94F196AD1520048C99E /* PBSQLiteManager.m */; };
 		808CC952196AD7940048C99E /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 808CC951196AD7940048C99E /* libsqlite3.dylib */; };
 		8097679F195C1ABE0048CA13 /* DBCommonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8097679E195C1ABE0048CA13 /* DBCommonViewController.m */; };
-		809767A5195C7D7D0048CA13 /* DBListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 809767A4195C7D7D0048CA13 /* DBListViewController.m */; };
 		809767A8195C84800048CA13 /* DBLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 809767A7195C84800048CA13 /* DBLoginViewController.m */; };
 		80A437A51978D2F7004EF351 /* UIImageView+addOn.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A437A41978D2F7004EF351 /* UIImageView+addOn.m */; };
 		80A437AA1978F826004EF351 /* SWTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A437A91978F826004EF351 /* SWTableViewCell.m */; };
-		80D08B83195939A800C17879 /* makeNewBasketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D08B82195939A800C17879 /* makeNewBasketViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -334,6 +333,10 @@
 		807556511951980D00F68F63 /* UIImageView+HighlightedWebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+HighlightedWebCache.m"; sourceTree = "<group>"; };
 		807556521951980D00F68F63 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+WebCache.h"; sourceTree = "<group>"; };
 		807556531951980D00F68F63 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
+		80771A7D197CD2A400C3D0FF /* UIView+MGBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MGBadgeView.h"; sourceTree = "<group>"; };
+		80771A7E197CD2A400C3D0FF /* UIView+MGBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MGBadgeView.m"; sourceTree = "<group>"; };
+		80771A86197D064F00C3D0FF /* DBLogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBLogViewController.h; sourceTree = "<group>"; };
+		80771A87197D064F00C3D0FF /* DBLogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBLogViewController.m; sourceTree = "<group>"; };
 		80778A53195B11B1003EF884 /* CHAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAnimation.h; sourceTree = "<group>"; };
 		80778A54195B11B1003EF884 /* CHAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAnimation.m; sourceTree = "<group>"; };
 		80778A55195B11B1003EF884 /* CHAnimationState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAnimationState.h; sourceTree = "<group>"; };
@@ -355,12 +358,10 @@
 		80897F9D19764E9900903BF0 /* DBMyDocBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBMyDocBasketViewController.m; sourceTree = "<group>"; };
 		80897F9F1976550F00903BF0 /* DBSavedBasketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBSavedBasketViewController.h; sourceTree = "<group>"; };
 		80897FA01976550F00903BF0 /* DBSavedBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBSavedBasketViewController.m; sourceTree = "<group>"; };
-		80897FA21976553300903BF0 /* DBInvitedBasketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBInvitedBasketViewController.h; sourceTree = "<group>"; };
-		80897FA31976553300903BF0 /* DBInvitedBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBInvitedBasketViewController.m; sourceTree = "<group>"; };
+		80897FA21976553300903BF0 /* DBMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBMessageViewController.h; sourceTree = "<group>"; };
+		80897FA31976553300903BF0 /* DBMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBMessageViewController.m; sourceTree = "<group>"; };
 		80897FA51976555000903BF0 /* DBCreatedBasketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBCreatedBasketViewController.h; sourceTree = "<group>"; };
 		80897FA61976555000903BF0 /* DBCreatedBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBCreatedBasketViewController.m; sourceTree = "<group>"; };
-		80897FA81976556800903BF0 /* DBCommonBasketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBCommonBasketViewController.h; sourceTree = "<group>"; };
-		80897FA91976556800903BF0 /* DBCommonBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBCommonBasketViewController.m; sourceTree = "<group>"; };
 		80897FAB19776E8F00903BF0 /* ParseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseHelper.h; sourceTree = "<group>"; };
 		80897FAC19776E8F00903BF0 /* ParseHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseHelper.m; sourceTree = "<group>"; };
 		808CC92B196A6B640048C99E /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
@@ -384,8 +385,6 @@
 		808CC951196AD7940048C99E /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		8097679D195C1ABE0048CA13 /* DBCommonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBCommonViewController.h; sourceTree = "<group>"; };
 		8097679E195C1ABE0048CA13 /* DBCommonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBCommonViewController.m; sourceTree = "<group>"; };
-		809767A3195C7D7D0048CA13 /* DBListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBListViewController.h; sourceTree = "<group>"; };
-		809767A4195C7D7D0048CA13 /* DBListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBListViewController.m; sourceTree = "<group>"; };
 		809767A6195C84800048CA13 /* DBLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBLoginViewController.h; sourceTree = "<group>"; };
 		809767A7195C84800048CA13 /* DBLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBLoginViewController.m; sourceTree = "<group>"; };
 		809B3608194FD0DC0099D3A8 /* docbasketURLInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = docbasketURLInfo.h; sourceTree = "<group>"; };
@@ -393,8 +392,6 @@
 		80A437A41978D2F7004EF351 /* UIImageView+addOn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+addOn.m"; sourceTree = "<group>"; };
 		80A437A81978F826004EF351 /* SWTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWTableViewCell.h; sourceTree = "<group>"; };
 		80A437A91978F826004EF351 /* SWTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWTableViewCell.m; sourceTree = "<group>"; };
-		80D08B81195939A800C17879 /* makeNewBasketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = makeNewBasketViewController.h; sourceTree = "<group>"; };
-		80D08B82195939A800C17879 /* makeNewBasketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = makeNewBasketViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -433,10 +430,10 @@
 		800A4D4F19628D7800E60B8A /* BarCodeScanner */ = {
 			isa = PBXGroup;
 			children = (
-				800A4D5919629AFE00E60B8A /* SCShapeView.h */,
-				800A4D5A19629AFE00E60B8A /* SCShapeView.m */,
 				800A4D5B19629AFE00E60B8A /* SCViewController.h */,
 				800A4D5C19629AFE00E60B8A /* SCViewController.m */,
+				800A4D5919629AFE00E60B8A /* SCShapeView.h */,
+				800A4D5A19629AFE00E60B8A /* SCShapeView.m */,
 				800A4D5019628D7800E60B8A /* Barcode.h */,
 				800A4D5119628D7800E60B8A /* Barcode.m */,
 				800A4D5219628D7800E60B8A /* ScannerViewController.h */,
@@ -650,7 +647,6 @@
 				805B8D7C196EDE7B00F2A694 /* EBPhotoPagesController */,
 				808CC929196A6B640048C99E /* ZipArchive */,
 				8016E87A196676AC001C029E /* MEExpandableHeaderView */,
-				800A4D4F19628D7800E60B8A /* BarCodeScanner */,
 				807115D8195B2EEC00E953B1 /* RESideMenu */,
 				80778A52195B11B1003EF884 /* CHAnimation */,
 				807555F81951967200F68F63 /* ImageCache */,
@@ -723,6 +719,8 @@
 		8061B02B19503C3B00685336 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				80771A7D197CD2A400C3D0FF /* UIView+MGBadgeView.h */,
+				80771A7E197CD2A400C3D0FF /* UIView+MGBadgeView.m */,
 				806845C2197398B1005699EB /* UIBarButtonItem+Badge.h */,
 				806845C3197398B1005699EB /* UIBarButtonItem+Badge.m */,
 				800A4D4C196281CB00E60B8A /* PopButtonImageView.h */,
@@ -745,32 +743,14 @@
 			isa = PBXGroup;
 			children = (
 				800BC5AE196C3F1B006D8240 /* SideMenuController */,
-				805A321F194EE13500F213C1 /* DBMapViewController.h */,
-				805A3220194EE13500F213C1 /* DBMapViewController.m */,
-				8097679D195C1ABE0048CA13 /* DBCommonViewController.h */,
-				8097679E195C1ABE0048CA13 /* DBCommonViewController.m */,
-				80D08B81195939A800C17879 /* makeNewBasketViewController.h */,
-				80D08B82195939A800C17879 /* makeNewBasketViewController.m */,
-				809767A3195C7D7D0048CA13 /* DBListViewController.h */,
-				809767A4195C7D7D0048CA13 /* DBListViewController.m */,
-				809767A6195C84800048CA13 /* DBLoginViewController.h */,
-				809767A7195C84800048CA13 /* DBLoginViewController.m */,
+				80771A81197CE3C300C3D0FF /* CommonViewController */,
+				80771A85197CE5D600C3D0FF /* QRCode Scan */,
+				80771A84197CE41700C3D0FF /* Message */,
+				80771A83197CE3EE00C3D0FF /* My DocBasket */,
+				80771A82197CE3D600C3D0FF /* Setting */,
+				80771A80197CE3B500C3D0FF /* Map */,
 				800A4D5619629ACE00E60B8A /* SCQRGeneratorViewController.h */,
 				800A4D5719629ACE00E60B8A /* SCQRGeneratorViewController.m */,
-				8016E87319654ED2001C029E /* DBBasketViewController.h */,
-				8016E87419654ED2001C029E /* DBBasketViewController.m */,
-				805B8D0D196E7B4500F2A694 /* DBSettingViewController.h */,
-				805B8D0E196E7B4500F2A694 /* DBSettingViewController.m */,
-				80897F9C19764E9900903BF0 /* DBMyDocBasketViewController.h */,
-				80897F9D19764E9900903BF0 /* DBMyDocBasketViewController.m */,
-				80897FA81976556800903BF0 /* DBCommonBasketViewController.h */,
-				80897FA91976556800903BF0 /* DBCommonBasketViewController.m */,
-				80897F9F1976550F00903BF0 /* DBSavedBasketViewController.h */,
-				80897FA01976550F00903BF0 /* DBSavedBasketViewController.m */,
-				80897FA21976553300903BF0 /* DBInvitedBasketViewController.h */,
-				80897FA31976553300903BF0 /* DBInvitedBasketViewController.m */,
-				80897FA51976555000903BF0 /* DBCreatedBasketViewController.h */,
-				80897FA61976555000903BF0 /* DBCreatedBasketViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -841,6 +821,69 @@
 				807556531951980D00F68F63 /* UIImageView+WebCache.m */,
 			);
 			path = SDWebImage;
+			sourceTree = "<group>";
+		};
+		80771A80197CE3B500C3D0FF /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				805A321F194EE13500F213C1 /* DBMapViewController.h */,
+				805A3220194EE13500F213C1 /* DBMapViewController.m */,
+			);
+			name = Map;
+			sourceTree = "<group>";
+		};
+		80771A81197CE3C300C3D0FF /* CommonViewController */ = {
+			isa = PBXGroup;
+			children = (
+				8097679D195C1ABE0048CA13 /* DBCommonViewController.h */,
+				8097679E195C1ABE0048CA13 /* DBCommonViewController.m */,
+				8016E87319654ED2001C029E /* DBBasketViewController.h */,
+				8016E87419654ED2001C029E /* DBBasketViewController.m */,
+			);
+			name = CommonViewController;
+			sourceTree = "<group>";
+		};
+		80771A82197CE3D600C3D0FF /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				805B8D0D196E7B4500F2A694 /* DBSettingViewController.h */,
+				805B8D0E196E7B4500F2A694 /* DBSettingViewController.m */,
+				809767A6195C84800048CA13 /* DBLoginViewController.h */,
+				809767A7195C84800048CA13 /* DBLoginViewController.m */,
+				80771A86197D064F00C3D0FF /* DBLogViewController.h */,
+				80771A87197D064F00C3D0FF /* DBLogViewController.m */,
+			);
+			name = Setting;
+			sourceTree = "<group>";
+		};
+		80771A83197CE3EE00C3D0FF /* My DocBasket */ = {
+			isa = PBXGroup;
+			children = (
+				80897F9C19764E9900903BF0 /* DBMyDocBasketViewController.h */,
+				80897F9D19764E9900903BF0 /* DBMyDocBasketViewController.m */,
+				80897F9F1976550F00903BF0 /* DBSavedBasketViewController.h */,
+				80897FA01976550F00903BF0 /* DBSavedBasketViewController.m */,
+				80897FA51976555000903BF0 /* DBCreatedBasketViewController.h */,
+				80897FA61976555000903BF0 /* DBCreatedBasketViewController.m */,
+			);
+			name = "My DocBasket";
+			sourceTree = "<group>";
+		};
+		80771A84197CE41700C3D0FF /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				80897FA21976553300903BF0 /* DBMessageViewController.h */,
+				80897FA31976553300903BF0 /* DBMessageViewController.m */,
+			);
+			name = Message;
+			sourceTree = "<group>";
+		};
+		80771A85197CE5D600C3D0FF /* QRCode Scan */ = {
+			isa = PBXGroup;
+			children = (
+				800A4D4F19628D7800E60B8A /* BarCodeScanner */,
+			);
+			name = "QRCode Scan";
 			sourceTree = "<group>";
 		};
 		80778A52195B11B1003EF884 /* CHAnimation */ = {
@@ -1057,7 +1100,6 @@
 				807556561951980D00F68F63 /* SDImageCache.m in Sources */,
 				808CC937196A6B640048C99E /* mztools.c in Sources */,
 				8061B03B1950B47F00685336 /* RegionAnnotationView.m in Sources */,
-				80897FAA1976556800903BF0 /* DBCommonBasketViewController.m in Sources */,
 				807556571951980D00F68F63 /* SDWebImageCompat.m in Sources */,
 				80778A5A195B11B1003EF884 /* CHAnimationState.m in Sources */,
 				8061B01E19503BE100685336 /* AFURLConnectionOperation.m in Sources */,
@@ -1071,11 +1113,12 @@
 				807556611951980D00F68F63 /* UIImageView+HighlightedWebCache.m in Sources */,
 				805B8DAA196EDE7B00F2A694 /* EBPhotoViewController.m in Sources */,
 				805B8DB6196EE04000F2A694 /* DBTag.m in Sources */,
+				80771A88197D064F00C3D0FF /* DBLogViewController.m in Sources */,
 				8075565C1951980D00F68F63 /* SDWebImagePrefetcher.m in Sources */,
 				8075565A1951980D00F68F63 /* SDWebImageDownloaderOperation.m in Sources */,
 				8061B02719503BE100685336 /* UIProgressView+AFNetworking.m in Sources */,
 				80897FAD19776E8F00903BF0 /* ParseHelper.m in Sources */,
-				80897FA41976553300903BF0 /* DBInvitedBasketViewController.m in Sources */,
+				80897FA41976553300903BF0 /* DBMessageViewController.m in Sources */,
 				807115E0195B2EEC00E953B1 /* RESideMenu.m in Sources */,
 				807556591951980D00F68F63 /* SDWebImageDownloader.m in Sources */,
 				807556551951980D00F68F63 /* NSData+ImageContentType.m in Sources */,
@@ -1109,7 +1152,6 @@
 				805B8DA1196EDE7B00F2A694 /* EBCommentCell.m in Sources */,
 				8061B03A1950B47F00685336 /* RegionAnnotation.m in Sources */,
 				805A3218194EE13500F213C1 /* main.m in Sources */,
-				80D08B83195939A800C17879 /* makeNewBasketViewController.m in Sources */,
 				800A4D761964E61300E60B8A /* DocbasketService.m in Sources */,
 				805B8DA4196EDE7B00F2A694 /* EBPhotoPagesController.m in Sources */,
 				805B8DB4196EE04000F2A694 /* DBComment.m in Sources */,
@@ -1120,13 +1162,13 @@
 				807115DF195B2EEC00E953B1 /* RECommonFunctions.m in Sources */,
 				807556541951980D00F68F63 /* MKAnnotationView+WebCache.m in Sources */,
 				8016E87819666342001C029E /* UIImage+QRCode.m in Sources */,
-				809767A5195C7D7D0048CA13 /* DBListViewController.m in Sources */,
 				8061B02419503BE100685336 /* UIAlertView+AFNetworking.m in Sources */,
 				8061B02E19503C4F00685336 /* DocbaketAPIClient.m in Sources */,
 				80778A59195B11B1003EF884 /* CHAnimation.m in Sources */,
 				8061B02919503BE100685336 /* UIWebView+AFNetworking.m in Sources */,
 				8075565F1951980D00F68F63 /* UIImage+MultiFormat.m in Sources */,
 				807556601951980D00F68F63 /* UIImage+WebP.m in Sources */,
+				80771A7F197CD2A400C3D0FF /* UIView+MGBadgeView.m in Sources */,
 				80897F9A1974E13300903BF0 /* UIActionSheet+Blocks.m in Sources */,
 				805B8D0F196E7B4500F2A694 /* DBSettingViewController.m in Sources */,
 				808CC942196A8B580048C99E /* AFDownloadRequestOperation.m in Sources */,

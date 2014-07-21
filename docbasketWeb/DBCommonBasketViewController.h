@@ -12,8 +12,10 @@
 #import "DBBasketViewController.h"
 #import "UIImageView+AFNetworking.h"
 #import "UIImageView+addOn.h"
+//#import "RESideMenu.h"
+#import "DBCommonViewController.h"
 
-@interface DBCommonBasketViewController : UIViewController
+@interface DBCommonBasketViewController : DBCommonViewController
 @property (nonatomic, strong) NSArray *baskets;
 
 //filter= created | invited | saved | public(default)

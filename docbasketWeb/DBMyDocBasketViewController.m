@@ -8,7 +8,7 @@
 
 #import "DBMyDocBasketViewController.h"
 #import "RESideMenu.h"
-#import "UIBarButtonItem+Badge.h"
+//#import "UIBarButtonItem+Badge.h"
 #import "GlobalValue.h"
 
 @interface DBMyDocBasketViewController ()
@@ -38,17 +38,34 @@
     self.title = @"My Basket";
     
     // Build your regular UIBarButtonItem with Custom View
-    UIImage *image = [UIImage imageNamed:@"list.png"];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(0,0,image.size.width, image.size.height);
-    [button addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
-    [button setBackgroundImage:image forState:UIControlStateNormal];
+//    UIImage *image = [UIImage imageNamed:@"list.png"];
+//    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+//    button.frame = CGRectMake(0,0,image.size.width, image.size.height);
+//    [button addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
+//    [button setBackgroundImage:image forState:UIControlStateNormal];
+//    
+//    // Make BarButton Item
+//    UIBarButtonItem *navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+//    self.navigationItem.leftBarButtonItem = navLeftButton;
+//    self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%d", GVALUE.badgeValue] ;
+//    self.navigationItem.leftBarButtonItem.badgeBGColor = self.navigationController.navigationBar.tintColor;
     
+    UIImage *image = [UIImage imageNamed:@"list.png"];
+    
+    GVALUE.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    GVALUE.menuButton.frame = CGRectMake(0,0,image.size.width, image.size.height);
+    [GVALUE.menuButton addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
+    [GVALUE.menuButton setBackgroundImage:image forState:UIControlStateNormal];
+    
+    
+    [GVALUE.menuButton.badgeView setBadgeValue:3];
+    [GVALUE.menuButton.badgeView setPosition:MGBadgePositionTopRight];
+    [GVALUE.menuButton.badgeView setBadgeColor:[UIColor redColor]];
     // Make BarButton Item
-    UIBarButtonItem *navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-    self.navigationItem.leftBarButtonItem = navLeftButton;
-    self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%d", GVALUE.badgeValue] ;
-    self.navigationItem.leftBarButtonItem.badgeBGColor = self.navigationController.navigationBar.tintColor;
+    GVALUE.navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:GVALUE.menuButton];
+    
+    
+    self.navigationItem.leftBarButtonItem = GVALUE.navLeftButton;
     
     NSLog(@"UTTabar = %@", self.tabBar.items);
     for(UITabBarItem *tabBarItem in self.tabBar.items) {

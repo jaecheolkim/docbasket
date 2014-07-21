@@ -44,6 +44,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+//    [self setNaviBarTitle:@"QRCode Scan"];
+    
+//    self.navigationItem.titleView = nil;
+//    self.title = @"QRCode Scan";
+
+    
     [self setupCaptureSession];
     _previewLayer.frame = _previewView.bounds;
     [_previewView.layer addSublayer:_previewLayer];

@@ -6,13 +6,17 @@
 //  Copyright (c) 2014 jaecheol kim. All rights reserved.
 //
 
-#import "DBInvitedBasketViewController.h"
+#import "DBMessageViewController.h"
+#import "DBBasketViewController.h"
+#import "DocbasketService.h"
+#import "UIImageView+addOn.h"
 
-@interface DBInvitedBasketViewController ()
+@interface DBMessageViewController ()
+@property (nonatomic,strong) NSArray *baskets;
 
 @end
 
-@implementation DBInvitedBasketViewController
+@implementation DBMessageViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -27,28 +31,43 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title = @"Invited";
+//    self.title = @"Message";
+//    [self badgeNumber:10];
+    
+    [GVALUE.menuButton.badgeView setBadgeValue:10];
+
+    [self setNaviBarTitle:@"Message"];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
+    
     //filter= created | invited | saved | public(default)
-    [self checkMyBasket:@"invited" completionHandler:^(BOOL success) {
+    [DBKSERVICE checkMyBasket:@"invited" completionHandler:^(NSArray *baskets) {
+        self.baskets = baskets;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
+        
     }];
     
+//    //filter= created | invited | saved | public(default)
+//    [self checkMyBasket:@"invited" completionHandler:^(BOOL success) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.tableView reloadData];
+//        });
+//    }];
     
     
     
-    [GVALUE setBadgeValue:0];
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DBCommonViewControllerEventHandler"
-                                                        object:self
-                                                      userInfo:@{@"Msg":@"updateBadge", @"badgeValue":@(0)}];
+    
+//    //[GVALUE setBadgeValue:0];
+//    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"DBCommonViewControllerEventHandler"
+//                                                        object:self
+//                                                      userInfo:@{@"Msg":@"updateBadge", @"badgeValue":@(0)}];
     
 
 

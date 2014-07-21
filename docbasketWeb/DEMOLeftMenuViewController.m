@@ -9,7 +9,8 @@
 #import "DEMOLeftMenuViewController.h"
 #import "DBMapViewController.h"
 #import "DBLoginViewController.h"
-#import "DBListViewController.h"
+#import "DBMessageViewController.h"
+#import "DBMyDocBasketViewController.h"
 #import "ScannerViewController.h"
 #import "DBSettingViewController.h"
 #import "UIViewController+RESideMenu.h"
@@ -19,10 +20,11 @@
 @property (strong, readwrite, nonatomic) UITableView *tableView;
 
 @property (nonatomic, strong) DBMapViewController *mapViewController;
-@property (nonatomic, strong) DBListViewController *myBasketListViewController;
+@property (nonatomic, strong) DBMessageViewController *messageViewController;
+@property (nonatomic, strong) DBMyDocBasketViewController *myBasketListViewController;
 @property (nonatomic, strong) ScannerViewController *QRScannerViewController;
-@property (nonatomic, strong) DBLoginViewController *loginViewController;
 @property (nonatomic, strong) DBSettingViewController *settingViewController;
+@property (nonatomic, strong) DBLoginViewController *loginViewController;
 @end
 
 @implementation DEMOLeftMenuViewController
@@ -49,11 +51,12 @@
     
     
     self.mapViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMapViewController"];
-    self.myBasketListViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMyDocBasketViewController"]; //
+    self.messageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMessageViewController"];
+    self.myBasketListViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMyDocBasketViewController"];
     self.QRScannerViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ScannerViewController"];
-    self.loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBLoginViewController"];
-    
     self.settingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBSettingViewController"];
+    //self.loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBLoginViewController"];
+
 }
 
 #pragma mark -
@@ -69,26 +72,31 @@
             [self.sideMenuViewController hideMenuViewController];
             break;
         case 1:
-            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.myBasketListViewController]
+            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.messageViewController]
                                                          animated:YES];
             [self.sideMenuViewController hideMenuViewController];
             break;
         case 2:
-            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.QRScannerViewController]
+            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.myBasketListViewController]
                                                          animated:YES];
             [self.sideMenuViewController hideMenuViewController];
             break;
         case 3:
+            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.QRScannerViewController]
+                                                         animated:YES];
+            [self.sideMenuViewController hideMenuViewController];
+            break;
+        case 4:
             [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.settingViewController]
                                                          animated:YES];
             [self.sideMenuViewController hideMenuViewController];
             break;
             
-        case 4:
-            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.loginViewController]
-                                                         animated:YES];
-            [self.sideMenuViewController hideMenuViewController];
-            break;
+//        case 5:
+//            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.loginViewController]
+//                                                         animated:YES];
+//            [self.sideMenuViewController hideMenuViewController];
+//            break;
         default:
             break;
     }
@@ -127,8 +135,8 @@
         cell.selectedBackgroundView = [[UIView alloc] init];
     }
     
-    NSArray *titles = @[@"Map", @"My basket", @"QRCode", @"Settings", @"Log In"];
-    NSArray *images = @[@"map.png", @"basket.png", @"qrCamera.png", @"setting.png", @"login.png"];
+    NSArray *titles = @[@"Map",  @"Message", @"My basket", @"QRCode", @"Setting"];
+    NSArray *images = @[@"map.png", @"basket.png", @"basket.png", @"qrCamera.png", @"setting.png"];
     cell.textLabel.text = titles[indexPath.row];
     cell.imageView.image = [UIImage imageNamed:images[indexPath.row]];
     

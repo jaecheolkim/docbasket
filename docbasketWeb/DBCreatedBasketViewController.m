@@ -7,10 +7,12 @@
 //
 
 #import "DBCreatedBasketViewController.h"
+#import "DBBasketViewController.h"
+#import "DocbasketService.h"
 #import "UIImageView+addOn.h"
 
 @interface DBCreatedBasketViewController ()
-
+@property (nonatomic,strong) NSArray *baskets;
 @end
 
 @implementation DBCreatedBasketViewController
@@ -36,11 +38,18 @@
     [super viewWillAppear:animated];
     
     //filter= created | invited | saved | public(default)
-    [self checkMyBasket:@"created" completionHandler:^(BOOL success) {
+    [DBKSERVICE checkMyBasket:@"created" completionHandler:^(NSArray *baskets) {
+        self.baskets = baskets;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
+        
     }];
+//    [DBKSERVICE checkMyBasket:@"created" completionHandler:^(BOOL success) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.tableView reloadData];
+//        });
+//    }];
     
     
     

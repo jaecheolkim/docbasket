@@ -7,7 +7,8 @@
 //
 
 #import "DBCommonViewController.h"
-#import "UIBarButtonItem+Badge.h"
+//#import "UIBarButtonItem+Badge.h"
+
 
 @interface DBCommonViewController ()
 < UIImagePickerControllerDelegate, UINavigationControllerDelegate >
@@ -60,21 +61,38 @@
 //                                                                            action:@selector(presentLeftMenuViewController:)];
     
 
-    
-    
     // Build your regular UIBarButtonItem with Custom View
     UIImage *image = [UIImage imageNamed:@"list.png"];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(0,0,image.size.width, image.size.height);
-    [button addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
-    [button setBackgroundImage:image forState:UIControlStateNormal];
     
+    GVALUE.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    GVALUE.menuButton.frame = CGRectMake(0,0,image.size.width, image.size.height);
+    [GVALUE.menuButton addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
+    [GVALUE.menuButton setBackgroundImage:image forState:UIControlStateNormal];
+    
+    
+    [GVALUE.menuButton.badgeView setBadgeValue:3];
+    [GVALUE.menuButton.badgeView setPosition:MGBadgePositionTopRight];
+    [GVALUE.menuButton.badgeView setBadgeColor:[UIColor redColor]];
     // Make BarButton Item
-    UIBarButtonItem *navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-    self.navigationItem.leftBarButtonItem = navLeftButton;
-    self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%d", GVALUE.badgeValue] ;
-    self.navigationItem.leftBarButtonItem.badgeBGColor = self.navigationController.navigationBar.tintColor;
+    GVALUE.navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:GVALUE.menuButton];
 
+
+    self.navigationItem.leftBarButtonItem = GVALUE.navLeftButton;
+//    self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%d", GVALUE.badgeValue] ;
+//    self.navigationItem.leftBarButtonItem.badgeBGColor = self.navigationController.navigationBar.tintColor;
+
+}
+
+- (void)setNaviBarTitle:(NSString *)title
+{
+    if(!IsEmpty(title)){
+        self.navigationItem.titleView = nil;
+        self.title = title;
+    } else {
+        UIImage* logoImage = [UIImage imageNamed:@"docbasketLogo.png"];
+        self.navigationItem.titleView = [[UIImageView alloc] initWithImage:logoImage];
+
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -86,11 +104,13 @@
 
 - (void)badgeNumber:(int)badgeValue
 {
-    if(badgeValue) {
-        self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%d", badgeValue];
-    } else {
-        self.navigationItem.leftBarButtonItem.badgeValue = nil;
-    }
+    [GVALUE.menuButton.badgeView setBadgeValue:badgeValue];
+    
+//    if(badgeValue) {
+//        self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%d", badgeValue];
+//    } else {
+//        self.navigationItem.leftBarButtonItem.badgeValue = nil;
+//    }
 }
 
 

@@ -8,6 +8,9 @@
 
 #import "DBCommonBasketViewController.h"
 #import "DocbasketService.h"
+#import "GlobalValue.h"
+//#import "UIBarButtonItem+Badge.h"
+
 @interface DBCommonBasketViewController ()
 
 @end
@@ -27,6 +30,22 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    
+//    // Build your regular UIBarButtonItem with Custom View
+//    UIImage *image = [UIImage imageNamed:@"list.png"];
+//    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+//    button.frame = CGRectMake(0,0,image.size.width, image.size.height);
+//    [button addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
+//    [button setBackgroundImage:image forState:UIControlStateNormal];
+//    
+//    // Make BarButton Item
+//    UIBarButtonItem *navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+//    self.navigationItem.leftBarButtonItem = navLeftButton;
+//    self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%d", GVALUE.badgeValue] ;
+//    self.navigationItem.leftBarButtonItem.badgeBGColor = self.navigationController.navigationBar.tintColor;
+    
+    
 }
 
 - (void)didReceiveMemoryWarning

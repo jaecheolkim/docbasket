@@ -27,9 +27,12 @@
 
 #import "UIAlertView+Blocks.h"
 
+
+
 @interface DBBasketViewController () <UITableViewDataSource, UITableViewDelegate>
 {
-     UIImage *qrCodeImage;
+    UIImage *qrCodeImage;
+    UIImage *mapImage;
     
 }
 @property (nonatomic,strong) NSDictionary *basketInfo;
@@ -65,9 +68,13 @@
     self.title = self.basket.title;
     self.basketID = self.basket.basketID;
     
+    qrCodeImage = [[UIImage new] drawQRImage:self.basketID];
+
+    
+    
     [self setupHeaderView];
     
-    //qrCodeImage = [UIImage drawQRCode:basketID];
+
     
     [self refreshView];
     
@@ -85,7 +92,28 @@
     UIBarButtonItem *navButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.rightBarButtonItem = navButton;
     
-    self.navigationItem.leftBarButtonItem.title = nil;
+
+    // Create a containing view to position the button
+    UIImage *barButtonImage = [UIImage imageNamed:@"back.png"];
+    UIView *containingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, barButtonImage.size.width + 40, barButtonImage.size.height)];
+    //containingView.backgroundColor = [UIColor redColor];
+    
+    // Create a custom button with the image
+    UIButton *barUIButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [barUIButton setImage:barButtonImage forState:UIControlStateNormal];
+    barUIButton.frame = CGRectMake(-14, 0, barButtonImage.size.width + 14, barButtonImage.size.height);
+    barUIButton.contentEdgeInsets = UIEdgeInsetsMake(0, -14, 0, 0);
+    [barUIButton addTarget:self action:@selector(popVC) forControlEvents:UIControlEventTouchUpInside];
+    //barUIButton.backgroundColor = [UIColor yellowColor];
+    
+    [containingView addSubview:barUIButton];
+    
+    // Create a container bar button
+    UIBarButtonItem *containingBarButton = [[UIBarButtonItem alloc] initWithCustomView:containingView];
+    
+    // Add the container bar button
+    self.navigationItem.leftBarButtonItem = containingBarButton;
+ 
 
 }
 
@@ -101,6 +129,11 @@
     NSLog(@"didRotateFromInterfaceOrientation");
     
     [self setupHeaderView];
+}
+
+
+- (void) popVC{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 
@@ -132,8 +165,8 @@
     if(IsEmpty(_backgroundImage))
         _backgroundImage = [UIImage imageNamed:@"basketView.png"];
 
-    NSArray *pages = @[[self createPageViewWithText:@"First page" size:headerViewSize],
-                       [self createPageViewWithText:@"Second page" size:headerViewSize],
+    NSArray *pages = @[[self createPageViewWithText:self.basket.description size:headerViewSize],
+                       [self createPageViewWithImage:qrCodeImage size:headerViewSize],
                        [self createPageViewWithText:@"Third page" size:headerViewSize],
                        [self createPageViewWithText:@"Fourth page" size:headerViewSize]];
     
@@ -250,15 +283,26 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     //UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260, 44)];
     
-    label.font = [UIFont boldSystemFontOfSize:27.0];
-    label.textColor = [UIColor whiteColor];
+    label.font = [UIFont boldSystemFontOfSize:20.0];
+    label.textColor = [UIColor grayColor];
     label.textAlignment = NSTextAlignmentCenter;
-    label.backgroundColor = [UIColor lightGrayColor];
-    label.shadowColor = [UIColor darkGrayColor];
+    label.backgroundColor = [UIColor clearColor];
+    label.shadowColor = [UIColor lightGrayColor];
     label.shadowOffset = CGSizeMake(0, 1);
+    label.numberOfLines = 5;
     label.text = text;
     
     return label;
+}
+
+- (UIImageView*)createPageViewWithImage:(UIImage*)image size:(CGSize)size
+{
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
+    [imgView setBackgroundColor:[UIColor clearColor]];
+    [imgView setContentMode:UIViewContentModeScaleAspectFit];
+    [imgView setImage:image];
+    
+    return imgView;
 }
 
 

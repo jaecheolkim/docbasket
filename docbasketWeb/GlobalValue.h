@@ -8,7 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#import <UIKit/UIKit.h>
 #import "Docbasket.h"
+#import "UIView+MGBadgeView.h"
+
+
+#define RGB_COLOR(r, g, b)      [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
+#define RGBA_COLOR(r, g, b, a)  [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
+
 
 #define GVALUE              [GlobalValue sharedInstance]
 
@@ -16,6 +23,12 @@
 #define KEY_USER_NAME       @"default_user_name"
 #define KEY_USER_TOKEN      @"default_user_token"
 #define KEY_BADGE_VALUE     @"badge_value"
+#define  KEY_PUSHNOTIFICATIONSETTING    @"pushNotificationSetting"
+
+
+#define MAINURL          @"http://doc:basket@docbasket.com/login"
+#define LOGOUTURL          @"http://doc:basket@docbasket.com/logout"
+#define BASKETS          @"http://docbasket.com/baskets"  // ?filer = inbox / outbox / public
 
 static inline BOOL IsEmpty(id thing) {
     return thing == nil
@@ -44,6 +57,8 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, assign) double longitude;
 @property (nonatomic, assign) double latitude;
 
+@property (nonatomic) int pushNotificationSetting;
+
 @property (nonatomic, assign) CLLocationCoordinate2D screenCenterCoordinate2D;
 @property (nonatomic, strong) CLLocation *screenCenterLocation;
 @property (nonatomic, assign) CLLocationCoordinate2D currentCoordinate;
@@ -60,6 +75,9 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, strong) CLLocation *lastAPICallLocation; // 최종 baskets.json API call location
 
 @property (nonatomic, strong) NSMutableArray *LogList; // 디버깅용 로그 어레이
+
+@property (nonatomic, strong) UIButton *menuButton;
+@property (nonatomic, strong) UIBarButtonItem *navLeftButton;
 
 +(GlobalValue*)sharedInstance;
 

@@ -9,14 +9,10 @@
 #import "UIImage+QRCode.h"
 #import <CoreImage/CoreImage.h>
 
-@interface UIImage ()
-
-@end
-
 @implementation UIImage (QRCode)
 
 
-- (UIImage*)drawQRCode:(NSString*)msg
+- (UIImage*)drawQRImage:(NSString*)msg
 {
 
     CIImage *qrCode = [self createQRForString:msg];

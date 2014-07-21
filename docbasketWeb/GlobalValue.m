@@ -29,6 +29,9 @@
         self.LogList = [NSMutableArray array];
         self.regionMonitoringDistance = 0.1;  // 100m
         self.findBasketsRange = 10000.0; // 10000m (10km)
+        
+        
+        
 
     }
     return self;
@@ -81,6 +84,18 @@
 {
     return (int)[[self readObjectFromDefault:KEY_BADGE_VALUE] integerValue];
 }
+
+
+- (void)setPushNotificationSetting:(int)pushNotificationSetting
+{
+    [self writeObjectToDefault:[NSString stringWithFormat:@"%d",pushNotificationSetting] withKey:KEY_PUSHNOTIFICATIONSETTING];
+}
+
+- (int)pushNotificationSetting
+{
+    return [[self readObjectFromDefault:KEY_PUSHNOTIFICATIONSETTING] intValue];
+}
+
 
 - (void)writeObjectToDefault:(id)idValue withKey:(NSString *)strKey
 {

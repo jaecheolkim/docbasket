@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DBCommonViewController.h"
+//#import "DBCommonViewController.h"
 
-@interface DBLoginViewController : DBCommonViewController <UIWebViewDelegate>
+@interface DBLoginViewController : UIViewController <UIWebViewDelegate>
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, weak) IBOutlet UILabel *hiLabel;
 @property (nonatomic, weak) IBOutlet UILabel *nameLabel;

@@ -8,6 +8,8 @@
 
 #import "DBLoginViewController.h"
 #import <Parse/Parse.h>
+#import "GlobalValue.h"
+#import "DocbaketAPIClient.h"
 
 @interface DBLoginViewController ()
 
@@ -137,10 +139,8 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)theRequest navigationType:(UIWebViewNavigationType)navigationType
 {
     NSString *url = [[theRequest URL] absoluteString];
-    //NSString *keyURL = [[theRequest URL] host];
     NSString *path = [[theRequest URL] path];
     
-    //NSArray *arr = [url componentsSeparatedByString:@"?"];
     NSLog(@"path : %@", path);
     NSLog(@"currentURL : %@", url);
     
@@ -159,16 +159,6 @@
            
        }
     
-    //
-    //    if(keyURL != nil && ![[arr objectAtIndex:0] isEqualToString:@"http://help.paran.com/faq/mobile/wk/mFaqView.jsp"]
-    //       && ![[arr objectAtIndex:0] isEqualToString:@"http://help.paran.com/faq/global/english/mFaqView.jsp"]
-    //       && ![[arr objectAtIndex:0] isEqualToString:@"http://help.paran.com/faq/mobile/wk/mRarView.jsp"]
-    //       && ![[arr objectAtIndex:0] isEqualToString:@"http://help.paran.com/faq/global/english/mRarView.jsp"]
-    //       )
-    //    {
-    //        [indicator startAnimating];
-    //        [indicatorBg setHidden:NO];
-    //    }
     
     return YES;
 }

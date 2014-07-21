@@ -18,7 +18,7 @@
 #import "SCViewController.h"
 @import AVFoundation;
 #import "SCShapeView.h"
-
+#import "UIAlertView+Blocks.h"
 @interface SCViewController () <AVCaptureMetadataOutputObjectsDelegate>
 {
     AVCaptureSession *captureSession;
@@ -34,6 +34,9 @@
     NSTimer *_boxHideTimer;
     UILabel *_decodedMessage;
 }
+
+@property (nonatomic,strong) NSString *basketID;
+
 @end
 
 @implementation SCViewController
@@ -48,7 +51,19 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.title = @"QRScanner";
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0,0, 40, 20);
+    [button addTarget:self action:@selector(saveBasket:) forControlEvents:UIControlEventTouchDown];
+    [button setTitle:@"Save" forState:UIControlStateNormal];
+    
+    // Make BarButton Item
+    UIBarButtonItem *navButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.navigationItem.rightBarButtonItem = navButton;
+    
+    //self.navigationItem.leftBarButtonItem.title = nil;
+    
+    
+    //self.title = @"QRScanner";
     
     // Create a new AVCaptureSession
     captureSession = [[AVCaptureSession alloc] init];
@@ -126,6 +141,28 @@
     [self stopRunning];
 }
 
+- (void)saveBasket:(id)sender
+{
+    if(!IsEmpty(self.basketID))
+    {
+        [DocbaketAPIClient saveDocBasket:self.basketID completionHandler:^(BOOL success) {
+            NSString *msg = @"Success";
+            if(!success)
+                msg = @"Fail";
+            
+            [[[UIAlertView alloc] initWithTitle:msg
+                                        message:@"save to my basket"
+                               cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
+                                                 {
+                                                     
+                                                     
+                                                 }]
+                               otherButtonItems:nil, nil] show];
+        }];
+    }
+
+}
+
 
 
 - (void)startRunning {
@@ -165,6 +202,7 @@
                 
                 // Update the view with the decoded text
                 _decodedMessage.text = [transformed stringValue];
+                self.basketID = [transformed stringValue];
                 
                 // Start the timer which will hide the overlay
                 [self startOverlayHideTimer];
@@ -197,6 +235,7 @@
     // Hide the box and remove the decoded text
     _boundingBox.hidden = YES;
     _decodedMessage.text = @"";
+    self.basketID = nil;
 }
 
 - (NSArray *)translatePoints:(NSArray *)points fromView:(UIView *)fromView toView:(UIView *)toView

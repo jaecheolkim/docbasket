@@ -10,6 +10,6 @@
 
 @interface UIImage (QRCode)
 
-- (UIImage*)drawQRCode:(NSString*)msg;
+- (UIImage*)drawQRImage:(NSString*)msg;
 
 @end

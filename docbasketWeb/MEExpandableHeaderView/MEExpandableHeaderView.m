@@ -53,7 +53,13 @@
 {
     assert(!self.backgroundImageView);
     
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:self.originalImage];
+    UIImage *blurImage = [self.originalImage applyBlurWithRadius:3.0
+                                  tintColor:nil
+                      saturationDeltaFactor:1.0
+                                  maskImage:nil];
+    
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:blurImage];
     imageView.frame = self.bounds;
     imageView.contentMode = UIViewContentModeCenter;
     
@@ -179,6 +185,7 @@
         CGAffineTransform translateAndZoom = CGAffineTransformScale(translate, scaleFactor, scaleFactor);
         
         float radius = -newOffset.y/40.0;
+        NSLog(@"radius = %f", radius);
         self.backgroundImageView.image = [self.originalImage applyBlurWithRadius:radius
                                                                         tintColor:nil
                                                             saturationDeltaFactor:1.0

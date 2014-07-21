@@ -85,7 +85,7 @@
     [GVALUE setUserID:@""];
     [GVALUE setUserName:@""];
     [GVALUE setToken:@""];
-    [self checkLogin];
+    //[self checkLogin];
 }
 
 /*

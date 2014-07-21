@@ -544,9 +544,9 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
             
             [DocbaketAPIClient  Login:^(BOOL success) {
                 if(success){
-                    block(nil);
+                    block([NSDictionary new]);
                 } else {
-                    block(nil);
+                    block([NSDictionary new]);
                 }
             }];
         }
@@ -875,43 +875,50 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 + (void)Login:(void (^)(BOOL success))block
 {
     // TODO : WebView 형태의 로그인 거친 후 Login
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    // [manager setParameterEncoding:AFJSONParameterEncoding];
-    //http://docbasket.com/users/32ea57d6-6f0e-4902-817a-544cae7cc189/heartbeat.json
-    
     NSString *UserID = [[GlobalValue sharedInstance] userID];
     
-    NSString *URL = @"http://docbasket.com/oauth/token";
-    
-    NSDictionary *OAuthInfo = @{ @"grant_type" : @"password",
-                                 @"username" : UserID,
-                                 @"password" : @"sekret",
-                                 @"client_id" : @"16f1cfc9121c9e923db62aa9db69bfd6ef507313fb55337563b2ffef07df269a",
-                                 @"client_secret" : @"232a36d50361f926bae965057170250226caca32fbb0817ed602a54ecdac3d32"};
+    if(IsEmpty(UserID)) {
+        
+        block(NO);
+    } else {
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+        // [manager setParameterEncoding:AFJSONParameterEncoding];
+        //http://docbasket.com/users/32ea57d6-6f0e-4902-817a-544cae7cc189/heartbeat.json
+        
+        
+        
+        NSString *URL = @"http://docbasket.com/oauth/token";
+        
+        NSDictionary *OAuthInfo = @{ @"grant_type" : @"password",
+                                     @"username" : UserID,
+                                     @"password" : @"sekret",
+                                     @"client_id" : @"16f1cfc9121c9e923db62aa9db69bfd6ef507313fb55337563b2ffef07df269a",
+                                     @"client_secret" : @"232a36d50361f926bae965057170250226caca32fbb0817ed602a54ecdac3d32"};
+        
+        [manager POST:URL parameters:OAuthInfo
+              success:^(AFHTTPRequestOperation *operation, id responseObject)
+         {
+             NSLog(@"JSON: %@", responseObject);
+             
+             //         NSLog(@"access_token = %@", responseObject[@"access_token"]);
+             //         NSLog(@"expires_in = %@", responseObject[@"expires_in"]);
+             //         NSLog(@"token_type = %@", responseObject[@"token_type"]);
+             
+             [GVALUE setToken:responseObject[@"access_token"]];
+             
+             NSLog(@" token saved = %@", GVALUE.token);
+             
+             block(YES);
+             
+         }
+              failure:
+         ^(AFHTTPRequestOperation *operation, NSError *error) {
+             NSLog(@"Error: %@", error);
+             block(NO);
+         }];
 
-    [manager POST:URL parameters:OAuthInfo
-          success:^(AFHTTPRequestOperation *operation, id responseObject)
-     {
-         NSLog(@"JSON: %@", responseObject);
-         
-//         NSLog(@"access_token = %@", responseObject[@"access_token"]);
-//         NSLog(@"expires_in = %@", responseObject[@"expires_in"]);
-//         NSLog(@"token_type = %@", responseObject[@"token_type"]);
-         
-         [GVALUE setToken:responseObject[@"access_token"]];
-         
-         NSLog(@" token saved = %@", GVALUE.token);
-         
-         block(YES);
- 
-     }
-          failure:
-     ^(AFHTTPRequestOperation *operation, NSError *error) {
-         NSLog(@"Error: %@", error);
-         block(NO);
-     }];
+    }
 
 }
 

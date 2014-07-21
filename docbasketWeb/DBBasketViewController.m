@@ -5,6 +5,7 @@
 //  Created by jaecheol kim on 7/3/14.
 //  Copyright (c) 2014 jaecheol kim. All rights reserved.
 //
+#import <MapKit/MapKit.h>
 
 #import "DBBasketViewController.h"
 #import "UIImage+QRCode.h"
@@ -33,7 +34,6 @@
 {
     UIImage *qrCodeImage;
     UIImage *mapImage;
-    
 }
 @property (nonatomic,strong) NSDictionary *basketInfo;
 @property (nonatomic,strong) NSString *basketID;
@@ -45,6 +45,7 @@
 @property(nonatomic, strong) IBOutlet UITableView *tableView;
 @property(nonatomic, strong) MEExpandableHeaderView *headerView;
 @property(nonatomic, strong) UIImage *backgroundImage;
+@property(nonatomic, strong) MKMapView *mapView;
 
 @property (strong) NSArray *photos;
 @end
@@ -64,6 +65,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+ 
     
     self.title = self.basket.title;
     self.basketID = self.basket.basketID;
@@ -163,13 +166,29 @@
 
     CGSize headerViewSize = CGSizeMake(screenFrame.size.width, 200);
     if(IsEmpty(_backgroundImage))
-        _backgroundImage = [UIImage imageNamed:@"basketView.png"];
-
-    NSArray *pages = @[[self createPageViewWithText:self.basket.description size:headerViewSize],
-                       [self createPageViewWithImage:qrCodeImage size:headerViewSize],
-                       [self createPageViewWithText:@"Third page" size:headerViewSize],
-                       [self createPageViewWithText:@"Fourth page" size:headerViewSize]];
+        _backgroundImage = [UIImage new];// [UIImage imageNamed:@"basketView.png"];
     
+    
+    CLLocationCoordinate2D coord;
+    coord.longitude = self.basket.longitude;
+    coord.latitude = self.basket.latitude;
+    
+//    if(self.mapView) {
+//        [self setMapView:nil];
+//    }
+//    
+//    self.mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, headerViewSize.width, headerViewSize.height)];
+//    [self.mapView setRegion:MKCoordinateRegionMake(coord, MKCoordinateSpanMake(0.01, 0.01)) animated:NO];
+    
+    
+
+    
+
+    NSArray *pages = @[[self createPageViewWithText:self.basket.description size:headerViewSize]
+                       , [self createPageViewWithImage:qrCodeImage size:headerViewSize]
+                       , [self createPageViewWithText:self.basket.address size:headerViewSize]
+                       //,[self createPageViewWithText:self.basket. size:headerViewSize]
+                       ];
     
     if(self.headerView){
         [self setHeaderView:nil];
@@ -239,10 +258,11 @@
                  
              });
              
-         } else {
+         }
+         else {
              
              [[[UIAlertView alloc] initWithTitle:@"Need refresh."
-                                         message:@"refresh again"
+                                         message:@"refresh or Login again"
                                 cancelButtonItem:[RIButtonItem itemWithLabel:@"Yes"
                                                                       action:^{
                                                                           
@@ -283,11 +303,11 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     //UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260, 44)];
     
-    label.font = [UIFont boldSystemFontOfSize:20.0];
-    label.textColor = [UIColor grayColor];
+    label.font = [UIFont boldSystemFontOfSize:17.0];
+    label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
     label.backgroundColor = [UIColor clearColor];
-    label.shadowColor = [UIColor lightGrayColor];
+    label.shadowColor = [UIColor grayColor];
     label.shadowOffset = CGSizeMake(0, 1);
     label.numberOfLines = 5;
     label.text = text;
@@ -304,6 +324,34 @@
     
     return imgView;
 }
+
+
+
+
+//- (UIImageView*)createPageViewWithMap:(CLLocationCoordinate2D)coord size:(CGSize)size
+//{
+//    __block UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
+//    [imgView setBackgroundColor:[UIColor clearColor]];
+//    [imgView setContentMode:UIViewContentModeScaleAspectFit];
+//    
+//    MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
+//    options.size = size;
+//    options.scale = [[UIScreen mainScreen] scale];
+//    options.mapType = MKMapTypeStandard;
+//    
+//    MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
+//    
+//    [snapshotter startWithCompletionHandler:^(MKMapSnapshot *snapshot, NSError *e)
+//     {
+//         if (e) {
+//             NSLog(@"error:%@", e);
+//         }
+//         else {
+//             
+//             imgView.image = snapshot.image;
+//         }
+//     }];
+//}
 
 
 
@@ -377,7 +425,7 @@
 {
 	if (scrollView == self.tableView)
 	{
-        [self.headerView offsetDidUpdate:scrollView.contentOffset];
+//        [self.headerView offsetDidUpdate:scrollView.contentOffset];
 	}
 }
 /*

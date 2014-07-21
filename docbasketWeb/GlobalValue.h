@@ -12,6 +12,13 @@
 #import "Docbasket.h"
 #import "UIView+MGBadgeView.h"
 
+//#ifdef DEBUG
+#define NSLog( s, ... ) NSLog( @"\n===========================================================================\nObject : <%p %@:(%d)>\nMethod : %s\nLog    : %@\n===========================================================================\n\n", self, [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, __PRETTY_FUNCTION__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
+//#else
+//#define NSLog( s, ... )
+//#endif
+
+
 
 #define RGB_COLOR(r, g, b)      [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 #define RGBA_COLOR(r, g, b, a)  [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
@@ -27,7 +34,7 @@
 
 
 #define MAINURL          @"http://doc:basket@docbasket.com/login"
-#define LOGOUTURL          @"http://doc:basket@docbasket.com/logout"
+#define LOGOUTURL          @"http://doc:basket@docbasket.com/logout?simple_login=true"
 #define BASKETS          @"http://docbasket.com/baskets"  // ?filer = inbox / outbox / public
 
 static inline BOOL IsEmpty(id thing) {

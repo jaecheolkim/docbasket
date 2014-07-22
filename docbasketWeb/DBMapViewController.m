@@ -537,6 +537,36 @@
             regionView.annotation = annotation;
             regionView.theAnnotation = annotation;
         }
+        
+        
+// 핀 색 정의 시작
+// Red    : private = userID가 내가 아니고 & is_public = NO
+// Green  : public  = userID가 내가 아니고 & is_public = YES
+// Purple : created = userID가 나일때.
+        
+        MKPinAnnotationColor pinColor;
+        
+        NSString *ownerID = findBasket.ownerID;
+        int isPublic = (int)findBasket.is_public;
+        if([GVALUE.userID isEqualToString:ownerID]) {
+            pinColor = MKPinAnnotationColorPurple;
+        } else {
+            if(isPublic)
+                pinColor = MKPinAnnotationColorGreen;
+            else
+                pinColor = MKPinAnnotationColorRed;
+        }
+        // 핀 색 정의
+        regionView.pinColor = pinColor;
+        
+        // 혹시 핀을 이미지로 정의의 할 경우.
+        //regionView.image = [UIImage new];
+        
+// 핀 색 정의 끝.
+        
+        
+        
+        
 
         [regionView updateRadiusOverlay];
         

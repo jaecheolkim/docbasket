@@ -9,6 +9,7 @@
 #import "DBSettingViewController.h"
 #import "DBLoginViewController.h"
 #import "DBLogViewController.h"
+#import "UIImageView+addOn.h"
 
 #define LINE_COLOR RGBA_COLOR(76.0, 76.0, 76.0, 0.5)
 #define TEXT_COLOR RGB_COLOR(54.0, 54.0, 54.0)
@@ -95,14 +96,14 @@
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     NSLog(@"willRotateToInterfaceOrientation");
-     [self.tableView reloadData];
+    
 }
 
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     NSLog(@"didRotateFromInterfaceOrientation");
-    
+    [self.tableView reloadData];
    
 }
 
@@ -110,6 +111,14 @@
 
 #pragma mark -
 #pragma mark Table view data source
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0 && indexPath.row == 0)
+        return 120;
+    else
+        return 44;
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 3;
@@ -207,6 +216,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static int LOGINNAME_TAG            = 1000;
+    static int PROFILE_TAG              = 1111;
     static int LOGINOUT_TAG             = 1010;
     static int AUTOALBUMSCAN_TAG        = 1020;
     static int PUSHNOTI_TAG             = 1030;
@@ -234,13 +244,55 @@
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
             
+            CGSize contentSize = cell.contentView.frame.size;
+            CGRect nameLabelFrame = CGRectMake(0.0, 80, contentSize.width, 40.0);
+            CGRect profileImageFrame = CGRectMake(contentSize.width/2 - 30, 10, 60, 60);
+            
             NSString *title = [NSString stringWithFormat:@"%@", GVALUE.userName];
-            if((UILabel *)[cell.contentView viewWithTag:LOGINNAME_TAG]) {
-                [(UILabel *)[cell.contentView viewWithTag:LOGINNAME_TAG] setText:title];
+            if(IsEmpty(title)) title = @"Unknown user";
+            UILabel *nameLabel = (UILabel *)[cell.contentView viewWithTag:LOGINNAME_TAG];
+            UIImageView *profileImage = (UIImageView *)[cell.contentView viewWithTag:PROFILE_TAG];
+            NSURL *profileURL = [NSURL URLWithString:GVALUE.userImage];
+            
+            if(nameLabel) {
+                [nameLabel setText:title];
+                [nameLabel setFrame:nameLabelFrame];
+                //[(UILabel *)[cell.contentView viewWithTag:LOGINNAME_TAG] setText:title];
             } else {
-                UILabel *label = [self getTitleLabel:title tag:LOGINNAME_TAG color:RGB_COLOR(76.0, 114.0, 205.0)];
+                UILabel *label = [[UILabel alloc] initWithFrame:nameLabelFrame];
+                [label setTextAlignment:NSTextAlignmentCenter];
+                [label setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17]];
+                [label setBackgroundColor:[UIColor clearColor]];
+                [label setTextColor:RGB_COLOR(76.0, 114.0, 205.0)];
+                [label setTag:LOGINNAME_TAG];
+                [label setText:title];
+
+                //UILabel *label = [self getTitleLabel:title tag:LOGINNAME_TAG color:RGB_COLOR(76.0, 114.0, 205.0)];
                 [cell.contentView addSubview:label];
             }
+            
+            if(profileImage) {
+                
+                [profileImage setFrame:profileImageFrame];
+                
+            } else {
+                profileImage = [[UIImageView alloc] initWithFrame:profileImageFrame];
+                
+                [profileImage setTag:PROFILE_TAG];
+                [cell.contentView addSubview:profileImage];
+            }
+            
+            [profileImage setImageWithURL:profileURL placeholderImage:[UIImage imageNamed:@"login.png"]];
+            
+            [profileImage setContentMode:UIViewContentModeScaleAspectFill];
+            [profileImage setClipsToBounds:YES];
+            [profileImage.layer setBorderColor:[UIColor whiteColor].CGColor];
+            [profileImage.layer setBorderWidth:2.0];
+            [profileImage.layer setCornerRadius:profileImage.frame.size.width/2.0];
+
+            
+            
+
         }
         else if (indexPath.row == 1) {
             cell = [tableView dequeueReusableCellWithIdentifier:LoginOutCell];

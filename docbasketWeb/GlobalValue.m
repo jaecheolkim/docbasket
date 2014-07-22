@@ -60,6 +60,16 @@
     return [self readObjectFromDefault:KEY_USER_NAME];
 }
 
+- (void)setUserImage:(NSString *)userImage
+{
+    [self writeObjectToDefault:userImage withKey:KEY_USER_IMAGE];
+}
+
+- (NSString*)userImage
+{
+    return [self readObjectFromDefault:KEY_USER_IMAGE];
+}
+
 
 - (void)setToken:(NSString *)token
 {

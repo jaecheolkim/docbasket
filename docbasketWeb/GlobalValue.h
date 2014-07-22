@@ -26,10 +26,11 @@
 
 #define GVALUE              [GlobalValue sharedInstance]
 
-#define KEY_USER_ID         @"default_user_id"
-#define KEY_USER_NAME       @"default_user_name"
-#define KEY_USER_TOKEN      @"default_user_token"
-#define KEY_BADGE_VALUE     @"badge_value"
+#define  KEY_USER_ID                    @"default_user_id"
+#define  KEY_USER_NAME                  @"default_user_name"
+#define  KEY_USER_IMAGE                 @"default_user_image"
+#define  KEY_USER_TOKEN                 @"default_user_token"
+#define  KEY_BADGE_VALUE                @"badge_value"
 #define  KEY_PUSHNOTIFICATIONSETTING    @"pushNotificationSetting"
 
 
@@ -54,6 +55,7 @@ static inline id ObjectOrNull(id object)
 @interface GlobalValue : NSObject
 @property (nonatomic, strong) NSString *userID;
 @property (nonatomic, strong) NSString *userName;
+@property (nonatomic, strong) NSString *userImage;
 @property (nonatomic, strong) NSString *token;
 
 @property (nonatomic) BOOL START_LOGIN;

@@ -82,10 +82,16 @@
     
     [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:LOGOUTURL]]];
     
-    [GVALUE setUserID:@""];
+    //[GVALUE setUserID:@""];
     [GVALUE setUserName:@""];
     [GVALUE setToken:@""];
+    [GVALUE setUserImage:@""];
+    [self popVC];
     //[self checkLogin];
+}
+
+- (void) popVC{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 /*
@@ -108,21 +114,24 @@
 {
     id userID =  [self javaScriptFromString:@" $('*[data-user-id]').data('user-id')"];
     id userName = [self javaScriptFromString:@" $('*[data-user-name]').data('user-name')"];
-    
+    id userImage = [self javaScriptFromString:@" $('*[data-user-image]').data('user-image')"];
     if ([userID isKindOfClass:[NSString class]] && [userName isKindOfClass:[NSString class]])
     {
         
         [GVALUE setUserID:userID];
         [GVALUE setUserName:userName];
+        if(!IsEmpty(userImage) && [userImage isKindOfClass:[NSString class]] ) [GVALUE setUserImage:userImage];
         
-        
-        NSLog(@"Saved UserID = %@",[[GlobalValue sharedInstance] userID]);
-        
+        NSLog(@"Saved UserID = %@", GVALUE.userID);
+        NSLog(@"Saved userName = %@", GVALUE.userName);
+        NSLog(@"Saved userImage = %@", GVALUE.userImage);
         
         [DocbaketAPIClient Login:^(BOOL success) {
             if(success){
-                [self checkLogin];
-                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self checkLogin];
+                    [self popVC];
+                });
             }
         }];
     }

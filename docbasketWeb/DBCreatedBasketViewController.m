@@ -31,6 +31,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title = @"Created";
+    
+    self.edgesForExtendedLayout = UIRectEdgeAll;
+    self.tableView.contentInset = UIEdgeInsetsMake(CGRectGetHeight(self.navigationController.navigationBar.frame)+20, 0.0f, CGRectGetHeight(self.tabBarController.tabBar.frame), 0.0f);
+
 }
 
 - (void)viewWillAppear:(BOOL)animated

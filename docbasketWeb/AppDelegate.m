@@ -37,18 +37,6 @@
     
     if(!IsEmpty(GVALUE.userID)) [PARSE subscribePushChannel:GVALUE.userID];
     
-//    [Parse setApplicationId:@"4uXSfqyezD0qo8XcooiyipZqwKJzIHkMi54IlIpV"
-//                  clientKey:@"34UZWTxKQrmH4L3NxP7EV0nqGbla3t90BulBvIzR"];
-
-    
-//    if(!IsEmpty(GVALUE.userID)){
-        // When users indicate they are Giants fans, we subscribe them to that channel.
-//        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-//        [currentInstallation addUniqueObject:GVALUE.userID forKey:@"channels"];
-//        [currentInstallation saveInBackground];
-//        
-//        NSLog(@"UserID = %@", GVALUE.userID);
-//    }
     
     [DBKSERVICE startmanager];
     
@@ -63,10 +51,7 @@
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
 //    // Store the deviceToken in the current installation and save it to Parse.
-//    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-//    [currentInstallation setDeviceTokenFromData:deviceToken];
-//    [currentInstallation saveInBackground];
-    
+
     [PARSE saveNotificationDeviceToken:deviceToken];
 }
 

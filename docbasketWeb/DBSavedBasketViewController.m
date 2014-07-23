@@ -31,6 +31,10 @@
     // Do any additional setup after loading the view.
     
     self.title = @"Saved";
+    
+    self.edgesForExtendedLayout = UIRectEdgeAll;
+    self.tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, CGRectGetHeight(self.tabBarController.tabBar.frame), 0.0f);
+
 }
 
 - (void)viewWillAppear:(BOOL)animated

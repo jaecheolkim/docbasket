@@ -84,10 +84,17 @@
 
 - (void)setBadgeValue:(int)badgeValue
 {
-    if(badgeValue){
-        NSString *bv = [NSString stringWithFormat:@"%d", badgeValue];
-        [self writeObjectToDefault:bv withKey:KEY_BADGE_VALUE];
-    }
+    NSString *bv = [NSString stringWithFormat:@"%d", badgeValue];
+    [self writeObjectToDefault:bv withKey:KEY_BADGE_VALUE];
+    
+    [self.menuButton.badgeView setPosition:MGBadgePositionTopRight];
+    [self.menuButton.badgeView setBadgeValue:badgeValue];
+    
+    [self.messageIconView.badgeView setPosition:MGBadgePositionTopRight];
+    [self.messageIconView.badgeView setBadgeValue:badgeValue];
+
+    
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeValue];
 }
 
 - (int)badgeValue

@@ -15,6 +15,8 @@
 #import "DBSettingViewController.h"
 #import "UIViewController+RESideMenu.h"
 
+#import "GlobalValue.h"
+
 @interface DEMOLeftMenuViewController ()
 
 @property (strong, readwrite, nonatomic) UITableView *tableView;
@@ -122,6 +124,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSArray *titles = @[@"Map",  @"Message", @"My basket", @"QRCode", @"Setting"];
+    //NSArray *images = @[@"map.png", @"basket.png", @"basket.png", @"qrCamera.png", @"setting.png"];
+    NSArray *images = @[@"map.png", @"message.png", @"mybasket.png", @"qrCamera.png", @"setting.png"];
+
+    
     static NSString *cellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -133,12 +140,33 @@
         cell.textLabel.textColor = [UIColor whiteColor];
         cell.textLabel.highlightedTextColor = [UIColor lightGrayColor];
         cell.selectedBackgroundView = [[UIView alloc] init];
+        
+
     }
     
-    NSArray *titles = @[@"Map",  @"Message", @"My basket", @"QRCode", @"Setting"];
-    NSArray *images = @[@"map.png", @"basket.png", @"basket.png", @"qrCamera.png", @"setting.png"];
     cell.textLabel.text = titles[indexPath.row];
     cell.imageView.image = [UIImage imageNamed:images[indexPath.row]];
+    
+
+    
+    if(indexPath.row == 1){
+        if(IsEmpty(GVALUE.messageIconView)){
+            CGRect frame = CGRectMake(0, 0, 50, 60);
+            GVALUE.messageIconView = [[UIImageView alloc] initWithFrame:frame];
+            //[GVALUE.messageIconView setBackgroundColor:[UIColor redColor]];
+            [GVALUE.messageIconView.badgeView setPosition:MGBadgePositionTopRight];
+            [GVALUE.messageIconView.badgeView setBadgeColor:[UIColor redColor]];
+            
+            [cell.contentView addSubview:GVALUE.messageIconView];
+        }
+        
+        //GVALUE.messageIconView.image = [UIImage imageNamed:images[indexPath.row]];
+        
+    }
+    
+//    else {
+//        cell.imageView.image = [UIImage imageNamed:images[indexPath.row]];
+//    }
     
     return cell;
 }

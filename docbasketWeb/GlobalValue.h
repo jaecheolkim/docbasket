@@ -61,7 +61,6 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic) BOOL START_LOGIN;
 @property (nonatomic) BOOL FIND_USERID;
 
-@property (nonatomic, assign) int badgeValue;
 
 @property (nonatomic, assign) double longitude;
 @property (nonatomic, assign) double latitude;
@@ -85,8 +84,10 @@ static inline id ObjectOrNull(id object)
 
 @property (nonatomic, strong) NSMutableArray *LogList; // 디버깅용 로그 어레이
 
+@property (nonatomic, assign) int badgeValue;
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) UIBarButtonItem *navLeftButton;
+@property (nonatomic, strong) UIImageView *messageIconView;
 
 +(GlobalValue*)sharedInstance;
 

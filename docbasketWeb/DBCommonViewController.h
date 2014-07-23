@@ -20,7 +20,7 @@
 
 - (void)handleTakePhotoButtonPressed:(id)sender;
 - (UIImage*)rescaleImage:(UIImage*)image toSize:(CGSize)newSize;
-- (void)badgeNumber:(int)badgeValue;
+//- (void)badgeNumber:(int)badgeValue;
 
 - (void)setNaviBarTitle:(NSString *)title;
 

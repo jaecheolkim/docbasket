@@ -79,17 +79,9 @@
     
     if(!IsEmpty(userInfo))
     {
+        
         GVALUE.badgeValue = (int)([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
-        if (GVALUE.badgeValue >= 0) {
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:GVALUE.badgeValue];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DBCommonViewControllerEventHandler"
-                                                                object:self
-                                                              userInfo:@{@"Msg":@"updateBadge", @"badgeValue":@(GVALUE.badgeValue)}];
-        }
-        
-        
-        
-        
+
         if ( state == UIApplicationStateActive ) { // 포그라운드
             NSLog(@"UIApplicationStateActive");
             
@@ -110,14 +102,6 @@
 {
     
     GVALUE.badgeValue = (int)([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
-
-    if (GVALUE.badgeValue >= 0) {
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:GVALUE.badgeValue];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DBCommonViewControllerEventHandler"
-                                                            object:self
-                                                          userInfo:@{@"Msg":@"updateBadge", @"badgeValue":@(GVALUE.badgeValue)}];
-    }
     
     UIApplicationState state = [application applicationState]; //[[UIApplication sharedApplication ]applicationState]
     if ( state == UIApplicationStateActive ) { // 포그라운드

@@ -32,33 +32,17 @@
     
     self.delegate = self;
     
-    
-    // Do any additional setup after loading the view.
-    
+
     self.title = @"My Basket";
-    
-    // Build your regular UIBarButtonItem with Custom View
-//    UIImage *image = [UIImage imageNamed:@"list.png"];
-//    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-//    button.frame = CGRectMake(0,0,image.size.width, image.size.height);
-//    [button addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
-//    [button setBackgroundImage:image forState:UIControlStateNormal];
-//    
-//    // Make BarButton Item
-//    UIBarButtonItem *navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-//    self.navigationItem.leftBarButtonItem = navLeftButton;
-//    self.navigationItem.leftBarButtonItem.badgeValue = [NSString stringWithFormat:@"%d", GVALUE.badgeValue] ;
-//    self.navigationItem.leftBarButtonItem.badgeBGColor = self.navigationController.navigationBar.tintColor;
-    
-    UIImage *image = [UIImage imageNamed:@"list.png"];
-    
-    GVALUE.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    GVALUE.menuButton.frame = CGRectMake(0,0,image.size.width, image.size.height);
+
+    if(IsEmpty(GVALUE.menuButton)) {
+        GVALUE.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *image = [UIImage imageNamed:@"list.png"];
+        GVALUE.menuButton.frame = CGRectMake(0,0,image.size.width, image.size.height);
+        [GVALUE.menuButton setBackgroundImage:image forState:UIControlStateNormal];
+    }
+
     [GVALUE.menuButton addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
-    [GVALUE.menuButton setBackgroundImage:image forState:UIControlStateNormal];
-    
-    
-    [GVALUE.menuButton.badgeView setBadgeValue:3];
     [GVALUE.menuButton.badgeView setPosition:MGBadgePositionTopRight];
     [GVALUE.menuButton.badgeView setBadgeColor:[UIColor redColor]];
     // Make BarButton Item

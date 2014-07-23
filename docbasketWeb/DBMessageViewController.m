@@ -30,13 +30,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-//    self.title = @"Message";
-//    [self badgeNumber:10];
-    
-    [GVALUE.menuButton.badgeView setBadgeValue:10];
 
     [self setNaviBarTitle:@"Message"];
+    [GVALUE setBadgeValue:0];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -52,32 +49,6 @@
         });
         
     }];
-    
-//    //filter= created | invited | saved | public(default)
-//    [self checkMyBasket:@"invited" completionHandler:^(BOOL success) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.tableView reloadData];
-//        });
-//    }];
-    
-    
-    
-    
-//    //[GVALUE setBadgeValue:0];
-//    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"DBCommonViewControllerEventHandler"
-//                                                        object:self
-//                                                      userInfo:@{@"Msg":@"updateBadge", @"badgeValue":@(0)}];
-    
-
-
-    
-    
-//    NSArray *array = [SQLManager getDocBasketsForQuery:[NSString stringWithFormat:@"SELECT * FROM Docbasket WHERE id = '%@';", basketID]];
-//    if(!IsEmpty(array)) {
-//        Docbasket *basket = array[0];
-//    }
-    
     
 }
 

@@ -79,7 +79,6 @@
 		8061B03A1950B47F00685336 /* RegionAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8061B0371950B47F00685336 /* RegionAnnotation.m */; };
 		8061B03B1950B47F00685336 /* RegionAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8061B0391950B47F00685336 /* RegionAnnotationView.m */; };
 		8062BF2C19740FD6004F2FE3 /* DBListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8062BF2B19740FD6004F2FE3 /* DBListTableViewCell.m */; };
-		806845C4197398B1005699EB /* UIBarButtonItem+Badge.m in Sources */ = {isa = PBXBuildFile; fileRef = 806845C3197398B1005699EB /* UIBarButtonItem+Badge.m */; };
 		807115DF195B2EEC00E953B1 /* RECommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 807115DA195B2EEC00E953B1 /* RECommonFunctions.m */; };
 		807115E0195B2EEC00E953B1 /* RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 807115DC195B2EEC00E953B1 /* RESideMenu.m */; };
 		807115E1195B2EEC00E953B1 /* UIViewController+RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 807115DE195B2EEC00E953B1 /* UIViewController+RESideMenu.m */; };
@@ -289,8 +288,6 @@
 		8061B0391950B47F00685336 /* RegionAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionAnnotationView.m; sourceTree = "<group>"; };
 		8062BF2A19740FD6004F2FE3 /* DBListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBListTableViewCell.h; sourceTree = "<group>"; };
 		8062BF2B19740FD6004F2FE3 /* DBListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBListTableViewCell.m; sourceTree = "<group>"; };
-		806845C2197398B1005699EB /* UIBarButtonItem+Badge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+Badge.h"; sourceTree = "<group>"; };
-		806845C3197398B1005699EB /* UIBarButtonItem+Badge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+Badge.m"; sourceTree = "<group>"; };
 		807115D9195B2EEC00E953B1 /* RECommonFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RECommonFunctions.h; sourceTree = "<group>"; };
 		807115DA195B2EEC00E953B1 /* RECommonFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RECommonFunctions.m; sourceTree = "<group>"; };
 		807115DB195B2EEC00E953B1 /* RESideMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RESideMenu.h; sourceTree = "<group>"; };
@@ -721,8 +718,6 @@
 			children = (
 				80771A7D197CD2A400C3D0FF /* UIView+MGBadgeView.h */,
 				80771A7E197CD2A400C3D0FF /* UIView+MGBadgeView.m */,
-				806845C2197398B1005699EB /* UIBarButtonItem+Badge.h */,
-				806845C3197398B1005699EB /* UIBarButtonItem+Badge.m */,
 				800A4D4C196281CB00E60B8A /* PopButtonImageView.h */,
 				800A4D4D196281CB00E60B8A /* PopButtonImageView.m */,
 				80778A5E195B122C003EF884 /* CHPopUpMenu.h */,
@@ -1095,7 +1090,6 @@
 				800A4D5519628D7800E60B8A /* ScannerViewController.m in Sources */,
 				80A437AA1978F826004EF351 /* SWTableViewCell.m in Sources */,
 				8061B02219503BE100685336 /* AFNetworkActivityIndicatorManager.m in Sources */,
-				806845C4197398B1005699EB /* UIBarButtonItem+Badge.m in Sources */,
 				8061AFF01950163800685336 /* GlobalValue.m in Sources */,
 				807556561951980D00F68F63 /* SDImageCache.m in Sources */,
 				808CC937196A6B640048C99E /* mztools.c in Sources */,

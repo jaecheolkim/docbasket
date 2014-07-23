@@ -16,6 +16,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "UIImageView+addOn.h"
 #import "SWTableViewCell.h"
+#import "MyTableViewController.h"
 
 @interface DBMapViewController () <SWTableViewCellDelegate>
 {
@@ -207,6 +208,13 @@
 //    blurbar.barStyle = UIBarStyleBlack;
 //    [self.view addSubview:blurbar];
 
+}
+
+- (IBAction)searchButtonHadler:(id)sender
+{
+
+    MyTableViewController *searchMapViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"searchMapViewController"];
+    [self.navigationController pushViewController:searchMapViewController animated:YES];
 }
 
 
@@ -645,66 +653,10 @@
     return [GVALUE.baskets count];
 }
 
-
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    static NSString *cellIdentifier = @"Cell";
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-//    
-//    if (cell == nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-//    }
-//    
-//    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
-//    if(!IsEmpty(basket)){
-//        
-//        CLLocation *cLocation = [[CLLocation alloc] initWithLatitude:basket.latitude longitude:basket.longitude];
-//        CLLocationDistance distance = [GVALUE.currentLocation distanceFromLocation:cLocation];
-//        
-//        
-//        NSString *image = basket.image;
-//        
-// 
-//        //NSString *dataPath = [NSString stringWithFormat:@"%@/%@.json",cacheDir, fileName];
-//        NSString *fileName = @"no file";
-//        
-//        if(!IsEmpty(image)){
-//            
-//            fileName = [image lastPathComponent];//[[image lastPathComponent] stringByDeletingPathExtension];
-//            NSString *path = [image stringByDeletingLastPathComponent];
-//            NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"small_thumb", fileName ];
-//
-//            __weak UIImageView *imgView = cell.imageView;
-//            
-//            [cell.imageView setImageWithURL:thumbPath
-//                           placeholderImage:[UIImage imageNamed:@"map.png"]
-//                                 completion:^(UIImage *image){
-//                                     
-//                                     if(!IsEmpty(image)){
-//                                         dispatch_async(dispatch_get_main_queue(), ^{
-//                                             imgView.image = image;
-//                                         });
-//                                     }
-//                                     
-//                                 }];
-//    
-//            
-//            
-////            [cell.imageView setImageWithURL:[NSURL URLWithString:thumbPath] placeholderImage:[UIImage imageNamed:@"map.png"]];
-//        } else {
-//            [cell.imageView setImage:[UIImage imageNamed:@"map.png"]];
-//        }
-//        
-//        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
-//        cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@\n%dm", basket.title, fileName, (int)distance ];
-//
-//        
-//        
-//        cell.textLabel.numberOfLines = 4;
-//    }
-//    
-//    
-//    return cell;
-//}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 60;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -750,8 +702,6 @@
 //        [cell.imageView setContentMode:UIViewContentModeScaleAspectFill];
 //        [cell.imageView setClipsToBounds:YES];
 //        [cell.imageView.layer setCornerRadius:cell.imageView.frame.size.width/2.0];
-
-
     }
     
     Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
@@ -762,39 +712,51 @@
         
         NSString *image = basket.image;
         NSString *fileName = @"no file";
-        
 
+        [cell.imageView setImage:[UIImage imageNamed:@"map.png"]];
         
         if(!IsEmpty(image)){
             
-            fileName = [image lastPathComponent];//[[image lastPathComponent] stringByDeletingPathExtension];
+            fileName = [image lastPathComponent]; 
             NSString *path = [image stringByDeletingLastPathComponent];
             NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"small_thumb", fileName ];
             
-            __weak UIImageView *imgView = cell.imageView;
+            __weak UITableViewCell *weakCell = cell;
+//            __weak UIImageView *imgView = cell.imageView;
             
             [cell.imageView setImageWithURL:thumbPath
                            placeholderImage:[UIImage imageNamed:@"map.png"]
                                  completion:^(UIImage *image){
                                      
                                      if(!IsEmpty(image)){
-                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                         UIImage *iconImage = image;
+                                         if (image.size.width != 48 || image.size.height != 48)
+                                         {
+                                             CGSize itemSize = CGSizeMake(48, 48);
+                                             UIGraphicsBeginImageContextWithOptions(itemSize, NO, 0.0f);
+                                             CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+                                             [image drawInRect:imageRect];
+                                             iconImage = UIGraphicsGetImageFromCurrentImageContext();
+                                             UIGraphicsEndImageContext();
+                                         }
 
-                                             imgView.image = image;
+                                         
+                                         dispatch_async(dispatch_get_main_queue(), ^{
+//
+                                             
+                                             weakCell.imageView.image = iconImage;
+                                             [weakCell setNeedsLayout];
                                          });
                                      }
                                      
                                  }];
 
-        } else {
-            [cell.imageView setImage:[UIImage imageNamed:@"map.png"]];
         }
- 
         
         //cell.textLabel.font = [UIFont systemFontOfSize:12.0];
         cell.textLabel.text = [NSString stringWithFormat:@"%@", basket.title ];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%dm", (int)distance ];
-        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         //cell.textLabel.numberOfLines = 4;
     }
@@ -804,9 +766,9 @@
 }
 
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60.0;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    return 60.0;
+//}
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

@@ -131,6 +131,7 @@
 		809767A8195C84800048CA13 /* DBLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 809767A7195C84800048CA13 /* DBLoginViewController.m */; };
 		80A437A51978D2F7004EF351 /* UIImageView+addOn.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A437A41978D2F7004EF351 /* UIImageView+addOn.m */; };
 		80A437AA1978F826004EF351 /* SWTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A437A91978F826004EF351 /* SWTableViewCell.m */; };
+		80A810E01980049E0076BF08 /* MyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A810DF1980049E0076BF08 /* MyTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -389,6 +390,8 @@
 		80A437A41978D2F7004EF351 /* UIImageView+addOn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+addOn.m"; sourceTree = "<group>"; };
 		80A437A81978F826004EF351 /* SWTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWTableViewCell.h; sourceTree = "<group>"; };
 		80A437A91978F826004EF351 /* SWTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWTableViewCell.m; sourceTree = "<group>"; };
+		80A810DE1980049E0076BF08 /* MyTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyTableViewController.h; sourceTree = "<group>"; };
+		80A810DF1980049E0076BF08 /* MyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -737,6 +740,7 @@
 		8061B02F19503C7100685336 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				80A810DD198004830076BF08 /* SearchPOI */,
 				800BC5AE196C3F1B006D8240 /* SideMenuController */,
 				80771A81197CE3C300C3D0FF /* CommonViewController */,
 				80771A85197CE5D600C3D0FF /* QRCode Scan */,
@@ -963,6 +967,15 @@
 			path = SWTableViewCell;
 			sourceTree = "<group>";
 		};
+		80A810DD198004830076BF08 /* SearchPOI */ = {
+			isa = PBXGroup;
+			children = (
+				80A810DE1980049E0076BF08 /* MyTableViewController.h */,
+				80A810DF1980049E0076BF08 /* MyTableViewController.m */,
+			);
+			name = SearchPOI;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1132,6 +1145,7 @@
 				8061B02519503BE100685336 /* UIButton+AFNetworking.m in Sources */,
 				808CC950196AD1520048C99E /* PBSQLiteManager.m in Sources */,
 				805B8DA8196EDE7B00F2A694 /* EBPhotoToolbar.m in Sources */,
+				80A810E01980049E0076BF08 /* MyTableViewController.m in Sources */,
 				8061B02619503BE100685336 /* UIImageView+AFNetworking.m in Sources */,
 				808CC938196A6B640048C99E /* unzip.c in Sources */,
 				8016E881196676AC001C029E /* UIImage+ImageEffects.m in Sources */,

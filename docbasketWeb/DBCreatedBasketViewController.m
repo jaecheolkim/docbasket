@@ -84,46 +84,62 @@
     
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        
     }
     
     Docbasket *basket = [self.baskets objectAtIndex:indexPath.row];
     if(!IsEmpty(basket)){
-        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
-        cell.textLabel.text = basket.title;
         
         NSString *image = basket.image;
+        
         if(!IsEmpty(image)){
             
-            NSString *fileName = [image lastPathComponent];//[[image lastPathComponent] stringByDeletingPathExtension];
+            NSString *fileName = [image lastPathComponent];
             NSString *path = [image stringByDeletingLastPathComponent];
             NSString *thumbPath = [NSString stringWithFormat:@"%@/%@_%@",path, @"small_thumb", fileName ];
             
-            __weak UIImageView *imgView = cell.imageView;
+            __weak UITableViewCell *weakCell = cell;
             
             [cell.imageView setImageWithURL:thumbPath
                            placeholderImage:[UIImage imageNamed:@"map.png"]
                                  completion:^(UIImage *image){
                                      
                                      if(!IsEmpty(image)){
+                                         UIImage *iconImage = image;
+                                         if (image.size.width != 48 || image.size.height != 48)
+                                         {
+                                             CGSize itemSize = CGSizeMake(48, 48);
+                                             UIGraphicsBeginImageContextWithOptions(itemSize, NO, 0.0f);
+                                             CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+                                             [image drawInRect:imageRect];
+                                             iconImage = UIGraphicsGetImageFromCurrentImageContext();
+                                             UIGraphicsEndImageContext();
+                                         }
+                                         
+                                         
                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                             imgView.image = image;
+                                             //
+                                             
+                                             weakCell.imageView.image = iconImage;
+                                             [weakCell setNeedsLayout];
                                          });
                                      }
                                      
                                  }];
-            
-//            [cell.imageView setImageWithURL:[NSURL URLWithString:thumbPath] placeholderImage:[UIImage imageNamed:@"map.png"]];
-        } else {
+        }
+        else {
             [cell.imageView setImage:[UIImage imageNamed:@"map.png"]];
         }
         
-        
-        cell.textLabel.numberOfLines = 4;
+        cell.textLabel.font = [UIFont systemFontOfSize:12.0];
+        cell.textLabel.text = basket.title;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
     
     return cell;
 }
+
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

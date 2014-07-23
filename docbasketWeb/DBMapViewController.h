@@ -17,9 +17,11 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addBasketButton;
 @property (weak, nonatomic) IBOutlet UIButton *basketPin;
 @property (weak, nonatomic) IBOutlet UIButton *currentButton;
+@property (weak, nonatomic) IBOutlet UIButton *searchButton;
+
 - (IBAction)buttonHandler:(id)sender;
 - (IBAction)refreshCurrentLocation:(id)sender;
 - (IBAction)createNewBasket:(id)sender;
-
+- (IBAction)searchButtonHadler:(id)sender;
 @end
 

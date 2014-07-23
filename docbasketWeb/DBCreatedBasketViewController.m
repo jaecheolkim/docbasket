@@ -85,6 +85,11 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         
+        [cell.imageView setFrame:CGRectMake(0, 0, 60, 60)];
+        [cell.imageView setContentMode:UIViewContentModeScaleAspectFill];
+        [cell.imageView setClipsToBounds:YES];
+        [cell.imageView.layer setCornerRadius:8];
+        
     }
     
     Docbasket *basket = [self.baskets objectAtIndex:indexPath.row];

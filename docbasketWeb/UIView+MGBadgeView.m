@@ -207,27 +207,30 @@ static int const kMGBadgeViewTag = 9876;
         }
     }
     
-    switch (position) {
-        case MGBadgePositionTopRight: {
-            self.center = CGPointMake(superviewFrame.size.width + superviewFrame.size.width/4 , superviewFrame.size.height/4);
-//            self.center = CGPointMake(superviewFrame.size.width, 0);
-            break;
-        }
-        case MGBadgePositionTopLeft: {
-            self.center = CGPointMake(0, 0);
-            break;
-        }
-        case MGBadgePositionBottomRight: {
-            self.center = CGPointMake(superviewFrame.size.width, superviewFrame.size.height);
-            break;
-        }
-        case MGBadgePositionBottomLeft: {
-            self.center = CGPointMake(0, superviewFrame.size.height);
-            break;
-        }
-        default:
-            break;
-    }
+//    switch (position) {
+//        case MGBadgePositionTopRight: {
+//            self.center = CGPointMake(superviewFrame.size.width + superviewFrame.size.width/4 , superviewFrame.size.height/4);
+////            self.center = CGPointMake(superviewFrame.size.width, 0);
+//            break;
+//        }
+//        case MGBadgePositionTopLeft: {
+//            self.center = CGPointMake(0, 0);
+//            break;
+//        }
+//        case MGBadgePositionBottomRight: {
+//            self.center = CGPointMake(superviewFrame.size.width, superviewFrame.size.height);
+//            break;
+//        }
+//        case MGBadgePositionBottomLeft: {
+//            self.center = CGPointMake(0, superviewFrame.size.height);
+//            break;
+//        }
+//        default:
+//            break;
+//    }
+    
+    
+    self.center = CGPointMake(superviewFrame.size.width + superviewFrame.size.width/4 , superviewFrame.size.height/4);
 }
 
 @end

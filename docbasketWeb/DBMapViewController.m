@@ -249,7 +249,7 @@
         if(popUp._isMenuPresented) [popUp dismissSubMenu];
         
         //{{0, 20}, {320, 44}}
-        [UIView animateWithDuration:0.7 animations:^{
+        [UIView animateWithDuration:0.4 animations:^{
             self.navigationController.navigationBar.frame = CGRectMake(0, 20, screenFrame.size.width, 0);
             //[self hideAllAnnotations];
             popUp.alpha = 0;
@@ -474,7 +474,8 @@
 {
     NSLog(@"regionWillChangeAnimated");
     
-    if(isChangingScreen || self.basketPin.hidden) return;
+    //if(isChangingScreen || self.basketPin.hidden) return;
+    if(isChangingScreen) return;
     
     [self showNavigationBar:NO];
     
@@ -482,7 +483,8 @@
 }
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-    if(isChangingScreen || self.basketPin.hidden) return;
+    //if(isChangingScreen || self.basketPin.hidden) return;
+    if(isChangingScreen) return;
     
     NSLog(@"regionDidChangeAnimated");
     
@@ -698,10 +700,10 @@
         cell.delegate = self;
         [cell setCellHeight:60];
 
-//        [cell.imageView setFrame:CGRectMake(3, 3, 54, 54)];
-//        [cell.imageView setContentMode:UIViewContentModeScaleAspectFill];
-//        [cell.imageView setClipsToBounds:YES];
-//        [cell.imageView.layer setCornerRadius:cell.imageView.frame.size.width/2.0];
+        [cell.imageView setFrame:CGRectMake(0, 0, 60, 60)];
+        [cell.imageView setContentMode:UIViewContentModeScaleAspectFill];
+        [cell.imageView setClipsToBounds:YES];
+        [cell.imageView.layer setCornerRadius:8];
     }
     
     Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];

@@ -60,12 +60,13 @@
     NSLog(@" App build = %@ / bundleName = %@", build, bundleName);
 
     
-    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(125, 460, 70, 22)];
+    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 510, 200, 22)];
     versionLabel.backgroundColor = [UIColor clearColor];
     versionLabel.textAlignment = NSTextAlignmentCenter;
     versionLabel.font = [UIFont fontWithName:@"HelveticaNeue-light" size:9];
+    versionLabel.numberOfLines = 2;
     versionLabel.textColor = [UIColor colorWithRed:208.0/255.0 green:208.0/255.0 blue:205.0/255.0 alpha:1.0];
-    versionLabel.text = [NSString stringWithFormat:@"Version %@", build ];//@"Version 1.0";
+    versionLabel.text = [NSString stringWithFormat:@"Version %@ \n %@", build, GVALUE.userID];//@"Version 1.0";
     [self.view addSubview:versionLabel];
 
 }

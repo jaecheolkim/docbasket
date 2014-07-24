@@ -1,6 +1,6 @@
 /*
-     File: MyTableViewController.h
- Abstract: Primary view controller used to display search results.
+     File: PlaceAnnotation.h
+ Abstract: Custom pin annotation for display found places.
   Version: 1.0
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
@@ -45,12 +45,15 @@
  
  */
 
-#import <UIKit/UIKit.h>
-#import <CoreLocation/CoreLocation.h>
+#import <MapKit/MapKit.h>
 
-@interface MyTableViewController : UITableViewController <CLLocationManagerDelegate, UISearchBarDelegate>
+@interface PlaceAnnotation : NSObject <MKAnnotation>
 
-@property (nonatomic, strong) NSArray *places;
-@property (nonatomic) CLLocationCoordinate2D userLocation;
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+@property (nonatomic, retain) NSString *title;
+@property (nonatomic, retain) NSString *subTitle;
+@property (nonatomic, retain) NSURL *url;
 
 @end
+
+

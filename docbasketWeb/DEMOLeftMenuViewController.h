@@ -10,5 +10,5 @@
 #import "RESideMenu.h"
 
 @interface DEMOLeftMenuViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, RESideMenuDelegate>
-
+- (void)moveToMessage;
 @end

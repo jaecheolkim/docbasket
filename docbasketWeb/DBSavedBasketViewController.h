@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DBCommonViewController.h"
+//#import "DBCommonViewController.h"
 
-@interface DBSavedBasketViewController : DBCommonViewController
+@interface DBSavedBasketViewController : UIViewController
 < UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;

@@ -70,7 +70,14 @@
         [self hideMenuViewController];
     }
     
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"moveToMessage"]) {
+        
+        [(DEMOLeftMenuViewController*)self.leftMenuViewController moveToMessage];
+    }
 }
+
+
+
 
 #pragma mark -
 #pragma mark RESideMenu Delegate

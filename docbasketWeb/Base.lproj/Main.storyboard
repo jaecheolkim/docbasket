@@ -498,7 +498,7 @@
         <!--MyTableViewController-->
         <scene sceneID="QKG-fs-Vgb">
             <objects>
-                <tableViewController storyboardIdentifier="searchMapViewController" id="PFd-Ax-nSZ" userLabel="MyTableViewController" customClass="MyTableViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="searchMapViewController" id="PFd-Ax-nSZ" userLabel="MyTableViewController" customClass="DBSearchPOIViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="n2Q-zb-rEb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

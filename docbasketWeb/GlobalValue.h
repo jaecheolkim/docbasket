@@ -32,6 +32,7 @@
 #define  KEY_USER_TOKEN                 @"default_user_token"
 #define  KEY_BADGE_VALUE                @"badge_value"
 #define  KEY_PUSHNOTIFICATIONSETTING    @"pushNotificationSetting"
+#define  KEY_NOTIFICATION_BASKETID      @"defaul_notification_baskeID"
 
 
 #define MAINURL          @"http://doc:basket@docbasket.com/login"
@@ -57,6 +58,7 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, strong) NSString *userName;
 @property (nonatomic, strong) NSString *userImage;
 @property (nonatomic, strong) NSString *token;
+@property (nonatomic, strong) NSString *notiBasketID;
 
 @property (nonatomic) BOOL START_LOGIN;
 @property (nonatomic) BOOL FIND_USERID;
@@ -72,7 +74,7 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, assign) CLLocationCoordinate2D currentCoordinate;
 
 
-
+@property (nonatomic, strong) NSMutableArray *messages; // 메시지 메뉴에서 사용할 basket 리스트 어레이 (checked in[local] & invited[remote] 이 합쳐지는 장소)
 @property (nonatomic, strong) NSArray *baskets; //지도에서 사용할 전체 docbasket 리스트 가지고 있는 어레이
 @property (nonatomic, strong) NSMutableArray *geoFenceBaskets; // 지오팬스 docbasket 리스트
 @property (nonatomic, assign) double regionMonitoringDistance; // 현재 위치에서의 지오팬싱 모니터링 반경 : 1km = 1.0 단위임. default = 0.1 (100m)
@@ -82,12 +84,16 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, strong) CLLocation *lastLocation;  // 바로 이전의 currentLocation 위치 값
 @property (nonatomic, strong) CLLocation *lastAPICallLocation; // 최종 baskets.json API call location
 
+@property (nonatomic, strong) NSArray *mapItemList;
+
 @property (nonatomic, strong) NSMutableArray *LogList; // 디버깅용 로그 어레이
 
 @property (nonatomic, assign) int badgeValue;
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) UIBarButtonItem *navLeftButton;
 @property (nonatomic, strong) UIImageView *messageIconView;
+
+
 
 +(GlobalValue*)sharedInstance;
 

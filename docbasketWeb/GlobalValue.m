@@ -26,6 +26,7 @@
     if (self){
         self.baskets = [NSArray array];
         self.geoFenceBaskets = [NSMutableArray array];
+        self.messages = [NSMutableArray array];
         self.LogList = [NSMutableArray array];
         self.regionMonitoringDistance = 0.1;  // 100m
         self.findBasketsRange = 10000.0; // 10000m (10km)
@@ -81,6 +82,16 @@
     return [self readObjectFromDefault:KEY_USER_TOKEN];
 }
 
+
+- (void)setNotiBasketID:(NSString *)notiBasketID
+{
+    [self writeObjectToDefault:notiBasketID withKey:KEY_NOTIFICATION_BASKETID];
+}
+
+- (NSString*)notiBasketID
+{
+    return [self readObjectFromDefault:KEY_NOTIFICATION_BASKETID];
+}
 
 - (void)setBadgeValue:(int)badgeValue
 {

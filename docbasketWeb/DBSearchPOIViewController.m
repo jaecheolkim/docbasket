@@ -45,8 +45,8 @@
  
  */
 
-#import "MyTableViewController.h"
-
+#import "DBSearchPOIViewController.h"
+#import "GlobalValue.h"
 #import <MapKit/MapKit.h>
 
 
@@ -54,7 +54,7 @@
 
 static NSString *kCellIdentifier = @"cellIdentifier";
 
-@interface MyTableViewController ()
+@interface DBSearchPOIViewController ()
 
 @property (nonatomic, assign) MKCoordinateRegion boundingRegion;
 
@@ -70,7 +70,7 @@ static NSString *kCellIdentifier = @"cellIdentifier";
 
 #pragma mark -
 
-@implementation MyTableViewController
+@implementation DBSearchPOIViewController
 
 - (void)viewDidLoad
 {
@@ -129,10 +129,10 @@ static NSString *kCellIdentifier = @"cellIdentifier";
     
     // pass the individual place to our map destination view controller
     NSIndexPath *selectedItem = [self.tableView indexPathForSelectedRow];
-    NSArray *result = [NSArray arrayWithObject:[self.places objectAtIndex:selectedItem.row]];
+    GVALUE.mapItemList = [NSArray arrayWithObject:[self.places objectAtIndex:selectedItem.row]];
     
-    NSLog(@"result = %@", result);
-    
+    NSLog(@"result = %@", GVALUE.mapItemList);
+
     [self.navigationController popViewControllerAnimated:YES];
 }
 

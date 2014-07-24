@@ -27,7 +27,7 @@ static int const kMGBadgeViewTag = 9876;
         _outlineColor = [UIColor whiteColor];
         _outlineWidth = 2.0;
         _minDiameter = 25.0;
-        _position = MGBadgePositionBest;
+        _position = MGBadgePositionTopRight;
         _displayIfZero = NO;
         
         self.backgroundColor = [UIColor clearColor];
@@ -82,8 +82,8 @@ static int const kMGBadgeViewTag = 9876;
         if(badgeValue != 0 || _displayIfZero) {
             [self mg_updateBadgeViewSize];
         
-            if(_position == MGBadgePositionBest)
-                [self mg_updateBadgeViewPosition];
+            //if(_position == MGBadgePositionBest)
+            [self mg_updateBadgeViewPosition];
         
         } else {
             self.frame = CGRectZero;

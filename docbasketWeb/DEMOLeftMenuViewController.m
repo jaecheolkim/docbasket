@@ -19,6 +19,10 @@
 
 @interface DEMOLeftMenuViewController ()
 
+@property (strong, nonatomic) NSArray *menuTitles;
+@property (strong, nonatomic) NSArray *menuImages;
+@property (strong, nonatomic) NSArray *viewContorllers;
+
 @property (strong, readwrite, nonatomic) UITableView *tableView;
 
 @property (nonatomic, strong) DBMapViewController *mapViewController;
@@ -50,16 +54,49 @@
         tableView;
     });
     [self.view addSubview:self.tableView];
-    
-    
+
+    _menuTitles = @[@"Map",  @"Message", @"My basket", @"QRCode", @"Setting"];
+    _menuImages = @[@"map.png", @"message.png", @"mybasket.png", @"qrCamera.png", @"setting.png"];
+ 
     self.mapViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMapViewController"];
     self.messageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMessageViewController"];
     self.myBasketListViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMyDocBasketViewController"];
     self.QRScannerViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ScannerViewController"];
     self.settingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBSettingViewController"];
-    //self.loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBLoginViewController"];
+    
+//    _viewContorllers = @[ [[UINavigationController alloc] initWithRootViewController:self.mapViewController],
+//                         [[UINavigationController alloc] initWithRootViewController:self.messageViewController],
+//                         [[UINavigationController alloc] initWithRootViewController:self.myBasketListViewController],
+//                         [[UINavigationController alloc] initWithRootViewController:self.QRScannerViewController],
+//                         [[UINavigationController alloc] initWithRootViewController:self.settingViewController] ];
+    
+    
+    if(IsEmpty(GVALUE.menuButton)) {
+        GVALUE.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *image = [UIImage imageNamed:@"list.png"];
+        GVALUE.menuButton.frame = CGRectMake(0,0,image.size.width, image.size.height);
+        [GVALUE.menuButton setBackgroundImage:image forState:UIControlStateNormal];
+        
+        GVALUE.navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:GVALUE.menuButton];
+        
+    }
+    
+    [GVALUE.menuButton addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
+    [GVALUE.menuButton.badgeView setPosition:MGBadgePositionTopRight];
+    [GVALUE.menuButton.badgeView setBadgeColor:[UIColor redColor]];
 
+
+    
 }
+
+- (void)moveToMessage
+{
+//    [self.sideMenuViewController setContentViewController:_viewContorllers[1] animated:YES];
+    [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.messageViewController]
+                                                 animated:YES];
+    [self.sideMenuViewController hideMenuViewController];
+}
+
 
 #pragma mark -
 #pragma mark UITableView Delegate
@@ -67,6 +104,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+//    [self.sideMenuViewController setContentViewController:_viewContorllers[indexPath.row] animated:YES];
+//    [self.sideMenuViewController hideMenuViewController];
+
+    
     switch (indexPath.row) {
         case 0:
             [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.mapViewController]
@@ -102,6 +144,8 @@
         default:
             break;
     }
+    
+    
 }
 
 #pragma mark -
@@ -124,11 +168,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray *titles = @[@"Map",  @"Message", @"My basket", @"QRCode", @"Setting"];
-    //NSArray *images = @[@"map.png", @"basket.png", @"basket.png", @"qrCamera.png", @"setting.png"];
-    NSArray *images = @[@"map.png", @"message.png", @"mybasket.png", @"qrCamera.png", @"setting.png"];
 
-    
     static NSString *cellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -144,8 +184,8 @@
 
     }
     
-    cell.textLabel.text = titles[indexPath.row];
-    cell.imageView.image = [UIImage imageNamed:images[indexPath.row]];
+    cell.textLabel.text = _menuTitles[indexPath.row];
+    cell.imageView.image = [UIImage imageNamed:_menuImages[indexPath.row]];
     
 
     
@@ -153,21 +193,13 @@
         if(IsEmpty(GVALUE.messageIconView)){
             CGRect frame = CGRectMake(0, 0, 50, 60);
             GVALUE.messageIconView = [[UIImageView alloc] initWithFrame:frame];
-            //[GVALUE.messageIconView setBackgroundColor:[UIColor redColor]];
             [GVALUE.messageIconView.badgeView setPosition:MGBadgePositionTopRight];
             [GVALUE.messageIconView.badgeView setBadgeColor:[UIColor redColor]];
             
             [cell.contentView addSubview:GVALUE.messageIconView];
         }
-        
-        //GVALUE.messageIconView.image = [UIImage imageNamed:images[indexPath.row]];
-        
     }
-    
-//    else {
-//        cell.imageView.image = [UIImage imageNamed:images[indexPath.row]];
-//    }
-    
+
     return cell;
 }
 

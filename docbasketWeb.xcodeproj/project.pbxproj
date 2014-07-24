@@ -10,7 +10,6 @@
 		800A4D4E196281CB00E60B8A /* PopButtonImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D4D196281CB00E60B8A /* PopButtonImageView.m */; };
 		800A4D5419628D7800E60B8A /* Barcode.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5119628D7800E60B8A /* Barcode.m */; };
 		800A4D5519628D7800E60B8A /* ScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5319628D7800E60B8A /* ScannerViewController.m */; };
-		800A4D5819629ACE00E60B8A /* SCQRGeneratorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5719629ACE00E60B8A /* SCQRGeneratorViewController.m */; };
 		800A4D5D19629AFE00E60B8A /* SCShapeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5A19629AFE00E60B8A /* SCShapeView.m */; };
 		800A4D5E19629AFE00E60B8A /* SCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 800A4D5C19629AFE00E60B8A /* SCViewController.m */; };
 		800A4D621963A7C000E60B8A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800A4D611963A7C000E60B8A /* AudioToolbox.framework */; };
@@ -131,7 +130,9 @@
 		809767A8195C84800048CA13 /* DBLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 809767A7195C84800048CA13 /* DBLoginViewController.m */; };
 		80A437A51978D2F7004EF351 /* UIImageView+addOn.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A437A41978D2F7004EF351 /* UIImageView+addOn.m */; };
 		80A437AA1978F826004EF351 /* SWTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A437A91978F826004EF351 /* SWTableViewCell.m */; };
-		80A810E01980049E0076BF08 /* MyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A810DF1980049E0076BF08 /* MyTableViewController.m */; };
+		80A810E01980049E0076BF08 /* DBSearchPOIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A810DF1980049E0076BF08 /* DBSearchPOIViewController.m */; };
+		80CC6AF6198033510048FD26 /* PlaceAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 80CC6AF5198033510048FD26 /* PlaceAnnotation.m */; };
+		80FD9F36198107D3006EDA25 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 80FD9F35198107D3006EDA25 /* Message.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -151,8 +152,6 @@
 		800A4D5119628D7800E60B8A /* Barcode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Barcode.m; sourceTree = "<group>"; };
 		800A4D5219628D7800E60B8A /* ScannerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScannerViewController.h; sourceTree = "<group>"; };
 		800A4D5319628D7800E60B8A /* ScannerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScannerViewController.m; sourceTree = "<group>"; };
-		800A4D5619629ACE00E60B8A /* SCQRGeneratorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCQRGeneratorViewController.h; path = BarCodeScanner/SCQRGeneratorViewController.h; sourceTree = "<group>"; };
-		800A4D5719629ACE00E60B8A /* SCQRGeneratorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCQRGeneratorViewController.m; path = BarCodeScanner/SCQRGeneratorViewController.m; sourceTree = "<group>"; };
 		800A4D5919629AFE00E60B8A /* SCShapeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCShapeView.h; sourceTree = "<group>"; };
 		800A4D5A19629AFE00E60B8A /* SCShapeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCShapeView.m; sourceTree = "<group>"; };
 		800A4D5B19629AFE00E60B8A /* SCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCViewController.h; sourceTree = "<group>"; };
@@ -390,8 +389,12 @@
 		80A437A41978D2F7004EF351 /* UIImageView+addOn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+addOn.m"; sourceTree = "<group>"; };
 		80A437A81978F826004EF351 /* SWTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWTableViewCell.h; sourceTree = "<group>"; };
 		80A437A91978F826004EF351 /* SWTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWTableViewCell.m; sourceTree = "<group>"; };
-		80A810DE1980049E0076BF08 /* MyTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyTableViewController.h; sourceTree = "<group>"; };
-		80A810DF1980049E0076BF08 /* MyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyTableViewController.m; sourceTree = "<group>"; };
+		80A810DE1980049E0076BF08 /* DBSearchPOIViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBSearchPOIViewController.h; sourceTree = "<group>"; };
+		80A810DF1980049E0076BF08 /* DBSearchPOIViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBSearchPOIViewController.m; sourceTree = "<group>"; };
+		80CC6AF4198033510048FD26 /* PlaceAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceAnnotation.h; sourceTree = "<group>"; };
+		80CC6AF5198033510048FD26 /* PlaceAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceAnnotation.m; sourceTree = "<group>"; };
+		80FD9F34198107D3006EDA25 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		80FD9F35198107D3006EDA25 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -635,6 +638,8 @@
 				8061B03119503CA900685336 /* Docbasket.m */,
 				8061B03219503CA900685336 /* User.h */,
 				8061B03319503CA900685336 /* User.m */,
+				80FD9F34198107D3006EDA25 /* Message.h */,
+				80FD9F35198107D3006EDA25 /* Message.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -725,6 +730,8 @@
 				800A4D4D196281CB00E60B8A /* PopButtonImageView.m */,
 				80778A5E195B122C003EF884 /* CHPopUpMenu.h */,
 				80778A5F195B122C003EF884 /* CHPopUpMenu.m */,
+				80CC6AF4198033510048FD26 /* PlaceAnnotation.h */,
+				80CC6AF5198033510048FD26 /* PlaceAnnotation.m */,
 				8061B0361950B47F00685336 /* RegionAnnotation.h */,
 				8061B0371950B47F00685336 /* RegionAnnotation.m */,
 				8061B0381950B47F00685336 /* RegionAnnotationView.h */,
@@ -748,8 +755,6 @@
 				80771A83197CE3EE00C3D0FF /* My DocBasket */,
 				80771A82197CE3D600C3D0FF /* Setting */,
 				80771A80197CE3B500C3D0FF /* Map */,
-				800A4D5619629ACE00E60B8A /* SCQRGeneratorViewController.h */,
-				800A4D5719629ACE00E60B8A /* SCQRGeneratorViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -970,8 +975,8 @@
 		80A810DD198004830076BF08 /* SearchPOI */ = {
 			isa = PBXGroup;
 			children = (
-				80A810DE1980049E0076BF08 /* MyTableViewController.h */,
-				80A810DF1980049E0076BF08 /* MyTableViewController.m */,
+				80A810DE1980049E0076BF08 /* DBSearchPOIViewController.h */,
+				80A810DF1980049E0076BF08 /* DBSearchPOIViewController.m */,
 			);
 			name = SearchPOI;
 			sourceTree = "<group>";
@@ -1093,7 +1098,6 @@
 				809767A8195C84800048CA13 /* DBLoginViewController.m in Sources */,
 				8075565E1951980D00F68F63 /* UIImage+GIF.m in Sources */,
 				8061B03519503CA900685336 /* User.m in Sources */,
-				800A4D5819629ACE00E60B8A /* SCQRGeneratorViewController.m in Sources */,
 				8061B02119503BE100685336 /* AFURLSessionManager.m in Sources */,
 				80778A5B195B11B1003EF884 /* CHAnimator.m in Sources */,
 				805A323D194F0C8B00F213C1 /* DBKLocationManager.m in Sources */,
@@ -1135,6 +1139,7 @@
 				805A321E194EE13500F213C1 /* docbasketWeb.xcdatamodeld in Sources */,
 				805B8DAC196EDE7B00F2A694 /* EBTagPopover.m in Sources */,
 				808CC939196A6B640048C99E /* zip.c in Sources */,
+				80CC6AF6198033510048FD26 /* PlaceAnnotation.m in Sources */,
 				805B8DAB196EDE7B00F2A694 /* EBShadedView.m in Sources */,
 				800A4D5D19629AFE00E60B8A /* SCShapeView.m in Sources */,
 				805B8DA9196EDE7B00F2A694 /* EBPhotoView.m in Sources */,
@@ -1142,10 +1147,11 @@
 				807556581951980D00F68F63 /* SDWebImageDecoder.m in Sources */,
 				808CC94D196A8E470048C99E /* DBUtil.m in Sources */,
 				80A437A51978D2F7004EF351 /* UIImageView+addOn.m in Sources */,
+				80FD9F36198107D3006EDA25 /* Message.m in Sources */,
 				8061B02519503BE100685336 /* UIButton+AFNetworking.m in Sources */,
 				808CC950196AD1520048C99E /* PBSQLiteManager.m in Sources */,
 				805B8DA8196EDE7B00F2A694 /* EBPhotoToolbar.m in Sources */,
-				80A810E01980049E0076BF08 /* MyTableViewController.m in Sources */,
+				80A810E01980049E0076BF08 /* DBSearchPOIViewController.m in Sources */,
 				8061B02619503BE100685336 /* UIImageView+AFNetworking.m in Sources */,
 				808CC938196A6B640048C99E /* unzip.c in Sources */,
 				8016E881196676AC001C029E /* UIImage+ImageEffects.m in Sources */,

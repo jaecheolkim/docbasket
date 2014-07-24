@@ -31,25 +31,24 @@
     [super viewDidLoad];
     
     self.delegate = self;
-    
 
     self.title = @"My Basket";
 
-    if(IsEmpty(GVALUE.menuButton)) {
-        GVALUE.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *image = [UIImage imageNamed:@"list.png"];
-        GVALUE.menuButton.frame = CGRectMake(0,0,image.size.width, image.size.height);
-        [GVALUE.menuButton setBackgroundImage:image forState:UIControlStateNormal];
-    }
+//    if(IsEmpty(GVALUE.menuButton)) {
+//        GVALUE.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//        UIImage *image = [UIImage imageNamed:@"list.png"];
+//        GVALUE.menuButton.frame = CGRectMake(0,0,image.size.width, image.size.height);
+//        [GVALUE.menuButton setBackgroundImage:image forState:UIControlStateNormal];
+//        
+//        GVALUE.navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:GVALUE.menuButton];
+//        
+//    }
+//    
+//    [GVALUE.menuButton addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
+//    [GVALUE.menuButton.badgeView setPosition:MGBadgePositionTopRight];
+//    [GVALUE.menuButton.badgeView setBadgeColor:[UIColor redColor]];
+//    self.navigationItem.leftBarButtonItem = GVALUE.navLeftButton;
 
-    [GVALUE.menuButton addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
-    [GVALUE.menuButton.badgeView setPosition:MGBadgePositionTopRight];
-    [GVALUE.menuButton.badgeView setBadgeColor:[UIColor redColor]];
-    // Make BarButton Item
-    GVALUE.navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:GVALUE.menuButton];
-    
-    
-    self.navigationItem.leftBarButtonItem = GVALUE.navLeftButton;
     
     NSLog(@"UTTabar = %@", self.tabBar.items);
     for(UITabBarItem *tabBarItem in self.tabBar.items) {
@@ -57,6 +56,16 @@
     }
 
 }
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    UIBarButtonItem *leftBarButton = GVALUE.navLeftButton;
+    self.navigationItem.leftBarButtonItem = leftBarButton;
+
+}
+
 
 - (void)didReceiveMemoryWarning
 {

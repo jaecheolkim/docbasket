@@ -93,7 +93,6 @@
         [cell.imageView setContentMode:UIViewContentModeScaleAspectFill];
         [cell.imageView setClipsToBounds:YES];
         [cell.imageView.layer setCornerRadius:8];
-
         
     }
     

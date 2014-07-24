@@ -9,6 +9,7 @@
 #import "DBMapViewController.h"
 #import "RegionAnnotation.h"
 #import "RegionAnnotationView.h"
+#import "PlaceAnnotation.h"
 #import "UIButton+WebCache.h"
 #import "CHPopUpMenu.h"
 #import "DocbasketService.h"
@@ -16,7 +17,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "UIImageView+addOn.h"
 #import "SWTableViewCell.h"
-#import "MyTableViewController.h"
+#import "DBSearchPOIViewController.h"
 
 @interface DBMapViewController () <SWTableViewCellDelegate>
 {
@@ -97,7 +98,43 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MapViewEventHandler:)
                                                  name:@"MapViewEventHandler" object:nil];
     
-    
+    if (GVALUE.mapItemList.count == 1)
+    {
+        MKMapItem *mapItem = [GVALUE.mapItemList objectAtIndex:0];
+        
+//        self.title = mapItem.name;
+        
+        // add the single annotation to our map
+        PlaceAnnotation *annotation = [[PlaceAnnotation alloc] init];
+        annotation.coordinate = mapItem.placemark.location.coordinate;
+        annotation.title = mapItem.name;
+        annotation.url = mapItem.url;
+        
+        [self.mapView addAnnotation:annotation];
+        
+        // we have only one annotation, select it's callout
+        [self.mapView selectAnnotation:[self.mapView.annotations objectAtIndex:0] animated:YES];
+        
+        // center the region around this map item's coordinate
+        self.mapView.centerCoordinate = mapItem.placemark.coordinate;
+    }
+    else
+    {
+//        self.title = @"All Places";
+        
+        // add all the found annotations to the map
+        for (MKMapItem *item in GVALUE.mapItemList)
+        {
+            PlaceAnnotation *annotation = [[PlaceAnnotation alloc] init];
+            annotation.coordinate = item.placemark.location.coordinate;
+            annotation.title = item.name;
+            annotation.url = item.url;
+            
+            [self.mapView addAnnotation:annotation];
+        }
+    }
+
+    [GVALUE setMapItemList:nil];
 
     
 
@@ -213,7 +250,7 @@
 - (IBAction)searchButtonHadler:(id)sender
 {
 
-    MyTableViewController *searchMapViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"searchMapViewController"];
+    DBSearchPOIViewController *searchMapViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"searchMapViewController"];
     [self.navigationController pushViewController:searchMapViewController animated:YES];
 }
 
@@ -474,8 +511,8 @@
 {
     NSLog(@"regionWillChangeAnimated");
     
-    //if(isChangingScreen || self.basketPin.hidden) return;
-    if(isChangingScreen) return;
+    if(isChangingScreen || self.basketPin.hidden) return;
+    //if(isChangingScreen) return;
     
     [self showNavigationBar:NO];
     
@@ -483,13 +520,15 @@
 }
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-    //if(isChangingScreen || self.basketPin.hidden) return;
-    if(isChangingScreen) return;
+    if(isChangingScreen || self.basketPin.hidden) return;
+    //if(isChangingScreen) return;
     
     NSLog(@"regionDidChangeAnimated");
     
+    [self showNavigationBar:YES];
+    
     [self catchCurrentCenterAddress:^(bool find) {
-        [self showNavigationBar:YES];
+        
     }];
     
     

@@ -123,10 +123,17 @@
         for(Docbasket *basket in GVALUE.geoFenceBaskets){
             if([basket.region containsCoordinate:GVALUE.currentLocation.coordinate]){
                 if(!basket.checked){
+                    if(GVALUE.userID) {
+                        NSDictionary *parameters = @{@"trans_id": @"", @"user_id": GVALUE.userID, @"checkin_at":[NSDate date], @"checkout_at":@""};
+                        [DocbaketAPIClient postRegionCheck:nil withBasketID:[basket valueForKey:@"basketID"]];
+                    }
+
                     NSString *title = (IsEmpty(basket.title))?@"":basket.title;
                     NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, @"Enter !"];
                     
+                    
                     [DBKSERVICE pushLocalNotification:msg basket:basket];
+                    
                     
                     //한번 체크인 한 바스켓은 두번 안되게 막음.
                     basket.checked = YES;

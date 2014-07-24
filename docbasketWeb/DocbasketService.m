@@ -119,6 +119,17 @@
     [DBKLOCATION stopLocationManager];
 }
 
+- (void)checkMessage:(void (^)(NSArray *messages))block
+{
+    [DocbaketAPIClient checkNewMessage:^(NSArray *messages) {
+        if(!IsEmpty(messages)){
+            block(messages);
+        } else {
+            block([NSArray array]);
+        }
+    }];
+}
+
 - (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block
 {
     [DocbaketAPIClient checkNewDocBaskets:nil filter:filter completionHandler:^(NSArray *baskets)
@@ -291,6 +302,7 @@
         noti.timeZone = [NSTimeZone defaultTimeZone];
         noti.alertBody = event;
         noti.alertAction = @"GOGO";
+        noti.userInfo = @{@"baksetID":basket.basketID, @"title":basket.title };
         //noti.applicationIconBadgeNumber = GVALUE.badgeValue;
         [app presentLocalNotificationNow:noti];
     }

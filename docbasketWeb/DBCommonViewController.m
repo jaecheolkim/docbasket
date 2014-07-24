@@ -42,23 +42,34 @@
                                                  name:@"DBCommonViewControllerEventHandler" object:nil];
 
     
+//    if(IsEmpty(GVALUE.menuButton)) {
+//        GVALUE.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//        UIImage *image = [UIImage imageNamed:@"list.png"];
+//        GVALUE.menuButton.frame = CGRectMake(0,0,image.size.width, image.size.height);
+//        [GVALUE.menuButton setBackgroundImage:image forState:UIControlStateNormal];
+//        
+//        GVALUE.navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:GVALUE.menuButton];
+//        
+//    }
+//    
+//    [GVALUE.menuButton addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
+//    [GVALUE.menuButton.badgeView setPosition:MGBadgePositionTopRight];
+//    [GVALUE.menuButton.badgeView setBadgeColor:[UIColor redColor]];
     
-    if(IsEmpty(GVALUE.menuButton)) {
-        GVALUE.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *image = [UIImage imageNamed:@"list.png"];
-        GVALUE.menuButton.frame = CGRectMake(0,0,image.size.width, image.size.height);
-        [GVALUE.menuButton setBackgroundImage:image forState:UIControlStateNormal];
-    }
-    
-    [GVALUE.menuButton addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchDown];
-    [GVALUE.menuButton.badgeView setPosition:MGBadgePositionTopRight];
-    [GVALUE.menuButton.badgeView setBadgeColor:[UIColor redColor]];
+//    self.navigationItem.leftBarButtonItem = GVALUE.navLeftButton;
 
-    GVALUE.navLeftButton = [[UIBarButtonItem alloc] initWithCustomView:GVALUE.menuButton];
-
-    self.navigationItem.leftBarButtonItem = GVALUE.navLeftButton;
 
 }
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    UIBarButtonItem *leftBarButton = GVALUE.navLeftButton;
+    self.navigationItem.leftBarButtonItem = leftBarButton;
+}
+
 
 - (void)setNaviBarTitle:(NSString *)title
 {

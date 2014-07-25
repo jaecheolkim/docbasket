@@ -30,5 +30,6 @@
 
 - (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block;
 - (void)checkMessage:(void (^)(NSArray *messages))block;
+- (void)getNewGeoFences;
 @end
 

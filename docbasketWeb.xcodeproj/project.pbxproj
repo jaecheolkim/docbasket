@@ -33,6 +33,7 @@
 		803CE67219823B910059B1E0 /* DTTimePeriodCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE66919823B910059B1E0 /* DTTimePeriodCollection.m */; };
 		803CE67319823B910059B1E0 /* DTTimePeriodGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE66B19823B910059B1E0 /* DTTimePeriodGroup.m */; };
 		803CE67419823B910059B1E0 /* NSDate+DateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE66D19823B910059B1E0 /* NSDate+DateTools.m */; };
+		803CE677198297180059B1E0 /* DBControlTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE676198297180059B1E0 /* DBControlTableViewCell.m */; };
 		805A3218194EE13500F213C1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A3217194EE13500F213C1 /* main.m */; };
 		805A321B194EE13500F213C1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A321A194EE13500F213C1 /* AppDelegate.m */; };
 		805A321E194EE13500F213C1 /* docbasketWeb.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 805A321C194EE13500F213C1 /* docbasketWeb.xcdatamodeld */; };
@@ -197,6 +198,8 @@
 		803CE66B19823B910059B1E0 /* DTTimePeriodGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodGroup.m; sourceTree = "<group>"; };
 		803CE66C19823B910059B1E0 /* NSDate+DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateTools.h"; sourceTree = "<group>"; };
 		803CE66D19823B910059B1E0 /* NSDate+DateTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateTools.m"; sourceTree = "<group>"; };
+		803CE675198297180059B1E0 /* DBControlTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBControlTableViewCell.h; sourceTree = "<group>"; };
+		803CE676198297180059B1E0 /* DBControlTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBControlTableViewCell.m; sourceTree = "<group>"; };
 		805A3212194EE13500F213C1 /* DocBasket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocBasket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		805A3216194EE13500F213C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		805A3217194EE13500F213C1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -895,6 +898,8 @@
 		80771A82197CE3D600C3D0FF /* Setting */ = {
 			isa = PBXGroup;
 			children = (
+				803CE675198297180059B1E0 /* DBControlTableViewCell.h */,
+				803CE676198297180059B1E0 /* DBControlTableViewCell.m */,
 				805B8D0D196E7B4500F2A694 /* DBSettingViewController.h */,
 				805B8D0E196E7B4500F2A694 /* DBSettingViewController.m */,
 				809767A6195C84800048CA13 /* DBLoginViewController.h */,
@@ -1186,6 +1191,7 @@
 				805A321E194EE13500F213C1 /* docbasketWeb.xcdatamodeld in Sources */,
 				805B8DAC196EDE7B00F2A694 /* EBTagPopover.m in Sources */,
 				808CC939196A6B640048C99E /* zip.c in Sources */,
+				803CE677198297180059B1E0 /* DBControlTableViewCell.m in Sources */,
 				80CC6AF6198033510048FD26 /* PlaceAnnotation.m in Sources */,
 				803CE67419823B910059B1E0 /* NSDate+DateTools.m in Sources */,
 				805B8DAB196EDE7B00F2A694 /* EBShadedView.m in Sources */,

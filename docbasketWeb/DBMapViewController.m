@@ -79,7 +79,7 @@
     
     self.tableView.hidden = YES;
     
-    [self refreshMap];
+    
     
     self.mapView.showsUserLocation = YES;
 }
@@ -98,47 +98,15 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MapViewEventHandler:)
                                                  name:@"MapViewEventHandler" object:nil];
     
-    if (GVALUE.mapItemList.count == 1)
-    {
-        MKMapItem *mapItem = [GVALUE.mapItemList objectAtIndex:0];
-        
-//        self.title = mapItem.name;
-        
-        // add the single annotation to our map
-        PlaceAnnotation *annotation = [[PlaceAnnotation alloc] init];
-        annotation.coordinate = mapItem.placemark.location.coordinate;
-        annotation.title = mapItem.name;
-        annotation.url = mapItem.url;
-        
-        [self.mapView addAnnotation:annotation];
-        
-        // we have only one annotation, select it's callout
-        [self.mapView selectAnnotation:[self.mapView.annotations objectAtIndex:0] animated:YES];
-        
-        // center the region around this map item's coordinate
-        self.mapView.centerCoordinate = mapItem.placemark.coordinate;
-    }
-    else
-    {
-//        self.title = @"All Places";
-        
-        // add all the found annotations to the map
-        for (MKMapItem *item in GVALUE.mapItemList)
-        {
-            PlaceAnnotation *annotation = [[PlaceAnnotation alloc] init];
-            annotation.coordinate = item.placemark.location.coordinate;
-            annotation.title = item.name;
-            annotation.url = item.url;
-            
-            [self.mapView addAnnotation:annotation];
-        }
-    }
 
-    [GVALUE setMapItemList:nil];
-
+    [self addSearchedPOIPins];
+    
+    [self refreshMap];
     
 
 }
+
+
 
 - (void)viewDidDisappear:(BOOL)animated
 {
@@ -413,6 +381,46 @@
 
 }
 
+
+//검색된 POI 핀들 지도에 표시해 주는 메소드
+- (void)addSearchedPOIPins
+{
+    if (GVALUE.mapItemList.count == 1)
+    {
+        MKMapItem *mapItem = [GVALUE.mapItemList objectAtIndex:0];
+        
+        PlaceAnnotation *annotation = [[PlaceAnnotation alloc] init];
+        annotation.coordinate = mapItem.placemark.location.coordinate;
+        annotation.title = mapItem.name;
+        annotation.url = mapItem.url;
+        
+        [self.mapView addAnnotation:annotation];
+        
+        //        // we have only one annotation, select it's callout
+        //        [self.mapView selectAnnotation:[self.mapView.annotations objectAtIndex:0] animated:YES];
+        
+        // center the region around this map item's coordinate
+        self.mapView.centerCoordinate = mapItem.placemark.coordinate;
+    }
+    else
+    {
+        //        self.title = @"All Places";
+        
+        // add all the found annotations to the map
+        for (MKMapItem *item in GVALUE.mapItemList)
+        {
+            PlaceAnnotation *annotation = [[PlaceAnnotation alloc] init];
+            annotation.coordinate = item.placemark.location.coordinate;
+            annotation.title = item.name;
+            annotation.url = item.url;
+            
+            [self.mapView addAnnotation:annotation];
+        }
+    }
+    
+    [GVALUE setMapItemList:nil];
+}
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
 
@@ -537,7 +545,8 @@
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
-    if([annotation isKindOfClass:[RegionAnnotation class]]) {
+    if([annotation isKindOfClass:[RegionAnnotation class]])
+    {
         RegionAnnotation *currentAnnotation = (RegionAnnotation *)annotation;
         CLCircularRegion *region = currentAnnotation.region;
         
@@ -614,10 +623,12 @@
 // 핀 색 정의 끝.
         
         
-        
-        
 
-        [regionView updateRadiusOverlay];
+        //지오펜스 대상만 영역 오버레이 그려주기.
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"basketID == %@", annotationIdentifier];
+        NSArray *filteredArray = [GVALUE.geoFenceBaskets filteredArrayUsingPredicate:predicate];
+        if(!IsEmpty(filteredArray))
+            [regionView updateRadiusOverlay];
         
         return regionView;
     }

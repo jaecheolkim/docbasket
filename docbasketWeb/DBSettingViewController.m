@@ -10,6 +10,7 @@
 #import "DBLoginViewController.h"
 #import "DBLogViewController.h"
 #import "UIImageView+addOn.h"
+#import "DocbasketService.h"
 
 #define LINE_COLOR RGBA_COLOR(76.0, 76.0, 76.0, 0.5)
 #define TEXT_COLOR RGB_COLOR(54.0, 54.0, 54.0)
@@ -17,7 +18,16 @@
 @interface DBSettingViewController ()
 {
     UISwitch *PushNotiSwitch;
+    DBControlTableViewCell *monitoringRangeCell;
+    DBControlTableViewCell *findBasketRangeCell;
+    DBControlTableViewCell *checkInFilterCell;
+    UITableViewCell *applyCell;
+    
 }
+- (IBAction)sliderChanged:(id)sender;
+
+- (IBAction)apply:(id)sender;
+
 @end
 
 @implementation DBSettingViewController
@@ -38,11 +48,28 @@
     self.tableView.delegate = self;
 	self.tableView.dataSource = self;
     
+
+    monitoringRangeCell = (DBControlTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"controlCell0"];
+    findBasketRangeCell = (DBControlTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"controlCell1"];
+    checkInFilterCell = (DBControlTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"controlCell2"];
+    
+    applyCell = [self.tableView dequeueReusableCellWithIdentifier:@"applyCell"];
+    
+    monitoringRangeCell.controlSlider.value = GVALUE.regionMonitoringDistance;
+    monitoringRangeCell.controlValue.text = [NSString stringWithFormat:@"%0.1f",GVALUE.regionMonitoringDistance];
+    
+    findBasketRangeCell.controlSlider.value = GVALUE.findBasketsRange;
+    findBasketRangeCell.controlValue.text = [NSString stringWithFormat:@"%0.f",GVALUE.findBasketsRange];
+    
+    checkInFilterCell.controlSlider.value = GVALUE.checkInTimeFiler;
+    checkInFilterCell.controlValue.text = [NSString stringWithFormat:@"%0.f",GVALUE.checkInTimeFiler];
+    
     // Do any additional setup after loading the view.
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(DebugLogEventHandler:)
 //                                                 name:@"DebugLogEventHandler" object:nil];
 
+    
     
     //self.title = @"Debug Log";
     
@@ -117,6 +144,8 @@
 {
     if (indexPath.section == 0 && indexPath.row == 0)
         return 120;
+    else if(indexPath.section == 2)
+        return 70;
     else
         return 44;
 }
@@ -128,7 +157,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) return 2;
     else if (section == 1) return 2;
-    else if (section == 2) return 3;
+    else if (section == 2) return 4;
     return 0;
 }
 
@@ -384,55 +413,63 @@
     }
     else if(indexPath.section == 2){
         if (indexPath.row == 0) {
-            cell = [tableView dequeueReusableCellWithIdentifier:PixbeeIntroCell];
+            cell = monitoringRangeCell;//(DBControlTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"controlCell0"];
             if (cell == nil) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:PixbeeIntroCell];
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//                cell = [[DBControlTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:PixbeeIntroCell];
+//                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                
+//                cell = _controlCell;
             }
+ 
             
-            NSString *title = @"DocBasket Intro";
-            if((UILabel *)[cell.contentView viewWithTag:PIXBEEINTRO_TAG]) {
-                [(UILabel *)[cell.contentView viewWithTag:PIXBEEINTRO_TAG] setText:title];
-            } else {
-                UILabel *label = [self getTitleLabel:title tag:PIXBEEINTRO_TAG color:TEXT_COLOR];
-                [cell.contentView addSubview:label];
-            }
+//            NSString *title = @"DocBasket Intro";
+//            if((UILabel *)[cell.contentView viewWithTag:PIXBEEINTRO_TAG]) {
+//                [(UILabel *)[cell.contentView viewWithTag:PIXBEEINTRO_TAG] setText:title];
+//            } else {
+//                UILabel *label = [self getTitleLabel:title tag:PIXBEEINTRO_TAG color:TEXT_COLOR];
+//                [cell.contentView addSubview:label];
+//            }
             
         }
         else if (indexPath.row == 1) {
-            cell = [tableView dequeueReusableCellWithIdentifier:RatePixbeeCell];
-            if (cell == nil) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:RatePixbeeCell];
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            }
-            
-            NSString *title = @"Rate DocBasket";
-            if((UILabel *)[cell.contentView viewWithTag:RATEPIXBEE_TAG]) {
-                [(UILabel *)[cell.contentView viewWithTag:RATEPIXBEE_TAG] setText:title];
-            } else {
-                UILabel *label = [self getTitleLabel:title tag:RATEPIXBEE_TAG color:TEXT_COLOR];
-                [cell.contentView addSubview:label];
-            }
+//            cell = [tableView dequeueReusableCellWithIdentifier:RatePixbeeCell];
+//            if (cell == nil) {
+//                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:RatePixbeeCell];
+//                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//            }
+//            
+//            NSString *title = @"Rate DocBasket";
+//            if((UILabel *)[cell.contentView viewWithTag:RATEPIXBEE_TAG]) {
+//                [(UILabel *)[cell.contentView viewWithTag:RATEPIXBEE_TAG] setText:title];
+//            } else {
+//                UILabel *label = [self getTitleLabel:title tag:RATEPIXBEE_TAG color:TEXT_COLOR];
+//                [cell.contentView addSubview:label];
+//            }
+            cell = findBasketRangeCell;//(DBControlTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"controlCell1"];
         }
         
         else if (indexPath.row == 2) {
-            cell = [tableView dequeueReusableCellWithIdentifier:TermOfUseCell];
-            if (cell == nil) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TermOfUseCell];
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            }
-            
-            
-            NSString *title = @"Term Of Use";
-            if((UILabel *)[cell.contentView viewWithTag:TERMOFUSE_TAG]) {
-                [(UILabel *)[cell.contentView viewWithTag:TERMOFUSE_TAG] setText:title];
-            } else {
-                UILabel *label = [self getTitleLabel:title tag:TERMOFUSE_TAG color:TEXT_COLOR];
-                [cell.contentView addSubview:label];
-            }
+//            cell = [tableView dequeueReusableCellWithIdentifier:TermOfUseCell];
+//            if (cell == nil) {
+//                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TermOfUseCell];
+//                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//            }
+//            
+//            
+//            NSString *title = @"Term Of Use";
+//            if((UILabel *)[cell.contentView viewWithTag:TERMOFUSE_TAG]) {
+//                [(UILabel *)[cell.contentView viewWithTag:TERMOFUSE_TAG] setText:title];
+//            } else {
+//                UILabel *label = [self getTitleLabel:title tag:TERMOFUSE_TAG color:TEXT_COLOR];
+//                [cell.contentView addSubview:label];
+//            }
+            cell = checkInFilterCell;//(DBControlTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"controlCell2"];
+        }
+        else if(indexPath.row == 3) {
+            cell = applyCell;
         }
     }
     
@@ -512,6 +549,46 @@
     else {
         GVALUE.pushNotificationSetting = 0;
     }
+}
+
+- (IBAction)sliderChanged:(id)sender
+{
+    UISlider *slider = (UISlider*)sender;
+    switch (slider.tag) {
+        case 0:
+            NSLog(@"Monitoring range  = %f", slider.value);
+            monitoringRangeCell.controlValue.text = [NSString stringWithFormat:@"%0.1f", slider.value];
+            GVALUE.regionMonitoringDistance = slider.value;
+            break;
+        case 1:
+            NSLog(@"Find basket range = %f", slider.value);
+            findBasketRangeCell.controlValue.text = [NSString stringWithFormat:@"%0.f", slider.value];
+            GVALUE.findBasketsRange = slider.value;
+            break;
+        case 2:
+            NSLog(@"Check-in filter = %f", slider.value);
+            checkInFilterCell.controlValue.text = [NSString stringWithFormat:@"%0.f", slider.value];
+            GVALUE.checkInTimeFiler = slider.value;
+            break;
+        default:
+            break;
+    }
+    
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationNone];
+    
+}
+
+- (IBAction)apply:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ServiceEventHandler"
+                                                        object:self
+                                                      userInfo:@{@"Msg":@"locationServiceStarted", @"currentLocation":GVALUE.currentLocation}];
+    
+    [DBKSERVICE getNewGeoFences];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
+                                                        object:self
+                                                      userInfo:@{@"Msg":@"refreshMap"}];
 }
 
 //- (void)refresh

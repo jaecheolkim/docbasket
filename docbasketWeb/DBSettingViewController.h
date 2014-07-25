@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "GlobalValue.h"
 #import "DBCommonViewController.h"
+#import "DBControlTableViewCell.h"
 
 @interface DBSettingViewController : DBCommonViewController
 < UITableViewDelegate, UITableViewDataSource>

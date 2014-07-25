@@ -202,6 +202,34 @@
         }
     }
 
+    // 아니면 새로 모니터링할 지오팬싱 리스트를 가지고 온다.
+    [self getNewGeoFences];
+    
+//    double distance = GVALUE.regionMonitoringDistance; // 0.1km = 100m
+//    
+//    [SQLManager getRegionBasketsDistance:distance completionHandler:^(BOOL success) {
+//        if(success)
+//        {
+//            GVALUE.lastRegionDistanceLocation = GVALUE.currentLocation;
+//            
+//
+//            NSString *msg = [NSString stringWithFormat:@"===> GEO fence baskets =  %d", (int)GVALUE.geoFenceBaskets.count];
+//            [GVALUE addLog:msg];
+//            for(Docbasket *basket in GVALUE.geoFenceBaskets){
+//                NSString *title = (!IsEmpty(basket.title))?basket.title:@"";
+//                msg = [NSString stringWithFormat:@"===> GEO fence baskets =  %@", title];
+//                [GVALUE addLog:msg];
+//            }
+//            
+//        } else {
+//            // 이전 검색 위치랑 Distance가 가까워 따로 업데이트 안함.
+//        }
+//    }];
+}
+
+
+- (void)getNewGeoFences
+{
     double distance = GVALUE.regionMonitoringDistance; // 0.1km = 100m
     // 아니면 새로 모니터링할 지오팬싱 리스트를 가지고 온다.
     [SQLManager getRegionBasketsDistance:distance completionHandler:^(BOOL success) {
@@ -210,42 +238,20 @@
             GVALUE.lastRegionDistanceLocation = GVALUE.currentLocation;
             
             
+            NSString *msg = [NSString stringWithFormat:@"===> GEO fence baskets =  %d", (int)GVALUE.geoFenceBaskets.count];
+            [GVALUE addLog:msg];
+            for(Docbasket *basket in GVALUE.geoFenceBaskets){
+                NSString *title = (!IsEmpty(basket.title))?basket.title:@"";
+                msg = [NSString stringWithFormat:@"===> GEO fence baskets =  %@", title];
+                [GVALUE addLog:msg];
+            }
             
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                
-//                [DBKLOCATION cleanAllGeoFence];
-//                
-//                int count = 0;
-//                for(Docbasket *basket in GVALUE.geoFenceBaskets){
-//                    if(!IsEmpty(basket)){
-//                        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(basket.latitude, basket.longitude);
-//                        CLCircularRegion *newRegion = [DBKLOCATION makeNewCircularRegion:coord withID:basket.basketID];
-//                        
-//                        [DBKLOCATION startMonitoringRegion:newRegion];
-//                        count++;
-//                        if(count > 19) break; //(19개까지만 하고 싶을때)
-//                    }
-//                }
-//            });
         } else {
             // 이전 검색 위치랑 Distance가 가까워 따로 업데이트 안함.
         }
-        
-        
-        
-        NSString *msg = [NSString stringWithFormat:@"===> GEO fence baskets =  %d", (int)GVALUE.geoFenceBaskets.count];
-        [GVALUE addLog:msg];
-        for(Docbasket *basket in GVALUE.geoFenceBaskets){
-            NSString *title = (!IsEmpty(basket.title))?basket.title:@"";
-            msg = [NSString stringWithFormat:@"===> GEO fence baskets =  %@", title];
-            [GVALUE addLog:msg];
-        }
-        
     }];
+
 }
-
-
-
 
 
 //CLLocation *loc1 = [[CLLocation alloc] initWithLatitude:lat1 longitude:lon1];

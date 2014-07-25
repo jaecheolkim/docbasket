@@ -15,6 +15,7 @@
 @interface DBBasketViewController : UIViewController
 <EBPhotoPagesDataSource, EBPhotoPagesDelegate>
 
+@property (nonatomic,strong) NSString *basketID;
 @property (strong, nonatomic) Docbasket *basket;
 
 @end

@@ -73,8 +73,11 @@
                         
                         double longitude = currentLocation.coordinate.longitude;
                         double latitude =  currentLocation.coordinate.latitude;
-                        
-                        [DocbaketAPIClient postUserTracking:@{@"longitude":@(longitude), @"latitude":@(latitude)}];
+                        NSString *timestamp = GVALUE.timestamp;
+
+                        NSDictionary *trackingInfo = @{@"longitude":@(longitude), @"latitude": @(latitude), @"tracked_at": timestamp};
+                        [GVALUE.trackingArray addObject:trackingInfo];
+                        //[DocbaketAPIClient postUserTracking:GVALUE.trackingArray];
                     });
                 } else {
                     
@@ -96,8 +99,13 @@
             
             double longitude = currentLocation.coordinate.longitude;
             double latitude =  currentLocation.coordinate.latitude;
+            NSString *timestamp = GVALUE.timestamp;
             
-            [DocbaketAPIClient postUserTracking:@{@"longitude":@(longitude), @"latitude":@(latitude)}];
+            NSDictionary *trackingInfo = @{@"longitude":@(longitude), @"latitude": @(latitude), @"tracked_at": timestamp};
+            [GVALUE.trackingArray addObject:trackingInfo];
+
+            
+            //[DocbaketAPIClient postUserTracking:@{@"longitude":@(longitude), @"latitude":@(latitude)}];
         }
 
     }

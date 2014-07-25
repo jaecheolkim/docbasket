@@ -26,6 +26,13 @@
 		8016E87819666342001C029E /* UIImage+QRCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 8016E87719666342001C029E /* UIImage+QRCode.m */; };
 		8016E880196676AC001C029E /* MEExpandableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8016E87C196676AC001C029E /* MEExpandableHeaderView.m */; };
 		8016E881196676AC001C029E /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 8016E87F196676AC001C029E /* UIImage+ImageEffects.m */; };
+		803CE66E19823B910059B1E0 /* DateTools.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 803CE65F19823B910059B1E0 /* DateTools.bundle */; };
+		803CE66F19823B910059B1E0 /* DTError.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE66319823B910059B1E0 /* DTError.m */; };
+		803CE67019823B910059B1E0 /* DTTimePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE66519823B910059B1E0 /* DTTimePeriod.m */; };
+		803CE67119823B910059B1E0 /* DTTimePeriodChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE66719823B910059B1E0 /* DTTimePeriodChain.m */; };
+		803CE67219823B910059B1E0 /* DTTimePeriodCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE66919823B910059B1E0 /* DTTimePeriodCollection.m */; };
+		803CE67319823B910059B1E0 /* DTTimePeriodGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE66B19823B910059B1E0 /* DTTimePeriodGroup.m */; };
+		803CE67419823B910059B1E0 /* NSDate+DateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 803CE66D19823B910059B1E0 /* NSDate+DateTools.m */; };
 		805A3218194EE13500F213C1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A3217194EE13500F213C1 /* main.m */; };
 		805A321B194EE13500F213C1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 805A321A194EE13500F213C1 /* AppDelegate.m */; };
 		805A321E194EE13500F213C1 /* docbasketWeb.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 805A321C194EE13500F213C1 /* docbasketWeb.xcdatamodeld */; };
@@ -175,6 +182,21 @@
 		8016E87C196676AC001C029E /* MEExpandableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MEExpandableHeaderView.m; sourceTree = "<group>"; };
 		8016E87E196676AC001C029E /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
 		8016E87F196676AC001C029E /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
+		803CE65F19823B910059B1E0 /* DateTools.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DateTools.bundle; sourceTree = "<group>"; };
+		803CE66019823B910059B1E0 /* DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateTools.h; sourceTree = "<group>"; };
+		803CE66119823B910059B1E0 /* DTConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTConstants.h; sourceTree = "<group>"; };
+		803CE66219823B910059B1E0 /* DTError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTError.h; sourceTree = "<group>"; };
+		803CE66319823B910059B1E0 /* DTError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTError.m; sourceTree = "<group>"; };
+		803CE66419823B910059B1E0 /* DTTimePeriod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTTimePeriod.h; sourceTree = "<group>"; };
+		803CE66519823B910059B1E0 /* DTTimePeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriod.m; sourceTree = "<group>"; };
+		803CE66619823B910059B1E0 /* DTTimePeriodChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTTimePeriodChain.h; sourceTree = "<group>"; };
+		803CE66719823B910059B1E0 /* DTTimePeriodChain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodChain.m; sourceTree = "<group>"; };
+		803CE66819823B910059B1E0 /* DTTimePeriodCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTTimePeriodCollection.h; sourceTree = "<group>"; };
+		803CE66919823B910059B1E0 /* DTTimePeriodCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodCollection.m; sourceTree = "<group>"; };
+		803CE66A19823B910059B1E0 /* DTTimePeriodGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTTimePeriodGroup.h; sourceTree = "<group>"; };
+		803CE66B19823B910059B1E0 /* DTTimePeriodGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodGroup.m; sourceTree = "<group>"; };
+		803CE66C19823B910059B1E0 /* NSDate+DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateTools.h"; sourceTree = "<group>"; };
+		803CE66D19823B910059B1E0 /* NSDate+DateTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateTools.m"; sourceTree = "<group>"; };
 		805A3212194EE13500F213C1 /* DocBasket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocBasket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		805A3216194EE13500F213C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		805A3217194EE13500F213C1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -492,6 +514,28 @@
 			path = ThirdParty;
 			sourceTree = "<group>";
 		};
+		803CE65E19823B910059B1E0 /* DateTools */ = {
+			isa = PBXGroup;
+			children = (
+				803CE65F19823B910059B1E0 /* DateTools.bundle */,
+				803CE66019823B910059B1E0 /* DateTools.h */,
+				803CE66119823B910059B1E0 /* DTConstants.h */,
+				803CE66219823B910059B1E0 /* DTError.h */,
+				803CE66319823B910059B1E0 /* DTError.m */,
+				803CE66419823B910059B1E0 /* DTTimePeriod.h */,
+				803CE66519823B910059B1E0 /* DTTimePeriod.m */,
+				803CE66619823B910059B1E0 /* DTTimePeriodChain.h */,
+				803CE66719823B910059B1E0 /* DTTimePeriodChain.m */,
+				803CE66819823B910059B1E0 /* DTTimePeriodCollection.h */,
+				803CE66919823B910059B1E0 /* DTTimePeriodCollection.m */,
+				803CE66A19823B910059B1E0 /* DTTimePeriodGroup.h */,
+				803CE66B19823B910059B1E0 /* DTTimePeriodGroup.m */,
+				803CE66C19823B910059B1E0 /* NSDate+DateTools.h */,
+				803CE66D19823B910059B1E0 /* NSDate+DateTools.m */,
+			);
+			path = DateTools;
+			sourceTree = "<group>";
+		};
 		805A3209194EE13500F213C1 = {
 			isa = PBXGroup;
 			children = (
@@ -532,8 +576,8 @@
 			isa = PBXGroup;
 			children = (
 				808CC944196A8E470048C99E /* common */,
-				8016E87219650FBE001C029E /* Service */,
 				8061B02A19503C1500685336 /* Class */,
+				8016E87219650FBE001C029E /* Service */,
 				8061AFF119503AB000685336 /* Model */,
 				8062BF2919740905004F2FE3 /* View */,
 				8061B02F19503C7100685336 /* Controller */,
@@ -647,6 +691,7 @@
 		8061AFF219503BB000685336 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				803CE65E19823B910059B1E0 /* DateTools */,
 				80A437A71978F826004EF351 /* SWTableViewCell */,
 				80897F921974E13300903BF0 /* UIAlertView_Blocks */,
 				805B8D7C196EDE7B00F2A694 /* EBPhotoPagesController */,
@@ -1078,6 +1123,7 @@
 				807555B919518EA700F68F63 /* ToDO in Resources */,
 				805B8D0C196E5DB900F2A694 /* RK_gpx _2014-07-10_1432.gpx in Resources */,
 				805A3226194EE13500F213C1 /* Images.xcassets in Resources */,
+				803CE66E19823B910059B1E0 /* DateTools.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1103,6 +1149,7 @@
 				805A323D194F0C8B00F213C1 /* DBKLocationManager.m in Sources */,
 				805A321B194EE13500F213C1 /* AppDelegate.m in Sources */,
 				8061B01C19503BE100685336 /* AFNetworkReachabilityManager.m in Sources */,
+				803CE67019823B910059B1E0 /* DTTimePeriod.m in Sources */,
 				800A4D5419628D7800E60B8A /* Barcode.m in Sources */,
 				800A4D5519628D7800E60B8A /* ScannerViewController.m in Sources */,
 				80A437AA1978F826004EF351 /* SWTableViewCell.m in Sources */,
@@ -1140,11 +1187,13 @@
 				805B8DAC196EDE7B00F2A694 /* EBTagPopover.m in Sources */,
 				808CC939196A6B640048C99E /* zip.c in Sources */,
 				80CC6AF6198033510048FD26 /* PlaceAnnotation.m in Sources */,
+				803CE67419823B910059B1E0 /* NSDate+DateTools.m in Sources */,
 				805B8DAB196EDE7B00F2A694 /* EBShadedView.m in Sources */,
 				800A4D5D19629AFE00E60B8A /* SCShapeView.m in Sources */,
 				805B8DA9196EDE7B00F2A694 /* EBPhotoView.m in Sources */,
 				8016E880196676AC001C029E /* MEExpandableHeaderView.m in Sources */,
 				807556581951980D00F68F63 /* SDWebImageDecoder.m in Sources */,
+				803CE67319823B910059B1E0 /* DTTimePeriodGroup.m in Sources */,
 				808CC94D196A8E470048C99E /* DBUtil.m in Sources */,
 				80A437A51978D2F7004EF351 /* UIImageView+addOn.m in Sources */,
 				80FD9F36198107D3006EDA25 /* Message.m in Sources */,
@@ -1157,6 +1206,7 @@
 				8016E881196676AC001C029E /* UIImage+ImageEffects.m in Sources */,
 				807556621951980D00F68F63 /* UIImageView+WebCache.m in Sources */,
 				80897F9B1974E13300903BF0 /* UIAlertView+Blocks.m in Sources */,
+				803CE66F19823B910059B1E0 /* DTError.m in Sources */,
 				805B8DA5196EDE7B00F2A694 /* EBPhotoPagesFactory.m in Sources */,
 				8075565B1951980D00F68F63 /* SDWebImageManager.m in Sources */,
 				8097679F195C1ABE0048CA13 /* DBCommonViewController.m in Sources */,
@@ -1191,11 +1241,13 @@
 				8075565D1951980D00F68F63 /* UIButton+WebCache.m in Sources */,
 				8062BF2C19740FD6004F2FE3 /* DBListTableViewCell.m in Sources */,
 				8061B02319503BE100685336 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
+				803CE67219823B910059B1E0 /* DTTimePeriodCollection.m in Sources */,
 				8061B01A19503BE100685336 /* AFHTTPRequestOperationManager.m in Sources */,
 				8061B02819503BE100685336 /* UIRefreshControl+AFNetworking.m in Sources */,
 				8061B01D19503BE100685336 /* AFSecurityPolicy.m in Sources */,
 				8061B02019503BE100685336 /* AFURLResponseSerialization.m in Sources */,
 				8061B01919503BE100685336 /* AFHTTPRequestOperation.m in Sources */,
+				803CE67119823B910059B1E0 /* DTTimePeriodChain.m in Sources */,
 				800A4D5E19629AFE00E60B8A /* SCViewController.m in Sources */,
 				805B8DB5196EE04000F2A694 /* DBPhoto.m in Sources */,
 				808CC936196A6B640048C99E /* ioapi.c in Sources */,

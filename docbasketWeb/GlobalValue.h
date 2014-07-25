@@ -11,6 +11,7 @@
 #import <UIKit/UIKit.h>
 #import "Docbasket.h"
 #import "UIView+MGBadgeView.h"
+#import "DateTools.h"
 
 //#ifdef DEBUG
 #define NSLog( s, ... ) NSLog( @"\n===========================================================================\nObject : <%p %@:(%d)>\nMethod : %s\nLog    : %@\n===========================================================================\n\n", self, [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, __PRETTY_FUNCTION__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
@@ -60,6 +61,14 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, strong) NSString *token;
 @property (nonatomic, strong) NSString *notiBasketID;
 
+@property (nonatomic, assign) double regionMonitoringDistance; // 현재 위치에서의 지오팬싱 모니터링 반경 : 1km = 1.0 단위임. default = 0.1 (100m)
+@property (nonatomic, assign) double findBasketsRange; // baskets.json API 호출할 때 현재 위치 기준 쿼리할 반경  [단위 = 미터 : 디폴트 10000 (10km)]
+@property (nonatomic, assign) double checkInTimeFiler;
+
+
+
+@property (nonatomic, strong) Docbasket *lastCheckInBasket;
+
 @property (nonatomic) BOOL START_LOGIN;
 @property (nonatomic) BOOL FIND_USERID;
 
@@ -77,8 +86,7 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, strong) NSMutableArray *messages; // 메시지 메뉴에서 사용할 basket 리스트 어레이 (checked in[local] & invited[remote] 이 합쳐지는 장소)
 @property (nonatomic, strong) NSArray *baskets; //지도에서 사용할 전체 docbasket 리스트 가지고 있는 어레이
 @property (nonatomic, strong) NSMutableArray *geoFenceBaskets; // 지오팬스 docbasket 리스트
-@property (nonatomic, assign) double regionMonitoringDistance; // 현재 위치에서의 지오팬싱 모니터링 반경 : 1km = 1.0 단위임. default = 0.1 (100m)
-@property (nonatomic, assign) double findBasketsRange; // baskets.json API 호출할 때 현재 위치 기준 쿼리할 반경  [단위 = 미터 : 디폴트 10000 (10km)]
+@property (nonatomic, strong) NSMutableArray *trackingArray; // tracking 정보
 @property (nonatomic, strong) CLLocation *lastRegionDistanceLocation; //마지막으로 지오팬싱 (regionMonitoringDistance기준) 가져왔던 위치 값
 @property (nonatomic, strong) CLLocation *currentLocation;  // LocationManager에서 갱신되는 최신 현재 위치 값
 @property (nonatomic, strong) CLLocation *lastLocation;  // 바로 이전의 currentLocation 위치 값
@@ -104,6 +112,8 @@ static inline id ObjectOrNull(id object)
 - (Docbasket *)findGeoFenceBasketWithID:(NSString *)str; // NSArray *geoFenceBaskets 에서 basketID로 Docbasket 객체 검색
 
 - (void)addLog:(NSString*)log;
+- (NSString*)timestamp;
+
 @end
 
 

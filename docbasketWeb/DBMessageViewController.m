@@ -12,8 +12,12 @@
 #import "Message.h"
 #import "UIImageView+addOn.h"
 #import "SWTableViewCell.h"
+#import "DateTools.h"
 
 @interface DBMessageViewController () <SWTableViewCellDelegate>
+{
+    NSDateFormatter *dateFormatter;
+}
 @property (nonatomic,strong) NSArray *messages;
 
 @end
@@ -32,42 +36,36 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.zzzZ"];
+    
 
     [self setNaviBarTitle:@"Message"];
    
-
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    [DBKSERVICE checkMessage:^(NSArray *messages) {
-        NSLog(@"Messages = %@", messages);
-        [self setMessages:messages];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-            
-            [self checkNotiBasket];
-        });
-    }];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MessageMenuEventHandler:)
+                                                 name:@"MessageMenuEventHandler" object:nil];
+
+    
+    [self checkNotiBasket];
+    [self refresh];
     
     [GVALUE setBadgeValue:0];
-    
-    //filter= created | invited | saved | public(default)
-//    [DBKSERVICE checkMyBasket:@"invited" completionHandler:^(NSArray *baskets)
-//    {
-//        self.baskets = baskets;
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.tableView reloadData];
-//            
-//            [self checkNotiBasket];
-//        });
-//
-//    }];
-    
 }
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MessageMenuEventHandler" object:nil];
+}
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -75,32 +73,62 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+
+- (void)MessageMenuEventHandler:(NSNotification *)notification
+{
+    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"refresh"]) {
+        
+        [self refresh];
+    }
+
+}
+
+- (void)refresh {
+    [DBKSERVICE checkMessage:^(NSArray *messages) {
+        NSLog(@"Messages = %@", messages);
+        [self setMessages:messages];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
+}
+
 - (void)checkNotiBasket
 {
-    NSString *notiBaskeID = GVALUE.notiBasketID;
-    
-    if(!IsEmpty(notiBaskeID)){
-        for(Message *message in self.messages)
-        {
-            Docbasket *basket = message.basket;
-            
-            if([basket.basketID isEqualToString:notiBaskeID])
-            {
-                [GVALUE setNotiBasketID:@""];
-                
-//                UIApplicationState state = [[UIApplication sharedApplication ]applicationState];
-//                if ( state == UIApplicationStateActive ) {
-                    DBBasketViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"DBBasketViewController"];
-                    viewcontroller.basket = basket;
-                    [self.navigationController pushViewController:viewcontroller animated:YES];
-//                }
-                
-                break;
 
-            }
-            
-        }
+    NSString *notiBaskeID = GVALUE.notiBasketID;
+    if(!IsEmpty(notiBaskeID)) {
+        DBBasketViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"DBBasketViewController"];
+        viewcontroller.basketID = notiBaskeID;
+        [self.navigationController pushViewController:viewcontroller animated:YES];
+        
+        [GVALUE setNotiBasketID:@""];
     }
+
+//    if(!IsEmpty(notiBaskeID)){
+//        for(Message *message in self.messages)
+//        {
+//            Docbasket *basket = message.basket;
+//            
+//            if([basket.basketID isEqualToString:notiBaskeID])
+//            {
+//                [GVALUE setNotiBasketID:@""];
+//                
+////                UIApplicationState state = [[UIApplication sharedApplication ]applicationState];
+////                if ( state == UIApplicationStateActive ) {
+//                    DBBasketViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"DBBasketViewController"];
+//                    viewcontroller.basket = basket;
+//                    [self.navigationController pushViewController:viewcontroller animated:YES];
+////                }
+//                
+//                break;
+//
+//            }
+//            
+//        }
+//    }
 }
 
 #pragma mark - UITableViewDelegate
@@ -209,9 +237,12 @@
     }
 
     cell.textLabel.text = [NSString stringWithFormat:@"%@ : %@", message.title, basket.title];
-    cell.detailTextLabel.text = message.created_at;
+    
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
  
+    NSDate *date = [dateFormatter dateFromString:message.created_at];
+    cell.detailTextLabel.text = date.timeAgoSinceNow;
+
     return cell;
 }
 
@@ -232,8 +263,8 @@
         //        viewcontroller.basket = basket;
         
         DBBasketViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"DBBasketViewController"];
-        viewcontroller.basket = basket;
-        
+        //viewcontroller.basket = basket;
+        viewcontroller.basketID = basket.basketID;
         
         [self.navigationController pushViewController:viewcontroller animated:YES];
         

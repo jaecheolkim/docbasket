@@ -38,7 +38,8 @@
 
 + (void)postComment:(NSDictionary*)params completionHandler:(void (^)(NSDictionary *result))block;
 
-+ (void)postUserTracking:(NSDictionary *)parameters;
+//+ (void)postUserTracking:(NSDictionary *)parameters;
++ (void)postUserTracking:(NSArray *)parameters;
 
 + (void)createBasket:(NSDictionary*)parameters completionHandler:(void (^)(NSDictionary *result))block;
 

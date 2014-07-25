@@ -50,7 +50,7 @@
 @property (nonatomic, assign) NSArray *documents;
 @property (nonatomic, assign) NSArray *tags;
 @property (nonatomic, assign) NSArray *comments;
-
+@property (nonatomic, strong) NSDate *checkInDate;
 
 @property (nonatomic, strong) User *user;
 

@@ -396,70 +396,53 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
      }];
 }
 
-+ (void)postUserTracking:(NSDictionary *)parameters {
-    // [manager setParameterEncoding:AFJSONParameterEncoding];
-    //http://docbasket.com/users/32ea57d6-6f0e-4902-817a-544cae7cc189/heartbeat.json
-    // /api/heartbeat  POST    (header: token) latitude, longitude
+//+ (void)postUserTracking:(NSDictionary *)parameters
++ (void)postUserTracking:(NSArray *)parameters
+{
+    
+    NSString *UserID = GVALUE.userID;
+    
+    if(!IsEmpty(UserID) && !IsEmpty(parameters))
+    {
 
-    
-    NSString *UserID = GVALUE.userID; // @"bb5774c9-2c4e-41d0-b792-530e295e1ca6";
-    
-    if(!IsEmpty(UserID) && !IsEmpty(parameters)) {
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
         
-
-        double longitude = (IsEmpty(parameters[@"longitude"])) ? 0 : [parameters[@"longitude"] doubleValue];
-        double latitude =  (IsEmpty(parameters[@"latitude"])) ? 0 : [parameters[@"latitude"] doubleValue];
+        NSString *token = [NSString stringWithFormat:@"Bearer %@",GVALUE.token];
         
-        if(!(longitude == 0 && latitude == 0)) {
-            
-            NSDate *today = [NSDate date];
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];//]@"yyyyMMdd"];//@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"
-            NSString *timestamp = [formatter stringFromDate:today];
-
-            
-            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-            manager.requestSerializer = [AFJSONRequestSerializer serializer];
-            
-            NSString *token = [NSString stringWithFormat:@"Bearer %@",GVALUE.token];
-            
-            if(!IsEmpty(token)) {
-                [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"doc" password:@"basket"];
-                [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
-            }
-
-    
-            NSDictionary *trackingInfo = @{@"longitude":@(longitude), @"latitude": @(latitude), @"tracked_at": timestamp};
-            
-            NSDictionary *params = @{@"trackings" : @[trackingInfo,] };
-            
-            NSString *URL = @"http://docbasket.com/api/heartbeat";
-            
-            [manager POST:URL parameters:params
-                  success:^(AFHTTPRequestOperation *operation, id responseObject)
-             {
-                 NSLog(@"JSON: %@", responseObject);
-             }
-                  failure:
-             ^(AFHTTPRequestOperation *operation, NSError *error) {
-                 NSLog(@"Error: %@", error);
-
-                 int statusCode = (int)[operation.response statusCode];
-                 if(statusCode == 401){
-                     NSLog(@"Token expired");
-                     
-                     [DocbaketAPIClient  Login:^(BOOL success) {
-
-                         NSLog(@"Token refreshed");
-                     }];
-                 }
-                 
-             }];
-
+        if(!IsEmpty(token)) {
+            [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"doc" password:@"basket"];
+            [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
         }
+
+        //NSDictionary *params = @{@"trackings" : @[parameters,parameters,parameters] };
+        NSDictionary *params = @{@"trackings" : parameters };
+        
+        NSString *URL = @"http://docbasket.com/api/heartbeat";
+        
+        [manager POST:URL parameters:params
+              success:^(AFHTTPRequestOperation *operation, id responseObject)
+         {
+             [GVALUE.trackingArray removeAllObjects];
+             
+             NSLog(@"JSON: %@", responseObject);
+         }
+              failure:
+         ^(AFHTTPRequestOperation *operation, NSError *error) {
+             NSLog(@"Error: %@", error);
+             
+             int statusCode = (int)[operation.response statusCode];
+             if(statusCode == 401){
+                 NSLog(@"Token expired");
+                 
+                 [DocbaketAPIClient  Login:^(BOOL success) {
+                     
+                     NSLog(@"Token refreshed");
+                 }];
+             }
+             
+         }];
      }
-
-
 }
 
 

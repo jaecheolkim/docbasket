@@ -36,7 +36,7 @@
     UIImage *mapImage;
 }
 @property (nonatomic,strong) NSDictionary *basketInfo;
-@property (nonatomic,strong) NSString *basketID;
+
 @property (nonatomic,strong) NSString *documentID;
 @property (nonatomic,strong) NSArray *documents;
 @property (nonatomic,strong) NSArray *tags;
@@ -64,21 +64,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
  
     
-    self.title = self.basket.title;
-    self.basketID = self.basket.basketID;
-    
-    qrCodeImage = [[UIImage new] drawQRImage:self.basketID];
-
-    
-    
     [self setupHeaderView];
-    
-
-    
+ 
     [self refreshView];
     
     
@@ -94,30 +83,6 @@
     // Make BarButton Item
     UIBarButtonItem *navButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.rightBarButtonItem = navButton;
-    
-
-//    // Create a containing view to position the button
-//    UIImage *barButtonImage = [UIImage imageNamed:@"back.png"];
-//    UIView *containingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, barButtonImage.size.width + 40, barButtonImage.size.height)];
-//    //containingView.backgroundColor = [UIColor redColor];
-//    
-//    // Create a custom button with the image
-//    UIButton *barUIButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [barUIButton setImage:barButtonImage forState:UIControlStateNormal];
-//    barUIButton.frame = CGRectMake(-14, 0, barButtonImage.size.width + 14, barButtonImage.size.height);
-//    barUIButton.contentEdgeInsets = UIEdgeInsetsMake(0, -14, 0, 0);
-//    [barUIButton addTarget:self action:@selector(popVC) forControlEvents:UIControlEventTouchUpInside];
-//    //barUIButton.backgroundColor = [UIColor yellowColor];
-//    
-//    [containingView addSubview:barUIButton];
-//    
-//    // Create a container bar button
-//    UIBarButtonItem *containingBarButton = [[UIBarButtonItem alloc] initWithCustomView:containingView];
-//    
-//    // Add the container bar button
-//    self.navigationItem.leftBarButtonItem = containingBarButton;
- 
-
 }
 
 
@@ -139,19 +104,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
-//- (void)fixScreenFrame
-//{
-//    UIInterfaceOrientation statusBarOrientation =  [UIApplication sharedApplication].statusBarOrientation;
-//    CGRect screenFrame = [[UIScreen mainScreen] bounds];
-//    
-//    if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight){
-//        screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
-//    }
-//    
-// }
-
-
 #pragma mark - Setup
 
 - (void)setupHeaderView
@@ -167,11 +119,18 @@
     CGSize headerViewSize = CGSizeMake(screenFrame.size.width, 200);
     if(IsEmpty(_backgroundImage))
         _backgroundImage = [UIImage new];// [UIImage imageNamed:@"basketView.png"];
+
+    
+    qrCodeImage = [[UIImage new] drawQRImage:self.basket.basketID];
+    
+    self.title = self.basket.title;
+    if(!IsEmpty(self.basket))
+        self.basketID = self.basket.basketID;
     
     
-    CLLocationCoordinate2D coord;
-    coord.longitude = self.basket.longitude;
-    coord.latitude = self.basket.latitude;
+//    CLLocationCoordinate2D coord;
+//    coord.longitude = self.basket.longitude;
+//    coord.latitude = self.basket.latitude;
     
 //    if(self.mapView) {
 //        [self setMapView:nil];
@@ -212,18 +171,14 @@
          if(!IsEmpty(result)){
              
              self.basketInfo = result;
+             self.basket = [[Docbasket alloc] initWithAttributes:self.basketInfo];
+             self.documents = self.basketInfo[@"documents"];
+             
              NSLog(@"basket = %@", self.basketInfo);
              
-//             "created_at" = "2014-07-11T04:51:42.627Z";
-//             description = lalala;
-//             image = "http://0c86568b33ba49994159-f6bbd63f18dffb4beb7359283894d4fe.r82.cf6.rackcdn.com/Document-Microsoft-Word-icon.png";
-//             "is_public" = 1;
-//             latitude = "37.5621117663126";
-//             longitude = "126.989893913269";
-//              title = "test 1 -kat";
-//             "user_id" = "0c7849ee-f60e-4e90-9f21-8d7c3025d933";
+             self.title = self.basket.title;
              
-             self.documents = self.basketInfo[@"documents"];
+             [self setupHeaderView];
              
              NSString *imagePath = self.basketInfo[@"image"];
              NSString *thumbPath = nil;
@@ -235,7 +190,7 @@
              }
              
              __weak MEExpandableHeaderView *header = _headerView;
-            
+             
              dispatch_async(dispatch_get_main_queue(), ^{
                  if(!IsEmpty(thumbPath)) {
                      [header.backgroundImageView setImageWithURL:thumbPath
@@ -251,7 +206,7 @@
                                                           }
                                                           
                                                       }];
-
+                     
                  }
                  
                  [self.tableView reloadData];

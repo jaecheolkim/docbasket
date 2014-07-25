@@ -115,48 +115,78 @@
 
 }
 
-- (void)checkGeoFence
+- (void)checkIn:(Docbasket*)basket
 {
+    //라스트 체크인 바스켓에 먼저 저장하고
+    [GVALUE setLastCheckInBasket:basket];
+    GVALUE.lastCheckInBasket.checkInDate = [NSDate date];
+    
+    NSString *title = (IsEmpty(basket.title))?@"":basket.title;
+    NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, @"Enter !"];
+    NSLog(@"GEOFENCE :: %@", msg);
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        int index = 0;
-        for(Docbasket *basket in GVALUE.geoFenceBaskets){
-            if([basket.region containsCoordinate:GVALUE.currentLocation.coordinate]){
-                if(!basket.checked){
-                    if(GVALUE.userID) {
-                        NSDictionary *parameters = @{@"trans_id": @"", @"user_id": GVALUE.userID, @"checkin_at":[NSDate date], @"checkout_at":@""};
-                        [DocbaketAPIClient postRegionCheck:nil withBasketID:[basket valueForKey:@"basketID"]];
-                    }
-
-                    NSString *title = (IsEmpty(basket.title))?@"":basket.title;
-                    NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, @"Enter !"];
-                    
-                    
-                    [DBKSERVICE pushLocalNotification:msg basket:basket];
-                    
-                    
-                    //한번 체크인 한 바스켓은 두번 안되게 막음.
-                    basket.checked = YES;
-                    //[GVALUE.geoFenceBaskets replaceObjectAtIndex:index withObject:basket];
-                }
-            }
-            index++;
+        // 로컬 노티피케이션에 체크인 등록.
+        [DBKSERVICE pushLocalNotification:msg basket:basket];
+        
+        // 서버에 체크인 정보 보내기.
+        if(GVALUE.userID) {
+            [DocbaketAPIClient postRegionCheck:nil withBasketID:[basket valueForKey:@"basketID"]];
         }
-
+        
+        
     });
+
 }
 
+- (void)checkGeoFence
+{
+    for(Docbasket *basket in GVALUE.geoFenceBaskets)
+    {
+        // 만약에 현재 위치의 지오펜스가 존재한다면
+        if([basket.region containsCoordinate:GVALUE.currentLocation.coordinate])
+        {
+            //마지막 체크인 지오펜스가 있는지 검사한다.
+            Docbasket *lastCheckInBasket = GVALUE.lastCheckInBasket;
+            if(!IsEmpty(lastCheckInBasket)) {
+                NSString *lastCheckInBasketID = lastCheckInBasket.basketID;
+                double timeDuration = [lastCheckInBasket.checkInDate secondsAgo];
+                
+                //만약 마지막 체크인 한 지오펜스와 같다면 시간을 검사한다.
+                if([basket.basketID isEqualToString:lastCheckInBasketID]){
+                    if(timeDuration > GVALUE.checkInTimeFiler) { // 만약 24시간이 지났다면..
+                      // 새롭게 해당 지오펜스 체크인 한다.
+                        [self checkIn:basket];
+                    }
+                }
+                //만약 마지막 체크인 한 지오펜스와 다르다면
+                else {
+                    // 새롭게 해당 지오펜스 체크인 한다.
+                    [self checkIn:basket];
+                }
 
+            }
+            // 만약 새로 체크인 하는 지오펜스 일 경우는
+            else {
+                // 새롭게 해당 지오펜스 체크인 한다.
+                [self checkIn:basket];
+            }
+            
+            break; // 진행하던 루프를 종료한다.
+        }
+    }
+}
+
+//위치 정보 모니터링
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    // If it's a relatively recent event, turn off updates to save power.
     CLLocation* location = [locations lastObject];
     
     if(!_isLocationServiceStarted){
         
         GVALUE.currentLocation = location;
-        GVALUE.longitude = GVALUE.currentLocation.coordinate.longitude;
-        GVALUE.latitude = GVALUE.currentLocation.coordinate.latitude;
+        GVALUE.longitude = location.coordinate.longitude;
+        GVALUE.latitude = location.coordinate.latitude;
         GVALUE.lastRegionDistanceLocation = [[CLLocation alloc] initWithLatitude:0 longitude:0];
         GVALUE.lastAPICallLocation = [[CLLocation alloc] initWithLatitude:0 longitude:0];
         
@@ -172,27 +202,26 @@
                                                           userInfo:@{@"Msg":@"locationServiceStarted", @"currentLocation":GVALUE.currentLocation}];
         
         
-    }
-    
-    // test the age of the location measurement to determine if the measurement is cached
-    // in most cases you will not want to rely on cached measurements
-    CLLocation* newLocation = [locations firstObject];
-    NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
-    if (locationAge > 5.0) return;
-    
-    // test that the horizontal accuracy does not indicate an invalid measurement
-    if (newLocation.horizontalAccuracy < 0) return;
-    
-    // test the measurement to see if it is more accurate than the previous measurement
-    //if (GVALUE.currentLocation == nil || GVALUE.currentLocation.horizontalAccuracy > newLocation.horizontalAccuracy) {
+    } else {
+        // test the age of the location measurement to determine if the measurement is cached
+        // in most cases you will not want to rely on cached measurements
+        CLLocation* newLocation = [locations lastObject];
+        NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
+        if (locationAge > 15.0) return;
+        
+        // test that the horizontal accuracy does not indicate an invalid measurement
+        if (newLocation.horizontalAccuracy < 0) return;
+        
+        // test the measurement to see if it is more accurate than the previous measurement
+        //if (GVALUE.currentLocation == nil || GVALUE.currentLocation.horizontalAccuracy > newLocation.horizontalAccuracy) {
         // store the location as the "best effort"
         
         NSDate* eventDate = newLocation.timestamp;
         NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
-        if (abs(howRecent) < 15.0) {
+        if (abs(howRecent) < 30.0) {
             CLLocation *oldLocation = GVALUE.currentLocation;
             CLLocationDistance distance = [newLocation distanceFromLocation:oldLocation];
- 
+            
             NSString *event = [NSString stringWithFormat:@"================== distance = %f", distance];
             [GVALUE addLog:event];
             
@@ -201,10 +230,10 @@
             if(fabs(distance) > 1.0) {
                 GVALUE.lastLocation = GVALUE.currentLocation;
                 GVALUE.currentLocation = newLocation;
-                GVALUE.longitude = GVALUE.currentLocation.coordinate.longitude;
-                GVALUE.latitude = GVALUE.currentLocation.coordinate.latitude;
+                GVALUE.longitude = newLocation.coordinate.longitude;
+                GVALUE.latitude = newLocation.coordinate.latitude;
                 // If the event is recent, do something with it.
-
+                
                 NSString *event = [NSString stringWithFormat:@"checkGeoFence==L====== latitude %+.6f, longitude %+.6f\n", newLocation.coordinate.latitude, newLocation.coordinate.longitude];
                 [GVALUE addLog:event];
                 
@@ -214,7 +243,7 @@
                                                                     object:self
                                                                   userInfo:@{@"Msg":@"locationChanged", @"currentLocation":GVALUE.currentLocation}];
                 
-
+                
             }
             
             // 마지막으로 baskets.json 호출 할 때 거리의 1/2이 지났을 때 baskets.json 다시 호출 해서 바스켓 새로 고침.
@@ -238,27 +267,30 @@
             
             
             
-       // }
-        
-        
-        
-        // test the measurement to see if it meets the desired accuracy
-        //
-        // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
-        // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
-        // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on the timeout.
-        //
-        if (newLocation.horizontalAccuracy <= _locationManager.desiredAccuracy) {
-            // we have a measurement that meets our requirements, so we can stop updating the location
-            //
-            // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
-            //
-            //[self stopUpdatingLocation:NSLocalizedString(@"Acquired Location", @"Acquired Location")];
+            // }
             
-            // we can also cancel our previous performSelector:withObject:afterDelay: - it's no longer necessary
-            //[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
+            
+            
+            // test the measurement to see if it meets the desired accuracy
+            //
+            // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
+            // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
+            // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on the timeout.
+            //
+            if (newLocation.horizontalAccuracy <= _locationManager.desiredAccuracy) {
+                // we have a measurement that meets our requirements, so we can stop updating the location
+                //
+                // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
+                //
+                //[self stopUpdatingLocation:NSLocalizedString(@"Acquired Location", @"Acquired Location")];
+                
+                // we can also cancel our previous performSelector:withObject:afterDelay: - it's no longer necessary
+                //[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
+            }
         }
+
     }
+    
 
 }
 

@@ -74,12 +74,14 @@
     
     if(!IsEmpty(userInfo))
     {
-        
-
-        
-
         if ( state == UIApplicationStateActive ) { // 포그라운드
             NSLog(@"UIApplicationStateActive");
+            //메시지 메뉴 리프레싱
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"MessageMenuEventHandler"
+                                                                object:self
+                                                              userInfo:@{@"Msg":@"refresh"}];
+
             
         } else { // 백그라운드, 잠금상태
             NSLog(@"UIApplicationStateBackground");
@@ -87,17 +89,8 @@
             GVALUE.badgeValue = (int)([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
             GVALUE.notiBasketID = userInfo[@"basket_id"];
             NSString *basketTitle = userInfo[@"title"];
-            NSString *msg = [NSString stringWithFormat:@"%@ \n %@", basketTitle, GVALUE.notiBasketID];
+//            NSString *msg = [NSString stringWithFormat:@"%@ \n %@", basketTitle, GVALUE.notiBasketID];
             NSLog(@"notfication basketName = %@ \n basketID = %@", basketTitle, GVALUE.notiBasketID);
-            
-//            [[[UIAlertView alloc] initWithTitle:@"Remote Noti info"
-//                                        message:msg
-//                               cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
-//                                                 {
-//                                                     
-//                                                     
-//                                                 }]
-//                               otherButtonItems:nil, nil] show];
 
             // 여기서 해당 페이지로 분기해야 함.
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SideMenuEventHandler"
@@ -120,6 +113,11 @@
     if ( state == UIApplicationStateActive ) { // 포그라운드
         NSLog(@"UIApplicationStateActive");
         
+        //메시지 메뉴 리프레싱
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"MessageMenuEventHandler"
+                                                            object:self
+                                                          userInfo:@{@"Msg":@"refresh"}];
 
         
     } else { // 백그라운드, 잠금상태
@@ -129,20 +127,9 @@
 
         GVALUE.notiBasketID = notification.userInfo[@"baksetID"];
         NSString *basketTitle = notification.userInfo[@"title"];
-        NSString *msg = [NSString stringWithFormat:@"%@ \n %@", basketTitle, GVALUE.notiBasketID];
+//        NSString *msg = [NSString stringWithFormat:@"%@ \n %@", basketTitle, GVALUE.notiBasketID];
         NSLog(@"notfication basketName = %@ \n basketID = %@", basketTitle, GVALUE.notiBasketID);
-        
- 
-        
-//        [[[UIAlertView alloc] initWithTitle:@"Local Noti info"
-//                                    message:msg
-//                           cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
-//                                             {
-//                                                 
-//                                                 
-//                                             }]
-//                           otherButtonItems:nil, nil] show];
-        
+
         // 여기서 해당 페이지로 분기해야 함.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"SideMenuEventHandler"
                                                             object:self
@@ -155,6 +142,8 @@
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+    [DocbaketAPIClient postUserTracking:GVALUE.trackingArray];
     
     [self saveWebViewCookie];
 

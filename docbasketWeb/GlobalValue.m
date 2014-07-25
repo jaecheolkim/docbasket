@@ -7,6 +7,11 @@
 //
 
 #import "GlobalValue.h"
+@interface GlobalValue()
+{
+    NSDateFormatter *formatter;
+}
+@end
 
 @implementation GlobalValue
 
@@ -26,13 +31,15 @@
     if (self){
         self.baskets = [NSArray array];
         self.geoFenceBaskets = [NSMutableArray array];
+        self.trackingArray = [NSMutableArray array];
         self.messages = [NSMutableArray array];
         self.LogList = [NSMutableArray array];
-        self.regionMonitoringDistance = 0.1;  // 100m
+        
+        self.regionMonitoringDistance = 1;  // 1000m
         self.findBasketsRange = 10000.0; // 10000m (10km)
+        self.checkInTimeFiler = 60*60*24; // 24시간 이내에 동일 지오펜스에 체크인 시도하면 체크인 안 됨.
         
-        
-        
+        formatter = [[NSDateFormatter alloc] init];
 
     }
     return self;
@@ -122,6 +129,14 @@
 - (int)pushNotificationSetting
 {
     return [[self readObjectFromDefault:KEY_PUSHNOTIFICATIONSETTING] intValue];
+}
+
+- (NSString*)timestamp
+{
+    NSDate *today = [NSDate date];
+    [formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+    NSString *timestamp = [formatter stringFromDate:today];
+    return timestamp;
 }
 
 

@@ -176,7 +176,7 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
     NSArray *baskets = [SQLManager getDocBasketsForQuery:query];
     if(!IsEmpty(baskets)){
         //NSLog(@"GeoFence baskets = %@", baskets);
-        [GVALUE setGeoFenceBaskets:baskets];
+        [GVALUE setGeoFenceBaskets:(NSMutableArray*)baskets];
         block(YES);
     } else {
         block(NO);

@@ -22,10 +22,11 @@
 +(DocbasketService*)sharedInstance;
 
 - (void)startmanager;
-- (void)stopmanager;
+- (void)stopManager;
 
 - (void)pushLocalNotification:(NSString *)event basket:(Docbasket*)basket;
 
+- (void)refreshLocation;
 - (void)loadBasketsOnMap;
 
 - (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block;

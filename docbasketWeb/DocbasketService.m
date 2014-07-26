@@ -12,6 +12,7 @@
 {
     
 }
+@property (nonatomic, strong) NSTimer* locationUpdateTimer;
 @end
 
 @implementation DocbasketService
@@ -33,6 +34,15 @@
     self = [super init];
     if (self){
         
+        NSTimeInterval time = 60.0;
+        self.locationUpdateTimer =
+        [NSTimer scheduledTimerWithTimeInterval:time
+                                         target:self
+                                       selector:@selector(refreshLocation)
+                                       userInfo:nil
+                                        repeats:YES];
+
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ServiceEventHandler:)
                                                      name:@"ServiceEventHandler" object:nil];
     }
@@ -45,22 +55,44 @@
 }
 
 // 시나리오
-// [0]  DB및 Location Mananger 구동
+// [0]  DB및 Location Mananger 구동 및 위치가 잡히면 City Zip 데이터를 가져와 DB에 저장한다.
 // [1]  처음에 네트웍에서 현재 위치 기준으로 바스킷 정보 가져오고 바스킷 DB에 저장한다. 기본 현재 위치기준 10000m 반경(10km)
 // [2]  1단계가 끝나면 바스킷 DB에서 기본 10m반경에 있는 바스킷을 가지고와서 지오팬싱 모니터링 건 후에 맴 리프레쉬 해줌.
 //      만약 이전에 검사했던 위치와 현재 위치 거리가 GVALUE.regionMonitoringDistance 보다 작으면 스킵
 //      아니면 새로 모니터링할 지오팬싱 리스트를 가지고 온다.
 
+- (void)refreshLocation
+{
+    [self checkNewBasket:GVALUE.currentLocation filter:@"public" completionHandler:^(BOOL success) {
+        if(success){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                GVALUE.lastAPICallLocation = GVALUE.currentLocation;
+                
+                [self getNewGeoFences];
+                
+                [self loadBasketsOnMap];
+            });
+        } else {
+            
+        }
+     }];
+
+}
 
 #pragma mark - ServiceEventHandler
+
+
+
 - (void)ServiceEventHandler:(NSNotification *)notification
 {
     
     if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"locationServiceStarted"])
     {
         CLLocation *currentLocation = [[notification userInfo] objectForKey:@"currentLocation"];
-        if(!IsEmpty(currentLocation)) {
-            
+        if(!IsEmpty(currentLocation))
+        {
+
             // [1] 처음에 네트웍에서 현재 위치 기준으로 바스킷 정보 가져오고 DB에 저장한다.
             // 앱이 구동되고 Location service가 스타트 되면 체크 함.
             [self checkNewBasket:currentLocation filter:@"public" completionHandler:^(BOOL success) {
@@ -70,6 +102,8 @@
                         GVALUE.lastAPICallLocation = GVALUE.currentLocation;
                         
                         [self refreshGeoFenceMonitoring];
+                        
+                        [self loadBasketsOnMap];
                         
                         double longitude = currentLocation.coordinate.longitude;
                         double latitude =  currentLocation.coordinate.latitude;
@@ -82,8 +116,6 @@
                 } else {
                     
                 }
-                
-                [self loadBasketsOnMap];
             }];
         }
     }
@@ -119,6 +151,9 @@
     [SQLManager initDataBase];
     
     [DBKLOCATION startLocationManager];
+    
+    // [0] 앱 구동 후 처음으로 위치가 파악되면 City Zip 데이터를 가져와 DB에 저장한다.
+    [self loadBasketsFromDB];
 }
 
 
@@ -204,27 +239,7 @@
 
     // 아니면 새로 모니터링할 지오팬싱 리스트를 가지고 온다.
     [self getNewGeoFences];
-    
-//    double distance = GVALUE.regionMonitoringDistance; // 0.1km = 100m
-//    
-//    [SQLManager getRegionBasketsDistance:distance completionHandler:^(BOOL success) {
-//        if(success)
-//        {
-//            GVALUE.lastRegionDistanceLocation = GVALUE.currentLocation;
-//            
-//
-//            NSString *msg = [NSString stringWithFormat:@"===> GEO fence baskets =  %d", (int)GVALUE.geoFenceBaskets.count];
-//            [GVALUE addLog:msg];
-//            for(Docbasket *basket in GVALUE.geoFenceBaskets){
-//                NSString *title = (!IsEmpty(basket.title))?basket.title:@"";
-//                msg = [NSString stringWithFormat:@"===> GEO fence baskets =  %@", title];
-//                [GVALUE addLog:msg];
-//            }
-//            
-//        } else {
-//            // 이전 검색 위치랑 Distance가 가까워 따로 업데이트 안함.
-//        }
-//    }];
+
 }
 
 
@@ -247,19 +262,54 @@
             }
             
         } else {
-            // 이전 검색 위치랑 Distance가 가까워 따로 업데이트 안함.
+                        // 이전 검색 위치랑 Distance가 가까워 따로 업데이트 안함.
         }
+        
+        NSLog(@"GEOFence counts = %d", (int)[GVALUE.geoFenceBaskets count]);
+
     }];
 
 }
 
+/*
+ 처음 앱을 실행하면 City Zip  DB가 있는지 확인하고 있으면 GVALUE.baskets에 로드 한다. 
+ 처음 위치값이 들어오면 API의 checkNewBasket을 호출 하여 DB에 저장 후 
+ 
+ 저장 후 map pin 로드 한다.
+ 
+ 처음 Location 데이터가 들어오면 checkNewBasket
+ 
 
+*/
 //CLLocation *loc1 = [[CLLocation alloc] initWithLatitude:lat1 longitude:lon1];
 //double distance = [loc1 getDistanceFrom:position2];
 //if(distance <= 10)
 
-//- (void)loadBasketsFromDB
-//{
+- (void)loadBasketsFromDB
+{
+    [DocbaketAPIClient getZipBasket:^(id result) {
+        if(!IsEmpty(result)){
+            __block int count = (int)[result count];
+            for(NSDictionary *jsonData in result) {
+                [SQLManager syncDocBaskets2DB:jsonData completionHandler:^(BOOL success) {
+                    if(success){
+                        count--;
+                        
+                        if(count == 0){
+                            //[self loadBasketsOnMap];
+                        }
+                    } else {
+                        
+                    }
+                }];
+            }
+        } else {
+            NSLog(@"Error ");
+        }
+    }];
+
+    
+    
 //    NSArray *baskets = [SQLManager getDocBasketsForQuery:@"SELECT * FROM Docbasket;"];
 //    if(!IsEmpty(baskets)){
 //        [GVALUE setBaskets:baskets];
@@ -291,9 +341,9 @@
 //            }
 //        }];
 //    }
-//
-//
-//}
+
+
+}
 
 
 
@@ -325,6 +375,35 @@
     [SQLManager syncBasket2InvitedDB:basket type:0 completionHandler:^(BOOL success) {
         NSLog(@"Invited list = %@",[SQLManager getAllInvites]);
     }];
+
+}
+
+
+- (void) createBasket
+{
+    UIImage *photo = [UIImage imageNamed:@"login.png"];
+    //UIImage *smallerPhoto = [self rescaleImage:photo toSize:CGSizeMake(800, 600)];
+    //    NSData *jpeg = UIImageJPEGRepresentation(smallerPhoto, 0.82);
+    
+    double latitude = GVALUE.screenCenterCoordinate2D.latitude;
+    double longitude = GVALUE.screenCenterCoordinate2D.longitude;
+    
+    NSArray *arrayFilesData = @[photo,];
+    
+    NSDictionary *parameters = @{@"user_id": GVALUE.userID, @"basket[title]": @"테스트000", @"basket[longitude]": @(longitude), @"basket[latitude]": @(latitude), @"files" : arrayFilesData};
+    
+    [DocbaketAPIClient createBasket:parameters completionHandler:^(NSDictionary *result)
+     {
+         if(!IsEmpty(result)){
+             NSLog(@"result = %@", result);
+             
+//             CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([result[@"latitude"] doubleValue], [result[@"longitude"] doubleValue]);
+//             [DBKLOCATION makeNewRegionMonitoring:coord withID:result[@"id"] withMap:self.mapView];
+             
+         } else {
+             NSLog(@"Error ...");
+         }
+     }];
 
 }
 

@@ -85,7 +85,7 @@
     self.address = [attributes valueForKeyPath:@"address"];
     
     
-    self.is_public = [[attributes valueForKeyPath:@"is_public"] integerValue];
+    self.is_public = (!IsEmpty([attributes valueForKeyPath:@"is_public"]))?[[attributes valueForKeyPath:@"is_public"] integerValue] : 1 ;
     self.created_at = [attributes valueForKeyPath:@"created_at"];
 
     self.permission = [attributes valueForKeyPath:@"permission"];

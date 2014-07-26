@@ -18,6 +18,7 @@
 #import "UIImageView+addOn.h"
 #import "SWTableViewCell.h"
 #import "DBSearchPOIViewController.h"
+#import "UIAlertView+Blocks.h"
 
 @interface DBMapViewController () <SWTableViewCellDelegate>
 {
@@ -82,6 +83,9 @@
     
     
     self.mapView.showsUserLocation = YES;
+    
+    
+     [self refreshMap];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -101,7 +105,7 @@
 
     [self addSearchedPOIPins];
     
-    [self refreshMap];
+   
     
 
 }
@@ -201,6 +205,8 @@
 
 - (IBAction)refreshCurrentLocation:(id)sender
 {
+   [DBKSERVICE refreshLocation];
+    
     [self goCurrent];
 }
 
@@ -321,7 +327,7 @@
 - (void)refreshMap
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self goCurrent];
+        //[self goCurrent];
         
         [self removeAllAnnotations];
         
@@ -434,7 +440,7 @@
     NSArray *arrayFilesData = @[smallerPhoto,];
     NSString *userID = GVALUE.userID;
     
-    NSDictionary *parameters = @{@"user_id": userID, @"basket[title]": @"울사무실", @"basket[longitude]": @(longitude), @"basket[latitude]": @(latitude), @"files" : arrayFilesData};
+    NSDictionary *parameters = @{@"user_id": GVALUE.userID, @"basket[title]": @"테스트000", @"basket[longitude]": @(longitude), @"basket[latitude]": @(latitude), @"files" : arrayFilesData};
 
     [self dismissViewControllerAnimated:YES completion:^{
         
@@ -460,7 +466,13 @@
 #pragma mark - MapViewEventHandler
 - (void)MapViewEventHandler:(NSNotification *)notification
 {
-    
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"refreshMapList"]) {
+        
+        [self refreshTableView];
+ 
+    }
+
+
 
     
     if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"currentAddress"]) {
@@ -514,10 +526,23 @@
 
 
 #pragma mark - MKMapViewDelegate
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
+{
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 800, 800);
+    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+    
+    // Add an annotation
+    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+    point.coordinate = userLocation.coordinate;
+    point.title = @"Where am I?";
+    point.subtitle = @"I'm here!!!";
+    
+    [self.mapView addAnnotation:point];
+}
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
 {
-    NSLog(@"regionWillChangeAnimated");
+    //NSLog(@"regionWillChangeAnimated");
     
     if(isChangingScreen || self.basketPin.hidden) return;
     //if(isChangingScreen) return;
@@ -528,16 +553,18 @@
 }
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-    if(isChangingScreen || self.basketPin.hidden) return;
-    //if(isChangingScreen) return;
-    
-    NSLog(@"regionDidChangeAnimated");
-    
-    [self showNavigationBar:YES];
-    
     [self catchCurrentCenterAddress:^(bool find) {
         
     }];
+    
+    if(isChangingScreen || self.basketPin.hidden) return;
+    //if(isChangingScreen) return;
+    
+    //NSLog(@"regionDidChangeAnimated");
+    
+    [self showNavigationBar:YES];
+    
+
     
     
 }
@@ -873,19 +900,51 @@
             //
             //            [_testArray[cellIndexPath.section] removeObjectAtIndex:cellIndexPath.row];
             //            [self.tableView deleteRowsAtIndexPaths:@[cellIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+            
+            
+            NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
+            Docbasket *basket = [GVALUE.baskets objectAtIndex:cellIndexPath.row];
+            
+            [DocbaketAPIClient deleteBasket:basket.basketID completionHandler:^(BOOL success) {
+                if(success){
+                    [cell hideUtilityButtonsAnimated:YES];
+                    [GVALUE.baskets removeObjectAtIndex:cellIndexPath.row];
+                    [self.tableView deleteRowsAtIndexPaths:@[cellIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                }
+            }];
             break;
             
             
         }
         case 1:
         {
+            
+            NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
+            Docbasket *basket = [GVALUE.baskets objectAtIndex:cellIndexPath.row];
+            
+            [DocbaketAPIClient saveDocBasket:basket.basketID completionHandler:^(BOOL success) {
+                NSString *msg = @"Success";
+                if(!success)
+                    msg = @"Fail";
+                
+                [[[UIAlertView alloc] initWithTitle:@"Success"
+                                            message:@"save to my basket"
+                                   cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
+                                                     {
+                                                         [cell hideUtilityButtonsAnimated:YES];
+                                                         
+                                                     }]
+                                   otherButtonItems:nil, nil] show];
+            }];
+
+            
             //            NSLog(@"More button was pressed");
             //            UIAlertView *alertTest = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"More more more" delegate:nil cancelButtonTitle:@"cancel" otherButtonTitles: nil];
             //            [alertTest show];
             //
             //            NSInteger row = [indexPath row];
             
-            [cell hideUtilityButtonsAnimated:YES];
+            
             
 //            self.selectedUser = [self.Users objectAtIndex:index];
 //            

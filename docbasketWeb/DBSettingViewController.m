@@ -11,6 +11,7 @@
 #import "DBLogViewController.h"
 #import "UIImageView+addOn.h"
 #import "DocbasketService.h"
+#import "UIAlertView+Blocks.h"
 
 #define LINE_COLOR RGBA_COLOR(76.0, 76.0, 76.0, 0.5)
 #define TEXT_COLOR RGB_COLOR(54.0, 54.0, 54.0)
@@ -589,12 +590,19 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
                                                         object:self
                                                       userInfo:@{@"Msg":@"refreshMap"}];
+    
+    [[[UIAlertView alloc] initWithTitle:@"Success"
+                                message:@"apply setting"
+                       cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
+                                         {
+                                         }]
+                       otherButtonItems:nil, nil] show];
 }
 
 //- (void)refresh
 //{
 //    [self.tableView reloadData];
-//    
+//
 //    if (GVALUE.LogList.count > 0)
 //        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:GVALUE.LogList.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 //

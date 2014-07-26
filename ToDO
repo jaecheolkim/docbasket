@@ -1,6 +1,5 @@
 Todo (7/25)
 
-- (중요) 도시 단위 City DB Basket 데이터 연동 및 DB 저장 (앱 스타트 시 GZip)
 - (중요) 주요 Array값 앱 종료시 아카이브 및 앱 구동시 로딩
 
 - 주기적으로 위치값 체크 로직 넣기 (1분 단위) & 백그라운드 처리 포함
@@ -17,6 +16,7 @@ Todo (7/25)
         self.regionMonitoringDistance = 1;  // 1000m (1km)
         self.findBasketsRange = 10000.0;    // 10000m (10km)
         self.checkInTimeFiler = 60*60*24; // 24시간 이내에 동일 지오펜스에 체크인 시도하면 체크인 안 됨.
+[OK]- (중요) 도시 단위 City DB Basket 데이터 연동 및 DB 저장 (앱 스타트 시 GZip)
 
 
 

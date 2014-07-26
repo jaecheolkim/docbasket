@@ -243,6 +243,9 @@
                                                                     object:self
                                                                   userInfo:@{@"Msg":@"locationChanged", @"currentLocation":GVALUE.currentLocation}];
                 
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
+                                                                    object:self
+                                                                  userInfo:@{@"Msg":@"refreshMapList"}];
                 
             }
             

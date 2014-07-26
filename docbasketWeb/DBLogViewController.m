@@ -41,6 +41,16 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0,0, 60, 20);
+    [button addTarget:self action:@selector(clearLog:) forControlEvents:UIControlEventTouchDown];
+    [button setTitle:@"Clear" forState:UIControlStateNormal];
+    
+    // Make BarButton Item
+    UIBarButtonItem *navButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.navigationItem.rightBarButtonItem = navButton;
+
 }
 
 - (void)dealloc
@@ -59,6 +69,12 @@
 
 
 #pragma mark - Application's Handler
+
+- (void)clearLog:(id)sender
+{
+    [GVALUE.LogList removeAllObjects];
+    [self refresh];
+}
 
 - (void)refresh
 {

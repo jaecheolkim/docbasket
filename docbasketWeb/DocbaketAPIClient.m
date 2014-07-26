@@ -459,12 +459,15 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
         [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
     }
 
-    [manager GET:@"http://docbasket.com/api/activities" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSDictionary *param = @{@"limit":@(20), @"offset":@(0)};  //offset = (pagecount-1) * limit
+
+    [manager GET:@"http://docbasket.com/api/activities" parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if(!IsEmpty(responseObject)) {
             NSLog(@"result = %@", responseObject);
+            NSArray *result = responseObject[@"activities"];
             
-            NSMutableArray *mutableMessages = [NSMutableArray arrayWithCapacity:[responseObject count]];
-            for(id attributes in responseObject){
+            NSMutableArray *mutableMessages = [NSMutableArray arrayWithCapacity:[result count]];
+            for(id attributes in result){
                 if([attributes isKindOfClass:[NSDictionary class]]) {
                     
                     Message *message = [[Message alloc] initWithAttributes:attributes];
@@ -537,7 +540,7 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
             
             if([baskets isKindOfClass:[NSArray class]] && !IsEmpty(baskets))
             {
-                NSLog(@"JSON: %@", responseObject);
+                NSLog(@"New Baskets count : %d", (int)[responseObject count]);
                 
                 NSMutableArray *mutableBaskets = [NSMutableArray arrayWithCapacity:[baskets count]];
                 for(id attributes in baskets){
@@ -699,15 +702,19 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 
 + (void)getZipBasket:(void (^)(id result))block
 {
-    NSString *token = GVALUE.token;
-    double latitude = 37.5446;// GVALUE.latitude;
-    double longitude = 126.9722;// GVALUE.longitude;
+
+    double latitude = GVALUE.currentLocation.coordinate.latitude; // 37.5446;// GVALUE.latitude;
+    double longitude = GVALUE.currentLocation.coordinate.longitude; //126.9722;// GVALUE.longitude;
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
+    NSString *token = [NSString stringWithFormat:@"Bearer %@",GVALUE.token];
+    
     if(!IsEmpty(token)) {
-        [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"bearer" password:token];
+        [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"doc" password:@"basket"];
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
     }
+
     NSString *baseURL = [NSString stringWithFormat:@"http://docbasket.com/api/packages.json?latitude=%f&longitude=%f", latitude, longitude];
     [manager GET:baseURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
      {
@@ -807,6 +814,32 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 //    }];
 }
 
++ (void)deleteBasket:(NSString*)basketID completionHandler:(void (^)(BOOL success))block
+{
+    //delete api/baskets/:id
+    NSString *token = GVALUE.token;
+    if(!IsEmpty(token)){
+        NSString *apiURL = [NSString stringWithFormat:@"http://docbasket.com/api/baskets/%@", basketID];
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+        
+        if(!IsEmpty(token)) {
+            [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"doc" password:@"basket"];
+            [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+        }
+        
+        [manager DELETE:apiURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            block(YES);
+            NSLog(@"Success: %@", responseObject);
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            block(NO);
+            NSLog(@"Error: %@", error);
+        }];
+
+    }
+}
+
 
 + (void)createBasket:(NSDictionary*)parameters completionHandler:(void (^)(NSDictionary *result))block
 {
@@ -814,7 +847,16 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
     NSString *UserID = parameters[@"user_id"]; // GVALUE.userID ||  @"bb5774c9-2c4e-41d0-b792-530e295e1ca6";
     if(!IsEmpty(UserID)){
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager POST:@"http://docbasket.com/baskets.json" parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+        
+        NSString *token = [NSString stringWithFormat:@"Bearer %@",GVALUE.token];
+        
+        if(!IsEmpty(token)) {
+            [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:@"doc" password:@"basket"];
+            [manager.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
+        }
+        
+        [manager POST:@"http://docbasket.com/api/baskets" parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
         {
 
             NSArray *files = parameters[@"files"];

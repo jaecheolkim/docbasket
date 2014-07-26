@@ -43,6 +43,8 @@
 
 + (void)createBasket:(NSDictionary*)parameters completionHandler:(void (^)(NSDictionary *result))block;
 
++ (void)deleteBasket:(NSString*)basketID completionHandler:(void (^)(BOOL success))block;
+
 + (void)Login:(void (^)(BOOL success))block;
 
 + (void)getZipBasket:(void (^)(id result))block;

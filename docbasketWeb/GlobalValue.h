@@ -84,7 +84,7 @@ static inline id ObjectOrNull(id object)
 
 
 @property (nonatomic, strong) NSMutableArray *messages; // 메시지 메뉴에서 사용할 basket 리스트 어레이 (checked in[local] & invited[remote] 이 합쳐지는 장소)
-@property (nonatomic, strong) NSArray *baskets; //지도에서 사용할 전체 docbasket 리스트 가지고 있는 어레이
+@property (nonatomic, strong) NSMutableArray *baskets; //지도에서 사용할 전체 docbasket 리스트 가지고 있는 어레이
 @property (nonatomic, strong) NSMutableArray *geoFenceBaskets; // 지오팬스 docbasket 리스트
 @property (nonatomic, strong) NSMutableArray *trackingArray; // tracking 정보
 @property (nonatomic, strong) CLLocation *lastRegionDistanceLocation; //마지막으로 지오팬싱 (regionMonitoringDistance기준) 가져왔던 위치 값

@@ -29,7 +29,7 @@
 {
     self = [super init];
     if (self){
-        self.baskets = [NSArray array];
+        self.baskets = [NSMutableArray array];
         self.geoFenceBaskets = [NSMutableArray array];
         self.trackingArray = [NSMutableArray array];
         self.messages = [NSMutableArray array];
@@ -151,49 +151,67 @@
     return [[NSUserDefaults standardUserDefaults] objectForKey:strKey];
 }
 
-- (Docbasket *)findBasketWithID:(NSString *)str {
-    // ivar: NSArray *myArray;
-    __block BOOL found = NO;
-    __block Docbasket *dict = nil;
-    
-    [self.baskets enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        dict = (Docbasket *)obj;
-        NSString *basketID = dict.basketID;// [dict valueForKey:@"basketID"];
-        if ([basketID isEqualToString:str]) {
-            found = YES;
-            *stop = YES;
-        }
-    }];
- 
-    
-    if (found) {
-        return dict;
+- (Docbasket *)findBasketWithID:(NSString *)str
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"basketID == %@", str];
+    NSArray *filteredArray = [self.baskets filteredArrayUsingPredicate:predicate];
+    if(!IsEmpty(filteredArray)){
+        return filteredArray[0];
     } else {
         return nil;
     }
+        
+//    // ivar: NSArray *myArray; lat : 37.552869 / long : 126.968510
+//    __block BOOL found = NO;
+//    __block Docbasket *dict = nil;
+//    
+//    [self.baskets enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//        dict = (Docbasket *)obj;
+//        NSString *basketID = dict.basketID;// [dict valueForKey:@"basketID"];
+//        if ([basketID isEqualToString:str]) {
+//            found = YES;
+//            *stop = YES;
+//        }
+//    }];
+// 
+//    
+//    if (found) {
+//        return dict;
+//    } else {
+//        return nil;
+//    }
     
 }
 
-- (Docbasket *)findGeoFenceBasketWithID:(NSString *)str {
-    // ivar: NSArray *myArray;
-    __block BOOL found = NO;
-    __block Docbasket *dict = nil;
-    
-    [self.geoFenceBaskets enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        dict = (Docbasket *)obj;
-        NSString *basketID = dict.basketID;// [dict valueForKey:@"basketID"];
-        if ([basketID isEqualToString:str]) {
-            found = YES;
-            *stop = YES;
-        }
-    }];
-    
-    
-    if (found) {
-        return dict;
+- (Docbasket *)findGeoFenceBasketWithID:(NSString *)str
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"basketID == %@", str];
+    NSArray *filteredArray = [self.geoFenceBaskets filteredArrayUsingPredicate:predicate];
+    if(!IsEmpty(filteredArray)){
+        return filteredArray[0];
     } else {
         return nil;
     }
+    
+//    // ivar: NSArray *myArray;
+//    __block BOOL found = NO;
+//    __block Docbasket *dict = nil;
+//    
+//    [self.geoFenceBaskets enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//        dict = (Docbasket *)obj;
+//        NSString *basketID = dict.basketID;// [dict valueForKey:@"basketID"];
+//        if ([basketID isEqualToString:str]) {
+//            found = YES;
+//            *stop = YES;
+//        }
+//    }];
+//    
+//    
+//    if (found) {
+//        return dict;
+//    } else {
+//        return nil;
+//    }
     
 }
 

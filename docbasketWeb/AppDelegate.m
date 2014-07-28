@@ -60,44 +60,39 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     NSLog(@"Noti = %@", userInfo);
-//    Log    : Noti = {
-//        aps =     {
-//            alert = "You are invited.";
-//        };
-//        "basket_id" = "c611e338-a34e-4223-9f7c-60125834580d";
-//        latitude = "37.5634937627978";
-//        longitude = "126.985602378845";
-//        title = "\Uad7f\Ubaa8\Ub2dd";
-//    }
 
     UIApplicationState state = [application applicationState];
     
     if(!IsEmpty(userInfo))
     {
+        
         if ( state == UIApplicationStateActive ) { // 포그라운드
             NSLog(@"UIApplicationStateActive");
             //메시지 메뉴 리프레싱
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"MessageMenuEventHandler"
                                                                 object:self
-                                                              userInfo:@{@"Msg":@"refresh"}];
+                                                              userInfo:@{@"Msg":@"refreshMessageMenu"}];
 
             
-        } else { // 백그라운드, 잠금상태
+        }
+        else if(state == UIApplicationStateBackground)
+        { // 백그라운드, 잠금상태
             NSLog(@"UIApplicationStateBackground");
             
             GVALUE.badgeValue = (int)([[UIApplication sharedApplication] applicationIconBadgeNumber] + 1);
             GVALUE.notiBasketID = userInfo[@"basket_id"];
             NSString *basketTitle = userInfo[@"title"];
-//            NSString *msg = [NSString stringWithFormat:@"%@ \n %@", basketTitle, GVALUE.notiBasketID];
             NSLog(@"notfication basketName = %@ \n basketID = %@", basketTitle, GVALUE.notiBasketID);
-
+            
+            
             // 여기서 해당 페이지로 분기해야 함.
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SideMenuEventHandler"
                                                                 object:self
                                                               userInfo:@{@"Msg":@"moveToMessage"}];
-
         }
+        
+        [DBKSERVICE refreshLocation];
     }
     
     [PARSE handlePush:userInfo];
@@ -120,7 +115,9 @@
                                                           userInfo:@{@"Msg":@"refresh"}];
 
         
-    } else { // 백그라운드, 잠금상태
+    }
+    else if(state == UIApplicationStateBackground)
+    { // 백그라운드, 잠금상태
         NSLog(@"UIApplicationStateBackground");
         
         // 여기서 해당 페이지로 분기 해야 함.

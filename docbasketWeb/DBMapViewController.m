@@ -25,6 +25,8 @@
     CGRect screenFrame;
     BOOL isChangingScreen;
     CHPopUpMenu *popUp;
+    
+    BOOL isFinishRenderingMap;
 }
 
 @end
@@ -327,11 +329,9 @@
 - (void)refreshMap
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        //[self goCurrent];
-        
+ 
         [self removeAllAnnotations];
-        
-        
+ 
         for(Docbasket *basket in GVALUE.baskets){
             if(!IsEmpty(basket)){
 
@@ -370,10 +370,14 @@
 
 - (void)refreshTableView
 {
-    NSArray *sortedArray = [self sortedBaskets];
-    [GVALUE setBaskets:sortedArray];
-    
-    [self.tableView reloadData];
+    if(!self.tableView.hidden)
+    {
+        NSArray *sortedBasketArray = [self sortedBaskets];
+        [GVALUE setBaskets:sortedBasketArray];
+        
+        [self.tableView reloadData];
+    }
+
 
     
 }
@@ -526,18 +530,57 @@
 
 
 #pragma mark - MKMapViewDelegate
+- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered
+{
+    // Image creation code here
+    isFinishRenderingMap = YES;
+}
+
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
 {
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 800, 800);
-    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+    CLLocation *location = userLocation.location;
     
-    // Add an annotation
-    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
-    point.coordinate = userLocation.coordinate;
-    point.title = @"Where am I?";
-    point.subtitle = @"I'm here!!!";
+    NSDate* eventDate = location.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    if( abs(howRecent) > 15.0 ) return;
     
-    [self.mapView addAnnotation:point];
+    if( location.horizontalAccuracy < 0 ) return;
+    
+    
+    double speed = location.speed;  // m/s
+    if(speed > 2)
+    {
+        NSLog(@"speed = %f", speed);
+        if(!self.mapView.hidden){
+            MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 800, 800);
+            [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+        }
+        else if(!self.tableView.hidden){
+            [self refreshTableView];
+        }
+
+
+    }
+
+    
+//    if(userLocation.updating && isFinishRenderingMap)
+//    {
+//        //GVALUE.currentLocation = userLocation.location;
+//        
+////        NSLog(@"MapUserLoc lat = %0.5f / long = %0.5f",
+////              userLocation.location.coordinate.latitude, userLocation.coordinate.longitude);
+//    }
+    
+    
+    
+//
+//    // Add an annotation
+//    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+//    point.coordinate = userLocation.coordinate;
+//    point.title = @"Where am I?";
+//    point.subtitle = @"I'm here!!!";
+//    
+//    [self.mapView addAnnotation:point];
 }
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated

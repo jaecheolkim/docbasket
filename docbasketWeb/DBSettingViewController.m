@@ -87,6 +87,7 @@
     
     NSLog(@" App build = %@ / bundleName = %@", build, bundleName);
 
+    NSLog(@"USer ID = %@", GVALUE.userID);
     
     UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 510, 200, 22)];
     versionLabel.backgroundColor = [UIColor clearColor];

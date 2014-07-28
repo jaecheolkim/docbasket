@@ -50,5 +50,7 @@ enum errorCodes {
 - (NSArray*)getAllInvites;
 - (NSArray *)AcceptInvite:(NSString*)basketID;
 
+- (void)saveLastCheckInTime:(NSString*)basketID;
+- (double)checkLastCheckInTime:(NSString*)basketID;
 @end
 

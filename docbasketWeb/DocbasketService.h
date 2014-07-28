@@ -17,6 +17,8 @@
 
 #define DBKSERVICE [DocbasketService sharedInstance]
 
+
+
 @interface DocbasketService : NSObject
 
 +(DocbasketService*)sharedInstance;
@@ -32,5 +34,9 @@
 - (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block;
 - (void)checkMessage:(void (^)(NSArray *messages))block;
 - (void)getNewGeoFences;
+
+- (void)checkIn:(Docbasket*)basket;
+- (void)checkGeoFence;
+
 @end
 

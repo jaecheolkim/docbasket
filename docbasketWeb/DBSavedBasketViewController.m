@@ -50,15 +50,6 @@
         
     }];
     
-//    //filter= created | invited | saved | public(default)
-//    [self checkMyBasket:@"saved" completionHandler:^(BOOL success) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.tableView reloadData];
-//        });
-//    }];
-    
-    
-    
 }
 
 - (void)didReceiveMemoryWarning
@@ -127,9 +118,7 @@
                                          
                                          
                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                             //
-                                             
-                                             weakCell.imageView.image = iconImage;
+                                              weakCell.imageView.image = iconImage;
                                              [weakCell setNeedsLayout];
                                          });
                                      }
@@ -159,15 +148,9 @@
     
     Docbasket *basket = [self.baskets objectAtIndex:indexPath.row];
     if(!IsEmpty(basket)){
-        
-        //        SCQRGeneratorViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"SCQRGeneratorViewController"];
-        //        viewcontroller.basketID = basket.basketID;
-        //        viewcontroller.basket = basket;
-        
+
         DBBasketViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"DBBasketViewController"];
         viewcontroller.basket = basket;
-        
-        
         [self.navigationController pushViewController:viewcontroller animated:YES];
         
     }

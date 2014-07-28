@@ -31,6 +31,8 @@
 @property (nonatomic, strong) ScannerViewController *QRScannerViewController;
 @property (nonatomic, strong) DBSettingViewController *settingViewController;
 @property (nonatomic, strong) DBLoginViewController *loginViewController;
+
+@property (nonatomic, assign) int currentMenu;
 @end
 
 @implementation DEMOLeftMenuViewController
@@ -55,7 +57,7 @@
     });
     [self.view addSubview:self.tableView];
 
-    _menuTitles = @[@"Map",  @"Message", @"My basket", @"QRCode", @"Setting"];
+    _menuTitles = @[@"Map",  @"Activity", @"My basket", @"QRCode", @"Setting"];
     _menuImages = @[@"map.png", @"message.png", @"mybasket.png", @"qrCamera.png", @"setting.png"];
  
     self.mapViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DBMapViewController"];
@@ -85,13 +87,14 @@
     [GVALUE.menuButton.badgeView setPosition:MGBadgePositionTopRight];
     [GVALUE.menuButton.badgeView setBadgeColor:[UIColor redColor]];
 
-
+    self.currentMenu = 0;
     
 }
 
 - (void)moveToMessage
 {
-//    [self.sideMenuViewController setContentViewController:_viewContorllers[1] animated:YES];
+    if(self.currentMenu == 1) return;
+    
     [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.messageViewController]
                                                  animated:YES];
     [self.sideMenuViewController hideMenuViewController];
@@ -108,12 +111,13 @@
 //    [self.sideMenuViewController setContentViewController:_viewContorllers[indexPath.row] animated:YES];
 //    [self.sideMenuViewController hideMenuViewController];
 
-    
+    self.currentMenu = (int)indexPath.row;
     switch (indexPath.row) {
         case 0:
             [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.mapViewController]
                                                          animated:YES];
             [self.sideMenuViewController hideMenuViewController];
+            
             break;
         case 1:
             [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:self.messageViewController]

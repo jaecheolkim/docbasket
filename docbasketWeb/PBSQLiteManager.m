@@ -63,8 +63,10 @@
  
     NSString *createInvitedTable = @"CREATE TABLE IF NOT EXISTS 'Invited' ('basketID' VARCHAR PRIMARY KEY  NOT NULL  UNIQUE , 'type' INTEGER, 'title' VARCHAR, 'longitude' DOUBLE, 'latitude' DOUBLE, 'accept' INTEGER  DEFAULT 0, 'timestamp' DATETIME DEFAULT CURRENT_TIMESTAMP);";
     
+    NSString *createCheckInTable = @"CREATE TABLE IF NOT EXISTS 'CheckIn' ('basketID' VARCHAR PRIMARY KEY  NOT NULL  UNIQUE ,  'timestamp' DATETIME DEFAULT CURRENT_TIMESTAMP);";
     
-    NSArray *createTable =@[createDocbasketTable, createUsersTable, createInvitedTable];
+    
+    NSArray *createTable =@[createDocbasketTable, createUsersTable, createInvitedTable, createCheckInTable];
     
     for(NSString *sqlQuery in createTable){
         NSError *error = [[PBSQLiteManager sharedInstance] doQuery:sqlQuery];
@@ -474,6 +476,54 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
     
     return result;
     
+}
+
+//NSString *createCheckInTable = @"CREATE TABLE IF NOT EXISTS 'CheckIn' ('basketID' VARCHAR PRIMARY KEY  NOT NULL  UNIQUE ,  'title' VARCHAR, 'longitude' DOUBLE, 'latitude' DOUBLE, 'timestamp' DATETIME DEFAULT CURRENT_TIMESTAMP);";
+
+- (void)saveLastCheckInTime:(NSString*)basketID
+{
+    NSString *query = [NSString stringWithFormat:@"SELECT * FROM CheckIn WHERE basketID == '%@' ;", basketID];
+    NSArray *result = [[PBSQLiteManager sharedInstance] getRowsForQuery:query];
+    NSLog(@"result : %@", result);
+    
+    if(!IsEmpty(result)){
+        query = [NSString stringWithFormat:@"UPDATE CheckIn SET timestamp =  datetime('now')  WHERE basketID == '%@';", basketID];
+        NSError *error = [SQLManager doQuery:query];
+        if (error != nil) {
+            NSLog(@"Error: %@",[error localizedDescription]);
+        }
+
+    } else {
+        sqlite3_stmt *statement;
+        sqlite3 *sqlDB = [SQLManager getDBContext];
+        
+        const char* insertSQL = "INSERT INTO CheckIn (basketID) VALUES (?)";
+        if (sqlite3_prepare_v2(sqlDB, insertSQL, -1, &statement, nil) == SQLITE_OK)
+        {
+            sqlite3_bind_text(statement, 1, [basketID UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_step(statement);
+            sqlite3_finalize(statement);
+        }
+        
+    }
+    
+    result = [[PBSQLiteManager sharedInstance] getRowsForQuery:query];
+    NSLog(@"result : %@", result);
+}
+
+- (double)checkLastCheckInTime:(NSString*)basketID
+{
+    double timeDuration = -1.0;
+    NSString *query = [NSString stringWithFormat:@"SELECT timestamp FROM CheckIn WHERE basketID == '%@';", basketID];
+    NSArray *result = [SQLManager getRowsForQuery:query];
+    if(!IsEmpty(result)){
+        NSString *timeInfo = result[0][@"timestamp"];
+        
+        timeDuration = [GVALUE getSecond:timeInfo];
+        
+    }
+    
+    return timeDuration;
 }
 
 

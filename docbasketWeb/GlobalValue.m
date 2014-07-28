@@ -34,6 +34,7 @@
         self.trackingArray = [NSMutableArray array];
         self.messages = [NSMutableArray array];
         self.LogList = [NSMutableArray array];
+        self.lastCheckInBaskets= [NSMutableArray array];
         
         self.regionMonitoringDistance = 1;  // 1000m
         self.findBasketsRange = 10000.0; // 10000m (10km)
@@ -137,6 +138,20 @@
     [formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
     NSString *timestamp = [formatter stringFromDate:today];
     return timestamp;
+}
+
+- (double)getSecond:(NSString*)time
+{
+    NSDate *dateFromString = [[NSDate alloc] init];
+    
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd HH':'mm':'ss'"];
+    
+    dateFromString = [dateFormatter dateFromString:time];
+    
+    double timeDuration = [dateFromString secondsAgo];
+    return timeDuration;
 }
 
 

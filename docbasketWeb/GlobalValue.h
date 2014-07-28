@@ -66,7 +66,7 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, assign) double checkInTimeFiler;
 
 
-
+@property (nonatomic, strong) NSMutableArray *lastCheckInBaskets;
 @property (nonatomic, strong) Docbasket *lastCheckInBasket;
 
 @property (nonatomic) BOOL START_LOGIN;
@@ -113,6 +113,7 @@ static inline id ObjectOrNull(id object)
 
 - (void)addLog:(NSString*)log;
 - (NSString*)timestamp;
+- (double)getSecond:(NSString*)time;
 
 @end
 

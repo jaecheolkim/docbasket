@@ -41,7 +41,7 @@
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.zzzZ"];
     
 
-    [self setNaviBarTitle:@"Message"];
+    [self setNaviBarTitle:@"Activity"];
    
     
 }
@@ -78,7 +78,7 @@
 - (void)MessageMenuEventHandler:(NSNotification *)notification
 {
     
-    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"refresh"]) {
+    if([[[notification userInfo] objectForKey:@"Msg"] isEqualToString:@"refreshMessageMenu"]) {
         
         [self refresh];
     }

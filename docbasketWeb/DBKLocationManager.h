@@ -47,7 +47,6 @@
 
 + (void)reverseGeocodeLocation:(CLLocation *)location completionHandler:(void (^)(NSString *address))block;
 
-- (void)checkGeoFence;
 @end
 
 

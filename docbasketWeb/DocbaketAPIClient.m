@@ -521,7 +521,7 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
         double longitude = currentLocation.coordinate.longitude;
         double latitude = currentLocation.coordinate.latitude;
         double radius = GVALUE.findBasketsRange; // 단위 = 미터 : 디폴트 10000 (10km)
-        param = [NSMutableDictionary dictionaryWithDictionary:@{@"longitude":@(longitude), @"latitude":@(latitude), @"radius":@(radius), @"limit":@(100), @"offset":@(0)}];  //offset = (pagecount-1) * limit
+        param = [NSMutableDictionary dictionaryWithDictionary:@{@"longitude":@(longitude), @"latitude":@(latitude), @"radius":@(radius), @"limit":@(50), @"offset":@(0)}];  //offset = (pagecount-1) * limit
 
     }
     
@@ -540,14 +540,15 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
             
             if([baskets isKindOfClass:[NSArray class]] && !IsEmpty(baskets))
             {
-                NSLog(@"New Baskets count : %d", (int)[responseObject count]);
-                
+                NSLog(@"New Baskets count : %d", (int)[baskets count]);
+                //NSLog(@"New Baskets = %@", baskets);
                 NSMutableArray *mutableBaskets = [NSMutableArray arrayWithCapacity:[baskets count]];
                 for(id attributes in baskets){
                     if([attributes isKindOfClass:[NSDictionary class]]) {
                         
                         Docbasket *basket = [[Docbasket alloc] initWithAttributes:attributes];
                         [mutableBaskets addObject:basket];
+                        NSLog(@"Basket = %@", basket.title);
                         
                     }
                 }

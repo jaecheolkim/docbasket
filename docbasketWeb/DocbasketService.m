@@ -63,7 +63,7 @@
 
 - (void)refreshLocation
 {
-    [self checkNewBasket:GVALUE.currentLocation filter:@"public" completionHandler:^(BOOL success) {
+    [self checkNewBasket:GVALUE.currentLocation filter:nil completionHandler:^(BOOL success) {
         if(success){
             dispatch_async(dispatch_get_main_queue(), ^{
                 
@@ -188,7 +188,7 @@
 
 
 
-
+// <+37.54224236,+126.96199378>
 // [1] 처음에 네트웍에서 현재 위치 기준으로 바스킷 정보 가져오고 바스킷 DB에 저장한다. 기본 1000m반경
 - (void)checkNewBasket:(CLLocation *)currentLocation filter:(NSString*)filter completionHandler:(void (^)(BOOL success))block
 {
@@ -196,7 +196,7 @@
      {
          if(!IsEmpty(baskets)){
              
-             [GVALUE setBaskets:baskets];
+             [GVALUE setBaskets:(NSMutableArray*)baskets];
              
              if(!IsEmpty(GVALUE.baskets)){
                  __block int count = (int)[GVALUE.baskets count];
@@ -215,7 +215,11 @@
              
              
          } else {
-             
+//             NSArray *dbBaskets = [SQLManager getDocBasketsForQuery:@"SELECT * FROM Docbasket;"];
+//             if(!IsEmpty(dbBaskets)){
+//                 [GVALUE setBaskets:(NSMutableArray*)dbBaskets];
+//             }
+
          }
          
          
@@ -266,10 +270,200 @@
         }
         
         NSLog(@"GEOFence counts = %d", (int)[GVALUE.geoFenceBaskets count]);
+        
+        [self checkGeoFence];
 
     }];
 
 }
+
+- (void)checkIn:(Docbasket*)basket
+{
+
+    NSString *title = (IsEmpty(basket.title))?@"":basket.title;
+    NSString *msg = [NSString stringWithFormat:@" %@ : %@", title, @"Enter !"];
+    NSLog(@"GEOFENCE :: %@", msg);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //라스트 체크인 바스켓에 먼저 저장하고
+        NSString *basketID = basket.basketID;
+        [SQLManager saveLastCheckInTime:basketID];
+
+        // 로컬 노티피케이션에 체크인 등록.
+        [DBKSERVICE pushLocalNotification:msg basket:basket];
+        
+        // 서버에 체크인 정보 보내기.
+        if(GVALUE.userID) {
+            [DocbaketAPIClient postRegionCheck:nil withBasketID:[basket valueForKey:@"basketID"]];
+        }
+        
+        
+    });
+    
+}
+
+- (void)checkGeoFence
+{
+    // 지오팬스 대상 바스켓을 모두 읽어 온다.
+    for(Docbasket *basket in GVALUE.geoFenceBaskets)
+    {
+        //NSLog(@"check geofence = %@ ", basket.title);
+        // 만약에 현재 위치의 지오펜스가 존재한다면
+        if([basket.region containsCoordinate:GVALUE.currentLocation.coordinate])
+        {
+
+            NSString *basketID = basket.basketID;
+            
+            double timeDuration = [SQLManager checkLastCheckInTime:basketID];
+            NSLog(@"================================== checked in geofence = %0.3f / %@  ", timeDuration, basket.title);
+            
+            // 체크인이 처음인지 혹은 체크인 한지 하루 이상 지난 지오펜스 인지 조사한다.
+            if((timeDuration > GVALUE.checkInTimeFiler) || timeDuration < 0) {
+                NSLog(@"==================================>>> checked in new  :  %@  ", basket.title);
+                [self checkIn:basket];
+            }
+        }
+    }
+}
+
+
+- (void)checkGeoFenceOLD
+{
+    for(Docbasket *basket in GVALUE.geoFenceBaskets)
+    {
+        // 만약에 현재 위치의 지오펜스가 존재한다면
+        if([basket.region containsCoordinate:GVALUE.currentLocation.coordinate])
+        {
+            //마지막 체크인 지오펜스가 있는지 검사한다.
+            Docbasket *lastCheckInBasket = GVALUE.lastCheckInBasket;
+            if(!IsEmpty(lastCheckInBasket)) {
+                NSString *lastCheckInBasketID = lastCheckInBasket.basketID;
+                double timeDuration = [lastCheckInBasket.checkInDate secondsAgo];
+                
+                //만약 마지막 체크인 한 지오펜스와 같다면 시간을 검사한다.
+                if([basket.basketID isEqualToString:lastCheckInBasketID]){
+                    if(timeDuration > GVALUE.checkInTimeFiler) { // 만약 24시간이 지났다면..
+                        // 새롭게 해당 지오펜스 체크인 한다.
+                        [self checkIn:basket];
+                    }
+                }
+                //만약 마지막 체크인 한 지오펜스와 다르다면
+                else {
+                    // 새롭게 해당 지오펜스 체크인 한다.
+                    [self checkIn:basket];
+                }
+                
+            }
+            // 만약 새로 체크인 하는 지오펜스 일 경우는
+            else {
+                // 새롭게 해당 지오펜스 체크인 한다.
+                [self checkIn:basket];
+            }
+            
+            break; // 진행하던 루프를 종료한다.
+        }
+    }
+}
+
+
+
+//- (void)checkGeoFence
+//{
+//    for(Docbasket *basket in GVALUE.geoFenceBaskets)
+//    {
+//        // 만약에 현재 위치의 지오펜스가 존재한다면
+//        if([basket.region containsCoordinate:GVALUE.currentLocation.coordinate])
+//        {
+//            
+//            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"basketID == %@", basket.basketID];
+//            NSArray *filteredArray = [GVALUE.lastCheckInBaskets filteredArrayUsingPredicate:predicate];
+//            NSLog(@"filteredArray = %@", filteredArray);
+//            
+//            if(!IsEmpty(filteredArray)){
+//                for( Docbasket *tmpBasket in filteredArray){
+//                    
+//                }
+//                double timeDuration = [lastCheckInBasket.checkInDate secondsAgo];
+//                
+//                if([basket.basketID isEqualToString:lastCheckInBasketID]){
+//                    if(timeDuration > GVALUE.checkInTimeFiler) { // 만약 24시간이 지났다면..
+//                        // 새롭게 해당 지오펜스 체크인 한다.
+//                        [self checkIn:basket];
+//                    }
+//                }
+//                
+//            } else {
+//                
+//            }
+//            
+//            
+//            
+//            
+//        }
+//    }
+//}
+//
+////            if(IsEmpty(GVALUE.lastCheckInBaskets)){
+////                Docbasket *lastCheckInBasket = GVALUE.lastCheckInBasket;
+////                if(!IsEmpty(lastCheckInBasket)) {
+////                    NSString *lastCheckInBasketID = lastCheckInBasket.basketID;
+//double timeDuration = [lastCheckInBasket.checkInDate secondsAgo];
+////
+////                    //만약 마지막 체크인 한 지오펜스와 같다면 시간을 검사한다.
+////                    if([basket.basketID isEqualToString:lastCheckInBasketID]){
+////                        if(timeDuration > GVALUE.checkInTimeFiler) { // 만약 24시간이 지났다면..
+////                            // 새롭게 해당 지오펜스 체크인 한다.
+////                            [self checkIn:basket];
+////                        }
+////                    }
+////                    //만약 마지막 체크인 한 지오펜스와 다르다면
+////                    else {
+////                        // 새롭게 해당 지오펜스 체크인 한다.
+////                        [self checkIn:basket];
+////                    }
+////
+////                }
+////                // 만약 새로 체크인 하는 지오펜스 일 경우는
+////                else {
+////                    // 새롭게 해당 지오펜스 체크인 한다.
+////                    [self checkIn:basket];
+////                }
+////
+////                //break; // 진행하던 루프를 종료한다.
+////            } else {
+////
+//////                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"basketID == %@", basket.basketID];
+//////                NSArray *filteredArray = [GVALUE.lastCheckInBaskets filteredArrayUsingPredicate:predicate];
+//////                if(!IsEmpty(filteredArray)){
+//////
+//////                    for(Docbasket *lastCheckInBasket in filteredArray){
+//////
+//////                        double timeDuration = [lastCheckInBasket.checkInDate secondsAgo];
+//////                        if(timeDuration > GVALUE.checkInTimeFiler) { // 만약 24시간이 지났다면..
+//////                            // 새롭게 해당 지오펜스 체크인 한다.
+//////                            [self checkIn:basket];
+//////                        }
+//////
+//////                    }
+//////
+//////                }
+////
+////                for(Docbasket *tmpBasket in GVALUE.lastCheckInBaskets){
+////                    if([basket.basketID isEqualToString:tmpBasket.basketID]){
+////                        double timeDuration = [tmpBasket.checkInDate secondsAgo];
+////                        if(timeDuration > GVALUE.checkInTimeFiler) { // 만약 24시간이 지났다면..
+////                            // 새롭게 해당 지오펜스 체크인 한다.
+////                            [self checkIn:basket];
+////                        }
+////                    }
+////                }
+////             }
+////            //break; // 진행하던 루프를 종료한다.
+////
+////        }
+////    }
+////}
+
+
 
 /*
  처음 앱을 실행하면 City Zip  DB가 있는지 확인하고 있으면 GVALUE.baskets에 로드 한다. 

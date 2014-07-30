@@ -353,7 +353,7 @@
                                             <outlet property="startLabel" destination="nXH-o4-Pku" id="TZs-yV-uDJ"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell appearanceType="aqua" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="applyCell" rowHeight="70" id="SnF-oC-KKw">
+                                    <tableViewCell appearanceType="aqua" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="applyCell" rowHeight="70" id="SnF-oC-KKw" customClass="DBApplyTableViewCell">
                                         <rect key="frame" x="0.0" y="265" width="320" height="70"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SnF-oC-KKw" id="EVN-IJ-DWY">
@@ -361,7 +361,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button appearanceType="aqua" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="niR-oE-l3Q">
-                                                    <rect key="frame" x="58" y="10" width="205" height="49"/>
+                                                    <rect key="frame" x="58" y="10" width="205" height="38"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="21"/>
                                                     <state key="normal" title="Apply">
@@ -372,8 +372,102 @@
                                                         <action selector="apply:" destination="35p-xH-YcG" eventType="touchUpInside" id="tKb-3j-2R2"/>
                                                     </connections>
                                                 </button>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hP0-Xm-uyZ">
+                                                    <rect key="frame" x="54" y="37" width="213" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="10"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="UserID" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OEc-Vn-MIy">
+                                                    <rect key="frame" x="54" y="49" width="213" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="10"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="applyButon" destination="niR-oE-l3Q" id="5eB-e8-Q2J"/>
+                                            <outlet property="userIDLabel" destination="OEc-Vn-MIy" id="fLv-eK-NTF"/>
+                                            <outlet property="versionLabel" destination="hP0-Xm-uyZ" id="N7k-yB-f2Q"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell appearanceType="aqua" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="controlCell3" rowHeight="70" id="Mj1-3u-IyZ" customClass="DBControlTableViewCell">
+                                        <rect key="frame" x="0.0" y="335" width="320" height="70"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Mj1-3u-IyZ" id="aby-i9-MUZ">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <slider appearanceType="aqua" opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="20" minValue="20" maxValue="1000" translatesAutoresizingMaskIntoConstraints="NO" id="b0g-8O-2ob">
+                                                    <rect key="frame" x="55" y="25" width="210" height="31"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <connections>
+                                                        <action selector="sliderChanged:" destination="35p-xH-YcG" eventType="valueChanged" id="tfT-Us-h8Y"/>
+                                                    </connections>
+                                                </slider>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Geofence radius" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k0i-3h-9pE">
+                                                    <rect key="frame" x="35" y="6" width="158" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ag4-HB-83H">
+                                                    <rect key="frame" x="240" y="6" width="60" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="60" id="Nix-J6-fxU"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                                                    <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20m" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f2u-QF-hpy">
+                                                    <rect key="frame" x="57" y="49" width="69" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="69" id="42N-tW-VNO"/>
+                                                        <constraint firstAttribute="height" constant="21" id="7Ut-MH-OPf"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1km" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="58Q-0g-fi6">
+                                                    <rect key="frame" x="231" y="49" width="32" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="32" id="9EX-kf-3aK"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="58Q-0g-fi6" firstAttribute="baseline" secondItem="f2u-QF-hpy" secondAttribute="baseline" id="9dy-si-d7n"/>
+                                                <constraint firstItem="b0g-8O-2ob" firstAttribute="leading" secondItem="f2u-QF-hpy" secondAttribute="leading" id="AFE-vq-4g1"/>
+                                                <constraint firstItem="f2u-QF-hpy" firstAttribute="top" secondItem="58Q-0g-fi6" secondAttribute="top" id="AKx-1e-U4H"/>
+                                                <constraint firstItem="f2u-QF-hpy" firstAttribute="top" secondItem="k0i-3h-9pE" secondAttribute="bottom" constant="22" id="ErS-iQ-lNj"/>
+                                                <constraint firstAttribute="bottom" secondItem="58Q-0g-fi6" secondAttribute="bottom" id="Gte-1M-YjG"/>
+                                                <constraint firstItem="k0i-3h-9pE" firstAttribute="baseline" secondItem="ag4-HB-83H" secondAttribute="baseline" id="JTp-fl-6EK"/>
+                                                <constraint firstItem="b0g-8O-2ob" firstAttribute="leading" secondItem="aby-i9-MUZ" secondAttribute="leading" constant="57" id="K8t-du-U4B"/>
+                                                <constraint firstItem="k0i-3h-9pE" firstAttribute="leading" secondItem="aby-i9-MUZ" secondAttribute="leading" constant="35" id="YOU-lO-cJn"/>
+                                                <constraint firstAttribute="trailing" secondItem="ag4-HB-83H" secondAttribute="trailing" constant="20" symbolic="YES" id="fyV-gl-3i7"/>
+                                                <constraint firstItem="58Q-0g-fi6" firstAttribute="trailing" secondItem="b0g-8O-2ob" secondAttribute="trailing" id="lCt-SD-KVj"/>
+                                                <constraint firstItem="ag4-HB-83H" firstAttribute="leading" secondItem="k0i-3h-9pE" secondAttribute="trailing" constant="47" id="nMH-gd-GAn"/>
+                                                <constraint firstItem="b0g-8O-2ob" firstAttribute="top" secondItem="aby-i9-MUZ" secondAttribute="top" constant="25" id="pVh-Po-i4B"/>
+                                                <constraint firstItem="b0g-8O-2ob" firstAttribute="centerX" secondItem="aby-i9-MUZ" secondAttribute="centerX" id="qM1-YP-N9X"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="controlSlider" destination="b0g-8O-2ob" id="9mE-cs-VCD"/>
+                                            <outlet property="controlTitle" destination="k0i-3h-9pE" id="PKK-8O-5Gj"/>
+                                            <outlet property="controlValue" destination="ag4-HB-83H" id="x8o-tg-OS3"/>
+                                            <outlet property="endLabel" destination="58Q-0g-fi6" id="qd2-9T-M7V"/>
+                                            <outlet property="startLabel" destination="f2u-QF-hpy" id="KXF-iq-4ye"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>

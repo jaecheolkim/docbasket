@@ -39,15 +39,50 @@
         self.regionMonitoringDistance = 1;  // 1000m
         self.findBasketsRange = 10000.0; // 10000m (10km)
         self.checkInTimeFiler = 60*60*24; // 24시간 이내에 동일 지오펜스에 체크인 시도하면 체크인 안 됨.
-        
+        self.GEOFenceRadius = 20;
         formatter = [[NSDateFormatter alloc] init];
 
     }
     return self;
 }
 
+#pragma mark - Setter / Getter
 
-#pragma mark - public Methods
+- (void)saveInfo
+{
+    NSMutableDictionary *info = [[NSMutableDictionary alloc] init];
+    [info setObject:self.currentLocation forKey:@"currentLocation"];
+    [info setObject:self.lastLocation forKey:@"lastLocation"];
+    [info setObject:self.lastAPICallLocation forKey:@"lastAPICallLocation"];
+    [DBUtil saveDic:info withKey:@"savedInfo"];
+}
+
+- (void)loadInfo
+{
+    NSMutableDictionary *info = [DBUtil getDic:@"savedInfo"];
+    if(!IsEmpty(info)){
+        self.currentLocation = info[@"currentLocation"];
+        self.lastLocation = info[@"lastLocation"];
+        self.lastAPICallLocation = info[@"lastAPICallLocation"];
+    }
+}
+
+//- (void)setCurrentLocation:(CLLocation *)currentLocation
+//{
+//    NSMutableDictionary *info = [[NSMutableDictionary alloc] init];
+//    [info setObject:self.currentLocation forKey:@"currentLocation"];
+//    [DBUtil saveDic:info withKey:@"savedInfo"];
+//}
+//
+//- (CLLocation *)currentLocation
+//{
+//    CLLocation *location = [[CLLocation alloc] init];
+//    NSMutableDictionary *info = [DBUtil getDic:@"savedInfo"];
+//    if(!IsEmpty(info)){
+//        location = info[@"currentLocation"];
+//    }
+//    return location;
+//}
 
 - (void)setUserID:(NSString *)UserID
 {
@@ -121,6 +156,8 @@
     return (int)[[self readObjectFromDefault:KEY_BADGE_VALUE] integerValue];
 }
 
+
+#pragma mark - public Methods
 
 - (void)setPushNotificationSetting:(int)pushNotificationSetting
 {

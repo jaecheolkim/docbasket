@@ -12,6 +12,7 @@
 #import "Docbasket.h"
 #import "UIView+MGBadgeView.h"
 #import "DateTools.h"
+#import "DBUtil.h" 
 
 //#ifdef DEBUG
 #define NSLog( s, ... ) NSLog( @"\n===========================================================================\nObject : <%p %@:(%d)>\nMethod : %s\nLog    : %@\n===========================================================================\n\n", self, [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, __PRETTY_FUNCTION__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
@@ -65,6 +66,7 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, assign) double findBasketsRange; // baskets.json API 호출할 때 현재 위치 기준 쿼리할 반경  [단위 = 미터 : 디폴트 10000 (10km)]
 @property (nonatomic, assign) double checkInTimeFiler;
 
+@property (nonatomic, assign) double GEOFenceRadius;
 
 @property (nonatomic, strong) NSMutableArray *lastCheckInBaskets;
 @property (nonatomic, strong) Docbasket *lastCheckInBasket;
@@ -114,6 +116,10 @@ static inline id ObjectOrNull(id object)
 - (void)addLog:(NSString*)log;
 - (NSString*)timestamp;
 - (double)getSecond:(NSString*)time;
+
+
+- (void)saveInfo;
+- (void)loadInfo;
 
 @end
 

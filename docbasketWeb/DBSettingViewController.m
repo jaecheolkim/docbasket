@@ -12,6 +12,8 @@
 #import "UIImageView+addOn.h"
 #import "DocbasketService.h"
 #import "UIAlertView+Blocks.h"
+#import "DBControlTableViewCell.h"
+#import "DBApplyTableViewCell.h"
 
 #define LINE_COLOR RGBA_COLOR(76.0, 76.0, 76.0, 0.5)
 #define TEXT_COLOR RGB_COLOR(54.0, 54.0, 54.0)
@@ -22,7 +24,8 @@
     DBControlTableViewCell *monitoringRangeCell;
     DBControlTableViewCell *findBasketRangeCell;
     DBControlTableViewCell *checkInFilterCell;
-    UITableViewCell *applyCell;
+    DBControlTableViewCell *geoFenceRadiusCell;
+    DBApplyTableViewCell *applyCell;
     
 }
 - (IBAction)sliderChanged:(id)sender;
@@ -53,8 +56,9 @@
     monitoringRangeCell = (DBControlTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"controlCell0"];
     findBasketRangeCell = (DBControlTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"controlCell1"];
     checkInFilterCell = (DBControlTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"controlCell2"];
+    geoFenceRadiusCell = (DBControlTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:@"controlCell3"];
     
-    applyCell = [self.tableView dequeueReusableCellWithIdentifier:@"applyCell"];
+    applyCell = (DBApplyTableViewCell*)[self.tableView dequeueReusableCellWithIdentifier:@"applyCell"];
     
     monitoringRangeCell.controlSlider.value = GVALUE.regionMonitoringDistance;
     monitoringRangeCell.controlValue.text = [NSString stringWithFormat:@"%0.1f",GVALUE.regionMonitoringDistance];
@@ -64,6 +68,9 @@
     
     checkInFilterCell.controlSlider.value = GVALUE.checkInTimeFiler;
     checkInFilterCell.controlValue.text = [NSString stringWithFormat:@"%0.f",GVALUE.checkInTimeFiler];
+    
+    geoFenceRadiusCell.controlSlider.value = GVALUE.GEOFenceRadius;
+    geoFenceRadiusCell.controlValue.text = [NSString stringWithFormat:@"%0.f",GVALUE.GEOFenceRadius];
     
     // Do any additional setup after loading the view.
     
@@ -83,20 +90,23 @@
     NSDictionary *infoDictionary = [[NSBundle mainBundle]infoDictionary];
     
     NSString *build = infoDictionary[(NSString*)kCFBundleVersionKey];
-    NSString *bundleName = infoDictionary[(NSString *)kCFBundleNameKey];
+   // NSString *bundleName = infoDictionary[(NSString *)kCFBundleNameKey];
     
-    NSLog(@" App build = %@ / bundleName = %@", build, bundleName);
-
-    NSLog(@"USer ID = %@", GVALUE.userID);
+//    NSLog(@" App build = %@ / bundleName = %@", build, bundleName);
+//
+//    NSLog(@"USer ID = %@", GVALUE.userID);
+//    
+//    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 510, 200, 22)];
+//    versionLabel.backgroundColor = [UIColor clearColor];
+//    versionLabel.textAlignment = NSTextAlignmentCenter;
+//    versionLabel.font = [UIFont fontWithName:@"HelveticaNeue-light" size:9];
+//    versionLabel.numberOfLines = 2;
+//    versionLabel.textColor = [UIColor colorWithRed:208.0/255.0 green:208.0/255.0 blue:205.0/255.0 alpha:1.0];
+//    versionLabel.text = [NSString stringWithFormat:@"Version %@ \n %@", build, GVALUE.userID];//@"Version 1.0";
+//    [self.view addSubview:versionLabel];
     
-    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 510, 200, 22)];
-    versionLabel.backgroundColor = [UIColor clearColor];
-    versionLabel.textAlignment = NSTextAlignmentCenter;
-    versionLabel.font = [UIFont fontWithName:@"HelveticaNeue-light" size:9];
-    versionLabel.numberOfLines = 2;
-    versionLabel.textColor = [UIColor colorWithRed:208.0/255.0 green:208.0/255.0 blue:205.0/255.0 alpha:1.0];
-    versionLabel.text = [NSString stringWithFormat:@"Version %@ \n %@", build, GVALUE.userID];//@"Version 1.0";
-    [self.view addSubview:versionLabel];
+    applyCell.versionLabel.text = [NSString stringWithFormat:@"Version %@ ", build];
+    applyCell.userIDLabel.text = [NSString stringWithFormat:@"UserID : %@ ",  GVALUE.userID];
 
 }
 
@@ -159,7 +169,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) return 2;
     else if (section == 1) return 2;
-    else if (section == 2) return 4;
+    else if (section == 2) return 5;
     return 0;
 }
 
@@ -252,19 +262,12 @@
     static int LOGINOUT_TAG             = 1010;
     static int AUTOALBUMSCAN_TAG        = 1020;
     static int PUSHNOTI_TAG             = 1030;
-    static int PIXBEEINTRO_TAG          = 1040;
-    static int RATEPIXBEE_TAG           = 1050;
-    static int TERMOFUSE_TAG            = 1060;
     static int PUSHNOTICONTROL_TAG      = 1070;
-//    static int AUTOALBUMSCANCONTROL_TAG = 1080;
     
     static NSString *LoginNameCell = @"LoginNameCell";
     static NSString *LoginOutCell = @"LoginOutCell";
     static NSString *AutoAlbumScanCell = @"AutoAlbumScanCell";
     static NSString *PushNotiCell = @"PushNotiCell";
-    static NSString *PixbeeIntroCell = @"PixbeeIntroCell";
-    static NSString *RatePixbeeCell = @"RatePixbeeCell";
-    static NSString *TermOfUseCell = @"TermOfUseCell";
     
     UITableViewCell *cell;
     
@@ -415,62 +418,19 @@
     }
     else if(indexPath.section == 2){
         if (indexPath.row == 0) {
-            cell = monitoringRangeCell;//(DBControlTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"controlCell0"];
-            if (cell == nil) {
-//                cell = [[DBControlTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:PixbeeIntroCell];
-//                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                
-//                cell = _controlCell;
-            }
- 
-            
-//            NSString *title = @"DocBasket Intro";
-//            if((UILabel *)[cell.contentView viewWithTag:PIXBEEINTRO_TAG]) {
-//                [(UILabel *)[cell.contentView viewWithTag:PIXBEEINTRO_TAG] setText:title];
-//            } else {
-//                UILabel *label = [self getTitleLabel:title tag:PIXBEEINTRO_TAG color:TEXT_COLOR];
-//                [cell.contentView addSubview:label];
-//            }
-            
+            cell = monitoringRangeCell;
         }
         else if (indexPath.row == 1) {
-//            cell = [tableView dequeueReusableCellWithIdentifier:RatePixbeeCell];
-//            if (cell == nil) {
-//                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:RatePixbeeCell];
-//                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//            }
-//            
-//            NSString *title = @"Rate DocBasket";
-//            if((UILabel *)[cell.contentView viewWithTag:RATEPIXBEE_TAG]) {
-//                [(UILabel *)[cell.contentView viewWithTag:RATEPIXBEE_TAG] setText:title];
-//            } else {
-//                UILabel *label = [self getTitleLabel:title tag:RATEPIXBEE_TAG color:TEXT_COLOR];
-//                [cell.contentView addSubview:label];
-//            }
-            cell = findBasketRangeCell;//(DBControlTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"controlCell1"];
+            cell = findBasketRangeCell;
         }
         
         else if (indexPath.row == 2) {
-//            cell = [tableView dequeueReusableCellWithIdentifier:TermOfUseCell];
-//            if (cell == nil) {
-//                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TermOfUseCell];
-//                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//            }
-//            
-//            
-//            NSString *title = @"Term Of Use";
-//            if((UILabel *)[cell.contentView viewWithTag:TERMOFUSE_TAG]) {
-//                [(UILabel *)[cell.contentView viewWithTag:TERMOFUSE_TAG] setText:title];
-//            } else {
-//                UILabel *label = [self getTitleLabel:title tag:TERMOFUSE_TAG color:TEXT_COLOR];
-//                [cell.contentView addSubview:label];
-//            }
-            cell = checkInFilterCell;//(DBControlTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"controlCell2"];
+            cell = checkInFilterCell;
         }
         else if(indexPath.row == 3) {
+            cell = geoFenceRadiusCell;
+        }
+        else if(indexPath.row == 4) {
             cell = applyCell;
         }
     }
@@ -571,6 +531,11 @@
             NSLog(@"Check-in filter = %f", slider.value);
             checkInFilterCell.controlValue.text = [NSString stringWithFormat:@"%0.f", slider.value];
             GVALUE.checkInTimeFiler = slider.value;
+            break;
+        case 3:
+            NSLog(@"geoFence radius = %f", slider.value);
+            geoFenceRadiusCell.controlValue.text = [NSString stringWithFormat:@"%0.f", slider.value];
+            GVALUE.GEOFenceRadius = slider.value;
             break;
         default:
             break;

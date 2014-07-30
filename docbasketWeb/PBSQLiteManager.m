@@ -483,12 +483,12 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
 - (void)saveLastCheckInTime:(NSString*)basketID
 {
     NSString *query = [NSString stringWithFormat:@"SELECT * FROM CheckIn WHERE basketID == '%@' ;", basketID];
-    NSArray *result = [[PBSQLiteManager sharedInstance] getRowsForQuery:query];
+    NSArray *result = [SQLManager getRowsForQuery:query];
     NSLog(@"result : %@", result);
     
     if(!IsEmpty(result)){
-        query = [NSString stringWithFormat:@"UPDATE CheckIn SET timestamp =  datetime('now')  WHERE basketID == '%@';", basketID];
-        NSError *error = [SQLManager doQuery:query];
+        NSString *updateQuery = [NSString stringWithFormat:@"UPDATE CheckIn SET timestamp =  datetime('now')  WHERE basketID == '%@';", basketID];
+        NSError *error = [SQLManager doQuery:updateQuery];
         if (error != nil) {
             NSLog(@"Error: %@",[error localizedDescription]);
         }
@@ -507,7 +507,7 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
         
     }
     
-    result = [[PBSQLiteManager sharedInstance] getRowsForQuery:query];
+    result = [SQLManager getRowsForQuery:query];
     NSLog(@"result : %@", result);
 }
 
@@ -525,12 +525,6 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
     
     return timeDuration;
 }
-
-
-
-
-
-
 
 
 - (NSError*)openDatabase {

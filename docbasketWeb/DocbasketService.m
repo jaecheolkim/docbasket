@@ -45,6 +45,11 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ServiceEventHandler:)
                                                      name:@"ServiceEventHandler" object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+        
+
     }
     return self;
 }
@@ -53,6 +58,18 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ServiceEventHandler" object:nil];
 }
+
+-(void)applicationEnterBackground
+{
+    
+    NSLog(@"applicationEnterBackground");
+}
+
+-(void)applicationEnterForeground
+{
+    NSLog(@"applicationEnterForeground");
+}
+
 
 // 시나리오
 // [0]  DB및 Location Mananger 구동 및 위치가 잡히면 City Zip 데이터를 가져와 DB에 저장한다.
@@ -481,60 +498,60 @@
 
 - (void)loadBasketsFromDB
 {
-    [DocbaketAPIClient getZipBasket:^(id result) {
-        if(!IsEmpty(result)){
-            __block int count = (int)[result count];
-            for(NSDictionary *jsonData in result) {
-                [SQLManager syncDocBaskets2DB:jsonData completionHandler:^(BOOL success) {
-                    if(success){
-                        count--;
-                        
-                        if(count == 0){
-                            //[self loadBasketsOnMap];
-                        }
-                    } else {
-                        
-                    }
-                }];
-            }
-        } else {
-            NSLog(@"Error ");
-        }
-    }];
+//    [DocbaketAPIClient getZipBasket:^(id result) {
+//        if(!IsEmpty(result)){
+//            __block int count = (int)[result count];
+//            for(NSDictionary *jsonData in result) {
+//                [SQLManager syncDocBaskets2DB:jsonData completionHandler:^(BOOL success) {
+//                    if(success){
+//                        count--;
+//                        
+//                        if(count == 0){
+//                            //[self loadBasketsOnMap];
+//                        }
+//                    } else {
+//                        
+//                    }
+//                }];
+//            }
+//        } else {
+//            NSLog(@"Error ");
+//        }
+//    }];
 
     
     
-//    NSArray *baskets = [SQLManager getDocBasketsForQuery:@"SELECT * FROM Docbasket;"];
-//    if(!IsEmpty(baskets)){
-//        [GVALUE setBaskets:baskets];
-//        
-//        [self loadBasketsOnMap];
-//        
-//        // DB에 있는 걸로 맵 다시 정의
-//        // 만약 새로운 맵이 있다면
-//        
-//    } else {
-//        [DocbaketAPIClient getZipBasket:^(id result) {
-//            if(!IsEmpty(result)){
-//                __block int count = (int)[result count];
-//                for(NSDictionary *jsonData in result) {
-//                    [SQLManager syncDocBaskets2DB:jsonData completionHandler:^(BOOL success) {
-//                        if(success){
-//                            count--;
-//                            
-//                            if(count == 0){
-//                                [self loadBasketsOnMap];
-//                            }
-//                        } else {
-//                            
-//                        }
-//                    }];
-//                }
-//            } else {
-//                NSLog(@"Error ");
-//            }
-//        }];
-//    }
+    NSArray *baskets = [SQLManager getDocBasketsForQuery:@"SELECT * FROM Docbasket;"];
+    if(!IsEmpty(baskets)){
+        [GVALUE setBaskets:baskets];
+        
+        [self loadBasketsOnMap];
+        
+        // DB에 있는 걸로 맵 다시 정의
+        // 만약 새로운 맵이 있다면
+        
+    } else {
+        [DocbaketAPIClient getZipBasket:^(id result) {
+            if(!IsEmpty(result)){
+                __block int count = (int)[result count];
+                for(NSDictionary *jsonData in result) {
+                    [SQLManager syncDocBaskets2DB:jsonData completionHandler:^(BOOL success) {
+                        if(success){
+                            count--;
+                            
+                            if(count == 0){
+                                [self loadBasketsOnMap];
+                            }
+                        } else {
+                            
+                        }
+                    }];
+                }
+            } else {
+                NSLog(@"Error ");
+            }
+        }];
+    }
 
 
 }

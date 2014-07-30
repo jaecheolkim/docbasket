@@ -548,7 +548,7 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
                         
                         Docbasket *basket = [[Docbasket alloc] initWithAttributes:attributes];
                         [mutableBaskets addObject:basket];
-                        NSLog(@"Basket = %@", basket.title);
+                        //NSLog(@"Basket = %@", basket.title);
                         
                     }
                 }

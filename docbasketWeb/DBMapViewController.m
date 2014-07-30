@@ -606,11 +606,7 @@
     //NSLog(@"regionDidChangeAnimated");
     
     [self showNavigationBar:YES];
-    
-
-    
-    
-}
+ }
 
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
@@ -626,7 +622,7 @@
         
         NSString *image = findBasket.image;
         NSString *ext = nil;
-        UIImage *icon = [UIImage imageNamed:@"map.png"];//[UIImage imageNamed:@"RemoveRegion"];
+        UIImage *icon = [UIImage imageNamed:@"map.png"];
         NSString *MyURL = nil;
         
         if(!IsEmpty(image)){
@@ -707,19 +703,37 @@
 }
 
 
-- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
+//- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
+//    if([overlay isKindOfClass:[MKCircle class]]) {
+//        // Create the view for the radius overlay.
+//        MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
+//        circleView.strokeColor = [[UIColor grayColor] colorWithAlphaComponent:0.1];
+//        circleView.fillColor = [[UIColor yellowColor] colorWithAlphaComponent:0.05];
+//        
+//        return circleView;
+//    }
+//    
+//    return nil;
+//}
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id <MKOverlay>)overlay
+{
     if([overlay isKindOfClass:[MKCircle class]]) {
         // Create the view for the radius overlay.
-        MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
-        circleView.strokeColor = [[UIColor grayColor] colorWithAlphaComponent:0.2];
-        circleView.fillColor = [[UIColor yellowColor] colorWithAlphaComponent:0.1];
-        
+        MKCircleRenderer *circleView = [[MKCircleRenderer alloc] initWithOverlay:overlay];
+        circleView.strokeColor = [[UIColor grayColor] colorWithAlphaComponent:0.1];
+        circleView.fillColor = [[UIColor yellowColor] colorWithAlphaComponent:0.05];
+        circleView.lineWidth = 3.0;
+        //NSLog(@"line width = %0.2f", circleView.lineWidth);
         return circleView;
     }
     
     return nil;
 }
 
+- (void)mapView:(MKMapView *)mapView didAddOverlayRenderers:(NSArray *)renderers
+{
+    
+}
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)annotationView didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
 //    if([annotationView isKindOfClass:[RegionAnnotationView class]]) {

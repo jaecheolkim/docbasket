@@ -457,7 +457,7 @@
     if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) {
 
         CLCircularRegion *newRegion = [[CLCircularRegion alloc] initWithCenter:coord
-                                                                      radius:20
+                                                                      radius:GVALUE.GEOFenceRadius
                                                                   identifier:identifier];
         
         newRegion.notifyOnEntry = YES;
@@ -482,7 +482,7 @@
     CLCircularRegion *newRegion = nil;
     if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) {
         
-        newRegion = [[CLCircularRegion alloc] initWithCenter:coord radius:20 identifier:identifier];
+        newRegion = [[CLCircularRegion alloc] initWithCenter:coord radius:GVALUE.GEOFenceRadius identifier:identifier];
         
         newRegion.notifyOnEntry = YES;
         newRegion.notifyOnExit = NO;

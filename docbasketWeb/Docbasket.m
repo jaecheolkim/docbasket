@@ -104,7 +104,7 @@
 {
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(self.latitude, self.longitude);
     CLCircularRegion *newRegion = [[CLCircularRegion alloc] initWithCenter:coord
-                                                                    radius:20
+                                                                    radius:GVALUE.GEOFenceRadius
                                                                 identifier:self.basketID];
     return newRegion;
 }

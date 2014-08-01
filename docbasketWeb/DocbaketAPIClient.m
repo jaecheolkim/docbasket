@@ -501,7 +501,7 @@ static NSString * const DocbasketAPIBaseURLString = @"http://docbasket.com/";
 }
 
 //filter= created | invited | saved | public(default)
-+ (void)checkNewDocBaskets:(CLLocation *)currentLocation filter:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block
++ (void)checkNewDocBaskets:(CLLocation *)currentLocation filter:(NSString*)filter completionHandler:(void (^)(NSMutableArray *baskets))block
 {
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];

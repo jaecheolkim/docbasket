@@ -59,10 +59,10 @@
              //             NSLog(@"placemark %@",placemark);
              NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
              NSString *Address = IsEmpty(locatedAt)? @"" : locatedAt; // [[NSString alloc]initWithString:locatedAt];
-             NSString *Area = IsEmpty(placemark.locality) ? @"" : placemark.locality; //[[NSString alloc]initWithString:placemark.locality];
-             NSString *subLocality = IsEmpty(placemark.subLocality) ? @"" : placemark.subLocality; //[[NSString alloc]initWithString:(!IsEmpty(placemark.subLocality)?placemark.subLocality:@"")];
+//             NSString *Area = IsEmpty(placemark.locality) ? @"" : placemark.locality; //[[NSString alloc]initWithString:placemark.locality];
+//             NSString *subLocality = IsEmpty(placemark.subLocality) ? @"" : placemark.subLocality; //[[NSString alloc]initWithString:(!IsEmpty(placemark.subLocality)?placemark.subLocality:@"")];
              //NSString *Country = [[NSString alloc]initWithString:placemark.country];
-             NSString *Name = IsEmpty(placemark.name) ? @"" : placemark.name; //[[NSString alloc]initWithString:placemark.name];
+//             NSString *Name = IsEmpty(placemark.name) ? @"" : placemark.name; //[[NSString alloc]initWithString:placemark.name];
              //NSString *CountryArea = [NSString stringWithFormat:@"%@, %@", Area,Country];
              
              currentAddress = (!IsEmpty(Address))?Address : @"";
@@ -228,7 +228,7 @@
         
         // 마지막으로 baskets.json 호출 할 때 거리의 1/2이 지났을 때 baskets.json 다시 호출 해서 바스켓 새로 고침.
         distance = [newLocation distanceFromLocation:GVALUE.lastAPICallLocation];
-        if(fabs(distance) > GVALUE.findBasketsRange/2){
+        if(fabs(distance) > 50 ){ //GVALUE.findBasketsRange/2){
             GVALUE.lastLocation = GVALUE.currentLocation;
             GVALUE.currentLocation = newLocation;
             GVALUE.longitude = newLocation.coordinate.longitude;
@@ -238,11 +238,13 @@
                                newLocation.coordinate.latitude, newLocation.coordinate.longitude];
             [GVALUE addLog:event];
             
-            [DBKSERVICE checkGeoFence];
+//            [DBKSERVICE checkGeoFence];
+//            
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"ServiceEventHandler"
+//                                                                object:self
+//                                                              userInfo:@{@"Msg":@"locationServiceStarted", @"currentLocation":GVALUE.currentLocation}];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ServiceEventHandler"
-                                                                object:self
-                                                              userInfo:@{@"Msg":@"locationServiceStarted", @"currentLocation":GVALUE.currentLocation}];
+            [DBKSERVICE refreshLocation];
         }
         
         

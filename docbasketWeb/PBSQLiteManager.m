@@ -242,19 +242,13 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
             
         }
         
-        NSArray *baskets = [SQLManager getDocBasketsForQuery:@"SELECT * FROM Docbasket;"];
-        if(!IsEmpty(baskets)){
-            [GVALUE setBaskets:baskets];
-        }
+//        NSArray *baskets = [SQLManager getDocBasketsForQuery:@"SELECT * FROM Docbasket;"];
+//        if(!IsEmpty(baskets)){
+//            [GVALUE setBaskets:(NSMutableArray*)baskets];
+//        }
         
         block(YES);
         
-//        NSString *query = @"SELECT * FROM Docbasket;";
-//        NSArray *result = [SQLManager getRowsForQuery:query];
-//        if(!IsEmpty(result))
-//        {
-//            NSLog(@"%@ = %@",query, result);
-//        }
     } else {
         block(NO);
     }
@@ -327,9 +321,9 @@ void sqlite_distance(sqlite3_context *context, int argc, sqlite3_value **argv)
 }
 
 
-- (NSArray*)getDocBasketsForQuery:(NSString *)sql {
+- (NSMutableArray*)getDocBasketsForQuery:(NSString *)sql {
 	
-	NSMutableArray *resultsArray = [[NSMutableArray alloc] initWithCapacity:1];
+	NSMutableArray *resultsArray = [[NSMutableArray alloc] init];//[[NSMutableArray alloc] initWithCapacity:1];
 	
 	if (db == nil) {
 		[self openDatabase];

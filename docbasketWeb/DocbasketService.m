@@ -7,6 +7,7 @@
 //
 
 #import "DocbasketService.h"
+#import "NSMutableArray-merge.h"
 
 @interface DocbasketService ()
 {
@@ -34,9 +35,9 @@
     self = [super init];
     if (self){
         
-        NSTimeInterval time = 60.0;
+        
         self.locationUpdateTimer =
-        [NSTimer scheduledTimerWithTimeInterval:time
+        [NSTimer scheduledTimerWithTimeInterval:GVALUE.refreshIntervalTime
                                          target:self
                                        selector:@selector(refreshLocation)
                                        userInfo:nil
@@ -63,6 +64,8 @@
 {
     
     NSLog(@"applicationEnterBackground");
+    
+    [self syncCityZipToDB];
 }
 
 -(void)applicationEnterForeground
@@ -190,14 +193,14 @@
     }];
 }
 
-- (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block
+- (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSMutableArray *baskets))block
 {
-    [DocbaketAPIClient checkNewDocBaskets:nil filter:filter completionHandler:^(NSArray *baskets)
+    [DocbaketAPIClient checkNewDocBaskets:nil filter:filter completionHandler:^(NSMutableArray *baskets)
      {
          if(!IsEmpty(baskets)){
              block(baskets);
          } else {
-             block([NSArray array]);
+             block([NSMutableArray array]);
          }
      }];
     
@@ -209,36 +212,38 @@
 // [1] 처음에 네트웍에서 현재 위치 기준으로 바스킷 정보 가져오고 바스킷 DB에 저장한다. 기본 1000m반경
 - (void)checkNewBasket:(CLLocation *)currentLocation filter:(NSString*)filter completionHandler:(void (^)(BOOL success))block
 {
-    [DocbaketAPIClient checkNewDocBaskets:(CLLocation *)currentLocation filter:filter completionHandler:^(NSArray *baskets)
+    [DocbaketAPIClient checkNewDocBaskets:(CLLocation *)currentLocation filter:filter completionHandler:^(NSMutableArray *baskets)
      {
          if(!IsEmpty(baskets)){
-             
-             [GVALUE setBaskets:(NSMutableArray*)baskets];
-             
-             if(!IsEmpty(GVALUE.baskets)){
-                 __block int count = (int)[GVALUE.baskets count];
-                 for(Docbasket *basket in GVALUE.baskets) {
-                     [SQLManager syncDocBasket2DB:basket completionHandler:^(BOOL success) {
-                         
-                         count--;
-                         
-                         if(count == 0){
-                             block(success);
-                         }
-                         
-                     }];
+             @synchronized(GVALUE.baskets) {
+                
+#warning TODO
+//여기서 기존 Docbasket Array와 머지하는 로직 들어가야 함.
+                 //if(!IsEmpty(GVALUE.baskets))
+                 // 기존에 DB base의 Docbasket array가 있을 경우에는 API에서 가져온 basket과 머지한다.
+                 //   [GVALUE.baskets mergeWithArray:baskets allowDuplicateEntries:NO];
+                 //else
+                     [GVALUE setBaskets:(NSMutableArray*)baskets];
+                 
+                 
+                 if(!IsEmpty(GVALUE.baskets)){
+                     __block int count = (int)[GVALUE.baskets count];
+                     for(Docbasket *basket in GVALUE.baskets) {
+                         [SQLManager syncDocBasket2DB:basket completionHandler:^(BOOL success) {
+                             
+                             count--;
+                             
+                             if(count == 0){
+                                 block(success);
+                             }
+                             
+                         }];
+                     }
                  }
+                 
              }
-             
-             
-         } else {
-//             NSArray *dbBaskets = [SQLManager getDocBasketsForQuery:@"SELECT * FROM Docbasket;"];
-//             if(!IsEmpty(dbBaskets)){
-//                 [GVALUE setBaskets:(NSMutableArray*)dbBaskets];
-//             }
 
          }
-         
          
      }];
     
@@ -498,61 +503,40 @@
 
 - (void)loadBasketsFromDB
 {
-//    [DocbaketAPIClient getZipBasket:^(id result) {
-//        if(!IsEmpty(result)){
-//            __block int count = (int)[result count];
-//            for(NSDictionary *jsonData in result) {
-//                [SQLManager syncDocBaskets2DB:jsonData completionHandler:^(BOOL success) {
-//                    if(success){
-//                        count--;
-//                        
-//                        if(count == 0){
-//                            //[self loadBasketsOnMap];
-//                        }
-//                    } else {
-//                        
-//                    }
-//                }];
-//            }
-//        } else {
-//            NSLog(@"Error ");
-//        }
-//    }];
-
-    
-    
     NSArray *baskets = [SQLManager getDocBasketsForQuery:@"SELECT * FROM Docbasket;"];
     if(!IsEmpty(baskets)){
-        [GVALUE setBaskets:baskets];
-        
-        [self loadBasketsOnMap];
-        
-        // DB에 있는 걸로 맵 다시 정의
-        // 만약 새로운 맵이 있다면
-        
-    } else {
-        [DocbaketAPIClient getZipBasket:^(id result) {
-            if(!IsEmpty(result)){
-                __block int count = (int)[result count];
-                for(NSDictionary *jsonData in result) {
-                    [SQLManager syncDocBaskets2DB:jsonData completionHandler:^(BOOL success) {
-                        if(success){
-                            count--;
-                            
-                            if(count == 0){
-                                [self loadBasketsOnMap];
-                            }
-                        } else {
-                            
-                        }
-                    }];
-                }
-            } else {
-                NSLog(@"Error ");
-            }
-        }];
-    }
+        @synchronized(GVALUE.baskets) {
+            
+            [GVALUE setBaskets:(NSMutableArray *)baskets];
+            
+            [self loadBasketsOnMap];
+        }
 
+    }
+}
+
+- (void)syncCityZipToDB
+{
+    [DocbaketAPIClient getZipBasket:^(id result) {
+        if(!IsEmpty(result)){
+            __block int count = (int)[result count];
+            for(NSDictionary *jsonData in result) {
+                [SQLManager syncDocBaskets2DB:jsonData completionHandler:^(BOOL success) {
+                    if(success){
+                        count--;
+                        
+                        if(count == 0){
+                            //[self loadBasketsOnMap];
+                        }
+                    } else {
+                        
+                    }
+                }];
+            }
+        } else {
+            NSLog(@"Error ");
+        }
+    }];
 
 }
 
@@ -560,7 +544,7 @@
 
 - (void)loadBasketsOnMap
 {
-    NSLog(@"Basket count = %d", (int)[GVALUE.baskets count]);
+    NSLog(@"loadBasketsOnMap Basket count = %d", (int)[GVALUE.baskets count]);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"MapViewEventHandler"
                                                         object:self
                                                       userInfo:@{@"Msg":@"refreshMap"}];

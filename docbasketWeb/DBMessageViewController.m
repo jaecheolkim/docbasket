@@ -46,9 +46,9 @@
     
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MessageMenuEventHandler:)
                                                  name:@"MessageMenuEventHandler" object:nil];

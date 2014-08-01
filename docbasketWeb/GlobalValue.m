@@ -36,10 +36,12 @@
         self.LogList = [NSMutableArray array];
         self.lastCheckInBaskets= [NSMutableArray array];
         
+        self.refreshIntervalTime = 60.0;
+        
         self.regionMonitoringDistance = 1;  // 1000m
         self.findBasketsRange = 10000.0; // 10000m (10km)
         self.checkInTimeFiler = 60*60*24; // 24시간 이내에 동일 지오펜스에 체크인 시도하면 체크인 안 됨.
-        self.GEOFenceRadius = 20;
+        self.GEOFenceRadius = 100;
         formatter = [[NSDateFormatter alloc] init];
 
     }

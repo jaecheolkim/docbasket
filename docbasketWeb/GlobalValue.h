@@ -62,6 +62,7 @@ static inline id ObjectOrNull(id object)
 @property (nonatomic, strong) NSString *token;
 @property (nonatomic, strong) NSString *notiBasketID;
 
+@property (nonatomic, assign) NSTimeInterval refreshIntervalTime;
 @property (nonatomic, assign) double regionMonitoringDistance; // 현재 위치에서의 지오팬싱 모니터링 반경 : 1km = 1.0 단위임. default = 0.1 (100m)
 @property (nonatomic, assign) double findBasketsRange; // baskets.json API 호출할 때 현재 위치 기준 쿼리할 반경  [단위 = 미터 : 디폴트 10000 (10km)]
 @property (nonatomic, assign) double checkInTimeFiler;

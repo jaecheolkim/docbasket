@@ -31,7 +31,7 @@
 - (void)refreshLocation;
 - (void)loadBasketsOnMap;
 
-- (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSArray *baskets))block;
+- (void)checkMyBasket:(NSString*)filter completionHandler:(void (^)(NSMutableArray *baskets))block;
 - (void)checkMessage:(void (^)(NSArray *messages))block;
 - (void)getNewGeoFences;
 

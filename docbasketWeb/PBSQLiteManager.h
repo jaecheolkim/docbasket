@@ -38,7 +38,7 @@ enum errorCodes {
 - (void)syncDocBaskets2DB:(NSDictionary*)docbaskets completionHandler:(void (^)(BOOL success))block;
 - (void)syncDocBasket2DB:(Docbasket*)basket completionHandler:(void (^)(BOOL success))block;
 
-- (NSArray*)getDocBasketsForQuery:(NSString *)sql;
+- (NSMutableArray*)getDocBasketsForQuery:(NSString *)sql;
  
 - (void)getRegionBasketsDistance:(double)distance latitude:(double)latitude longitude:(double)longitude;
 - (void)getRegionBasketsDistance:(double)distance completionHandler:(void (^)(BOOL success))block;

@@ -331,39 +331,44 @@
     dispatch_async(dispatch_get_main_queue(), ^{
  
         [self removeAllAnnotations];
- 
-        for(Docbasket *basket in GVALUE.baskets){
-            if(!IsEmpty(basket)){
-
-                CLCircularRegion * newRegion = [basket region];
-                [self addPin:newRegion];
-
+        @synchronized(GVALUE.baskets) {
+            for(Docbasket *basket in GVALUE.baskets){
+                if(!IsEmpty(basket)){
+                    
+                    CLCircularRegion * newRegion = [basket region];
+                    [self addPin:newRegion];
+                    
+                }
             }
+            
+            [self refreshTableView];
         }
-        
-        [self refreshTableView];
+
     });
 
 }
 
 - (NSArray *)sortedBaskets
 {
-    NSArray *sortedBasket;
-    sortedBasket = [GVALUE.baskets sortedArrayUsingComparator:^(Docbasket *firstBasket, Docbasket *secondBasket) {
-        
-        CLLocation *firstLocation = [[CLLocation alloc] initWithLatitude:firstBasket.latitude longitude:firstBasket.longitude];
-        CLLocation *secondLocation = [[CLLocation alloc] initWithLatitude:secondBasket.latitude longitude:secondBasket.longitude];
-        CLLocationDistance firstDistance = [GVALUE.currentLocation distanceFromLocation:firstLocation];
-        CLLocationDistance secondDistance = [GVALUE.currentLocation distanceFromLocation:secondLocation];
 
-        if (firstDistance < secondDistance)
-            return (NSComparisonResult)NSOrderedAscending;
-        else if (firstDistance > secondDistance)
-            return (NSComparisonResult)NSOrderedDescending;
-        else
-            return (NSComparisonResult)NSOrderedSame;
-    }];
     
+    NSArray *sortedBasket;
+    @synchronized(GVALUE.baskets) {
+        sortedBasket = [GVALUE.baskets sortedArrayUsingComparator:^(Docbasket *firstBasket, Docbasket *secondBasket) {
+            
+            CLLocation *firstLocation = [[CLLocation alloc] initWithLatitude:firstBasket.latitude longitude:firstBasket.longitude];
+            CLLocation *secondLocation = [[CLLocation alloc] initWithLatitude:secondBasket.latitude longitude:secondBasket.longitude];
+            CLLocationDistance firstDistance = [GVALUE.currentLocation distanceFromLocation:firstLocation];
+            CLLocationDistance secondDistance = [GVALUE.currentLocation distanceFromLocation:secondLocation];
+            
+            if (firstDistance < secondDistance)
+                return (NSComparisonResult)NSOrderedAscending;
+            else if (firstDistance > secondDistance)
+                return (NSComparisonResult)NSOrderedDescending;
+            else
+                return (NSComparisonResult)NSOrderedSame;
+        }];
+    }
     return sortedBasket;
 
 }
@@ -373,9 +378,12 @@
     if(!self.tableView.hidden)
     {
         NSArray *sortedBasketArray = [self sortedBaskets];
-        [GVALUE setBaskets:sortedBasketArray];
         
-        [self.tableView reloadData];
+        @synchronized(GVALUE.baskets) {
+            [GVALUE setBaskets:(NSMutableArray*)sortedBasketArray];
+            [self.tableView reloadData];
+        }
+        
     }
 
 
@@ -840,7 +848,12 @@
         [cell.imageView.layer setCornerRadius:8];
     }
     
-    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    Docbasket *basket;
+    
+    @synchronized(GVALUE.baskets) {
+        basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    }
+    //Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
     if(!IsEmpty(basket)){
         
         CLLocation *cLocation = [[CLLocation alloc] initWithLatitude:basket.latitude longitude:basket.longitude];
@@ -911,7 +924,11 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    Docbasket *basket;
+    @synchronized(GVALUE.baskets) {
+        basket = [GVALUE.baskets objectAtIndex:indexPath.row];
+    }
+    //Docbasket *basket = [GVALUE.baskets objectAtIndex:indexPath.row];
     if(!IsEmpty(basket)){
         
         //        SCQRGeneratorViewController *viewcontroller = [self.storyboard instantiateViewControllerWithIdentifier:@"SCQRGeneratorViewController"];
@@ -958,17 +975,19 @@
             //            [_testArray[cellIndexPath.section] removeObjectAtIndex:cellIndexPath.row];
             //            [self.tableView deleteRowsAtIndexPaths:@[cellIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
             
-            
-            NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
-            Docbasket *basket = [GVALUE.baskets objectAtIndex:cellIndexPath.row];
-            
-            [DocbaketAPIClient deleteBasket:basket.basketID completionHandler:^(BOOL success) {
-                if(success){
-                    [cell hideUtilityButtonsAnimated:YES];
-                    [GVALUE.baskets removeObjectAtIndex:cellIndexPath.row];
-                    [self.tableView deleteRowsAtIndexPaths:@[cellIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                }
-            }];
+            @synchronized(GVALUE.baskets) {
+                NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
+                Docbasket *basket = [GVALUE.baskets objectAtIndex:cellIndexPath.row];
+                
+                [DocbaketAPIClient deleteBasket:basket.basketID completionHandler:^(BOOL success) {
+                    if(success){
+                        [cell hideUtilityButtonsAnimated:YES];
+                        [GVALUE.baskets removeObjectAtIndex:cellIndexPath.row];
+                        [self.tableView deleteRowsAtIndexPaths:@[cellIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                    }
+                }];
+            }
+
             break;
             
             
@@ -976,23 +995,26 @@
         case 1:
         {
             
-            NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
-            Docbasket *basket = [GVALUE.baskets objectAtIndex:cellIndexPath.row];
-            
-            [DocbaketAPIClient saveDocBasket:basket.basketID completionHandler:^(BOOL success) {
-                NSString *msg = @"Success";
-                if(!success)
-                    msg = @"Fail";
+            @synchronized(GVALUE.baskets) {
+                NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
+                Docbasket *basket = [GVALUE.baskets objectAtIndex:cellIndexPath.row];
                 
-                [[[UIAlertView alloc] initWithTitle:@"Success"
-                                            message:@"save to my basket"
-                                   cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
-                                                     {
-                                                         [cell hideUtilityButtonsAnimated:YES];
-                                                         
-                                                     }]
-                                   otherButtonItems:nil, nil] show];
-            }];
+                [DocbaketAPIClient saveDocBasket:basket.basketID completionHandler:^(BOOL success) {
+                    NSString *msg = @"Success";
+                    if(!success)
+                        msg = @"Fail";
+                    
+                    [[[UIAlertView alloc] initWithTitle:@"Success"
+                                                message:@"save to my basket"
+                                       cancelButtonItem:[RIButtonItem itemWithLabel:@"OK" action:^
+                                                         {
+                                                             [cell hideUtilityButtonsAnimated:YES];
+                                                             
+                                                         }]
+                                       otherButtonItems:nil, nil] show];
+                }];
+
+            }
 
             
             //            NSLog(@"More button was pressed");
